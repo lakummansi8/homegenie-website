@@ -1,0 +1,477 @@
+/* ================================
+   RESET
+================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+/* ================================
+   BODY
+================================ */
+
+body {
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    background-color: #f4f6f8;
+
+    min-height: 100vh;
+
+}
+
+/* ================================
+   MAIN CONTAINER
+================================ */
+
+.register-container {
+
+    width: 100%;
+
+    min-height: 100vh;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    padding: 40px 20px;
+
+}
+
+
+/* ================================
+   REGISTER BOX
+================================ */
+
+.register-box {
+
+    width: 100%;
+
+    max-width: 1050px;
+
+    min-height: 650px;
+
+    display: grid;
+
+    grid-template-columns: 40% 60%;
+
+    background-color: white;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+
+}
+
+
+/* ================================
+   LEFT SIDE
+================================ */
+
+.register-left {
+
+    padding: 60px 45px;
+
+    background-color: #1d3557;
+
+    color: white;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+}
+
+
+/* ================================
+   LOGO
+================================ */
+
+.logo {
+
+    margin-bottom: 70px;
+
+}
+
+
+.logo h1 {
+
+    font-size: 34px;
+
+    letter-spacing: 1px;
+
+}
+
+
+.logo span {
+
+    color: #fca311;
+
+}
+
+
+/* ================================
+   LEFT HEADING
+================================ */
+
+.register-left h2 {
+
+    font-size: 34px;
+
+    line-height: 1.3;
+
+    margin-bottom: 20px;
+
+}
+
+
+/* ================================
+   LEFT DESCRIPTION
+================================ */
+
+.register-left > p {
+
+    font-size: 16px;
+
+    line-height: 1.8;
+
+    color: #e5e5e5;
+
+}
+
+
+/* ================================
+   BENEFITS
+================================ */
+
+.benefits {
+
+    margin-top: 35px;
+
+}
+
+
+.benefits p {
+
+    font-size: 15px;
+
+    margin-bottom: 15px;
+
+    color: #f1f1f1;
+
+}
+
+
+/* ================================
+   RIGHT SIDE
+================================ */
+
+.register-right {
+
+    padding: 50px 60px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+}
+
+
+/* ================================
+   RIGHT HEADING
+================================ */
+
+.register-right h2 {
+
+    font-size: 32px;
+
+    color: #1d3557;
+
+    margin-bottom: 10px;
+
+}
+
+
+/* ================================
+   SUBTITLE
+================================ */
+
+.subtitle {
+
+    color: #777;
+
+    font-size: 15px;
+
+    margin-bottom: 30px;
+
+}
+
+
+/* ================================
+   FORM GROUP
+================================ */
+
+.form-group {
+
+    display: flex;
+
+    flex-direction: column;
+
+    margin-bottom: 18px;
+
+}
+
+
+/* ================================
+   LABEL
+================================ */
+
+.form-group label {
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+    color: #333;
+
+    margin-bottom: 8px;
+
+}
+
+
+/* ================================
+   INPUT AND TEXTAREA
+================================ */
+
+.form-group input,
+
+.form-group textarea {
+
+    width: 100%;
+
+    padding: 13px 14px;
+
+    font-size: 15px;
+
+    font-family: inherit;
+
+    border: 1px solid #d0d0d0;
+
+    border-radius: 8px;
+
+    outline: none;
+
+    transition: 0.3s;
+
+}
+
+
+/* ================================
+   TEXTAREA
+================================ */
+
+.form-group textarea {
+
+    resize: vertical;
+
+}
+
+
+/* ================================
+   INPUT FOCUS
+================================ */
+
+.form-group input:focus,
+
+.form-group textarea:focus {
+
+    border-color: #1d3557;
+
+    box-shadow: 0 0 0 3px rgba(29, 53, 87, 0.1);
+
+}
+
+
+/* ================================
+   SUBMIT BUTTON
+================================ */
+
+button {
+
+    width: 100%;
+
+    padding: 14px;
+
+    margin-top: 5px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background-color: #1d3557;
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+
+}
+
+
+/* ================================
+   BUTTON HOVER
+================================ */
+
+button:hover {
+
+    background-color: #14253d;
+
+    transform: translateY(-2px);
+
+}
+
+
+/* ================================
+   LOGIN TEXT
+================================ */
+
+.login-text {
+
+    text-align: center;
+
+    margin-top: 22px;
+
+    color: #666;
+
+    font-size: 14px;
+
+}
+
+
+/* ================================
+   LOGIN LINK
+================================ */
+
+.login-text a {
+
+    color: #1d3557;
+
+    font-weight: bold;
+
+    text-decoration: none;
+
+}
+
+
+.login-text a:hover {
+
+    text-decoration: underline;
+
+}
+
+
+/* ================================
+   RESPONSIVE DESIGN
+================================ */
+
+@media (max-width: 800px) {
+
+
+    .register-box {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .register-left {
+
+        padding: 40px 30px;
+
+    }
+
+
+    .logo {
+
+        margin-bottom: 30px;
+
+    }
+
+
+    .register-left h2 {
+
+        font-size: 28px;
+
+    }
+
+
+    .register-right {
+
+        padding: 40px 30px;
+
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+
+    .register-container {
+
+        padding: 20px 10px;
+
+    }
+
+
+    .register-box {
+
+        border-radius: 12px;
+
+    }
+
+
+    .register-left {
+
+        padding: 30px 22px;
+
+    }
+
+
+    .register-right {
+
+        padding: 30px 22px;
+
+    }
+
+
+    .register-right h2 {
+
+        font-size: 26px;
+
+    }
+
+
+    .register-left h2 {
+
+        font-size: 25px;
+
+    }
+
+}
