@@ -15,7 +15,7 @@ values
 
 if($conn->query($sql)==TRUE)
     {
-        echo "Registration successfull";
+        header("Location:../pages/auth/login/login.html");
     }
     else
         {

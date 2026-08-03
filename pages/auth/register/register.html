@@ -2,234 +2,59 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
 
-    <title>Register | Home Genie</title>
-
-    <!-- CSS File -->
     <link rel="stylesheet" href="../../../css/register.css">
-
 </head>
-
 
 <body>
 
-
-    <div class="register-container">
-
-
-        <div class="register-box">
-
-
-            <!-- LEFT SIDE -->
-
-            <div class="register-left">
-
-                <div class="logo">
-
-                    <h1>Home<span>Genie</span></h1>
-
-                </div>
-
-
-                <h2>Welcome to Home Genie</h2>
-
-
-                <p>
-                    Find trusted professionals for all your home service needs.
-                    Create your account and make your home services simple,
-                    reliable, and convenient.
-                </p>
-
-
-                <div class="benefits">
-
-                    <p>✓ Find trusted service providers</p>
-
-                    <p>✓ Book services easily</p>
-
-                    <p>✓ Manage all your bookings</p>
-
-                </div>
-
-            </div>
-
-
-            <!-- RIGHT SIDE -->
-
-            <div class="register-right">
-
-
-                <h2>Create Your Account</h2>
-
-
-                <p class="subtitle">
-                    Register with Home Genie to get started.
-                </p>
-
-
-                <!-- Registration Form -->
-
-                <form action="../../../php/register.php" method="POST">
-
-
-                    <!-- FULL NAME -->
-
-                    <div class="form-group">
-
-                        <label for="full_name">
-                            Full Name
-                        </label>
-
-
-                        <input
-                            type="text"
-                            id="full_name"
-                            name="full_name"
-                            placeholder="Enter your full name"
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- EMAIL -->
-
-                    <div class="form-group">
-
-                        <label for="email">
-                            Email Address
-                        </label>
-
-
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            placeholder="Enter your email address"
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- PHONE -->
-
-                    <div class="form-group">
-
-                        <label for="phone">
-                            Phone Number
-                        </label>
-
-
-                        <input
-                            type="tel"
-                            id="phone"
-                            name="phone"
-                            placeholder="Enter your phone number"
-                            pattern="[0-9]{10}"
-                            maxlength="10"
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- PASSWORD -->
-
-                    <div class="form-group">
-
-                        <label for="password">
-                            Password
-                        </label>
-
-
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            placeholder="Create a password"
-                            minlength="6"
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- ADDRESS -->
-
-                    <div class="form-group">
-
-                        <label for="address">
-                            Address
-                        </label>
-
-
-                        <textarea
-                            id="address"
-                            name="address"
-                            placeholder="Enter your complete address"
-                            rows="3"
-                            required
-                        ></textarea>
-
-                    </div>
-
-
-                    <!-- CITY -->
-
-                    <div class="form-group">
-
-                        <label for="city">
-                            City
-                        </label>
-
-
-                        <input
-                            type="text"
-                            id="city"
-                            name="city"
-                            placeholder="Enter your city"
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- BUTTON -->
-
-                    <button type="submit">
-                        Create Account
-                    </button>
-
-
-                </form>
-
-
-                <!-- LOGIN LINK -->
-
-                <p class="login-text">
-
-                    Already have an account?
-
-                    <a href="login.html">
-                        Login here
-                    </a>
-
-                </p>
-
-
-            </div>
-
-
+    <div class="container">
+
+        <div class="heading">
+            <h1>Registration Form</h1>
+            <p>Register Yourself on HomeGenie</p>
         </div>
 
+        <form action="../../../php/register.php" method="POST" class="form">
+
+            <div class="inputBox">
+                <label>Full Name</label>
+                <input type="text" name="full_name" placeholder="Enter your name" required>
+            </div>
+
+            <div class="inputBox">
+                <label>Email</label>
+                <input type="email" name="email" placeholder="Enter your email" required>
+            </div>
+
+            <div class="inputBox">
+                <label>Phone Number</label>
+                <input type="tel" name="phone" placeholder="Enter your phone number" required>
+            </div>
+
+            <div class="inputBox">
+                <label>Password</label>
+                <input type="password" name="password" placeholder="Enter your password" required>
+            </div>
+
+            <div class="inputBox">
+                <label>Address</label>
+                <textarea name="address" placeholder="Enter your address"></textarea>
+            </div>
+
+            <div class="inputBox">
+                <label>City</label>
+                <input type="text" name="city" placeholder="Enter your city" required>
+            </div>
+
+            <button type="submit">Register</button>
+
+        </form>
 
     </div>
-
 
 </body>
 
