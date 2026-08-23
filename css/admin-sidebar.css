@@ -1,0 +1,223 @@
+/* ================================
+   ADMIN LAYOUT
+================================ */
+
+.admin-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f5f7fa;
+}
+
+
+/* ================================
+   SIDEBAR
+================================ */
+
+.sidebar {
+    width: 240px;
+    min-height: 100vh;
+    background-color: #1f2937;
+    padding: 25px 15px;
+    flex-shrink: 0;
+}
+
+.sidebar-brand {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.sidebar-brand h2 {
+    color: white;
+    margin: 0;
+    font-size: 24px;
+}
+
+.sidebar-brand span {
+    display: block;
+    color: #9ca3af;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+
+/* SIDEBAR LINKS */
+
+.sidebar nav a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 13px 15px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    transition: 0.3s ease;
+}
+
+.sidebar nav a:hover {
+    background-color: #374151;
+}
+
+.sidebar nav a.active {
+    background-color: #4b5563;
+}
+
+
+/* ================================
+   LOGOUT
+================================ */
+
+.logout-button {
+    margin-top: 30px;
+}
+
+.logout-button a {
+    display: block;
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: white;
+    color: #1f2937;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s ease;
+}
+
+.logout-button a:hover {
+    background-color: #e5e7eb;
+}
+
+
+/* ================================
+   MAIN ADMIN AREA
+================================ */
+
+.admin-main {
+    flex: 1;
+    min-width: 0;
+}
+
+
+/* ================================
+   TOP NAVBAR
+================================ */
+
+.admin-navbar {
+    height: 75px;
+    background-color: white;
+    border-bottom: 1px solid #e5e7eb;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 30px;
+}
+
+
+/* PAGE TITLE */
+
+.navbar-left h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #111827;
+}
+
+
+/* ================================
+   ADMIN PROFILE
+================================ */
+
+.admin-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+
+/* ADMIN AVATAR */
+
+.admin-avatar {
+    width: 42px;
+    height: 42px;
+
+    border-radius: 50%;
+
+    background-color: #1f2937;
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-weight: 700;
+    font-size: 18px;
+}
+
+
+/* ADMIN NAME + EMAIL */
+
+.admin-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-info strong {
+    color: #111827;
+    font-size: 14px;
+}
+
+.admin-info span {
+    color: #6b7280;
+    font-size: 12px;
+}
+
+
+/* ================================
+   PAGE CONTENT
+================================ */
+
+.admin-content {
+    padding: 30px;
+}
+
+.admin-content h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #111827;
+}
+
+
+/* ================================
+   TABLE
+================================ */
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+}
+
+.table-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-container th {
+    background-color: #f3f4f6;
+    color: #374151;
+    text-align: left;
+    padding: 14px;
+    font-size: 14px;
+}
+
+.table-container td {
+    padding: 14px;
+    border-top: 1px solid #e5e7eb;
+    color: #4b5563;
+    font-size: 14px;
+}
+
+.table-container tr:hover {
+    background-color: #f9fafb;
+}

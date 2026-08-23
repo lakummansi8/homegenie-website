@@ -1,5 +1,5 @@
 <?php
-include '../../php/db.php';
+include '../config/db.php';
 
 $serviceResult = $conn->query("SELECT * FROM services");
 ?>
@@ -10,9 +10,30 @@ $serviceResult = $conn->query("SELECT * FROM services");
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Services - HomeGenie Admin</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin-sidebar.css">
 </head>
 
 <body>
+    <div class="admin-container">
+     <aside class="sidebar">
+
+            <h2>HomeGenie</h2>
+
+            <nav>
+                <a href="dashboard.php">Dashboard</a>
+                <a href="users.php">Manage Users</a>
+                <a href="providers.php">Manage Providers</a>
+                <a href="services.php">Manage Services</a>
+                <a href="bookings.php">Manage Bookings</a>
+                <a href="reviews.php">Manage Reviews</a>
+                <a href="contact.php">Manage Contacts</a>
+                 <div class="logout-button">
+                    <button>Logout</button>
+                </div>
+            </nav>
+
+        </aside>
 
     <h1>Services</h1>
 
@@ -40,6 +61,6 @@ $serviceResult = $conn->query("SELECT * FROM services");
         ?>
 
     </table>
-
+</div>
 </body>
 </html>

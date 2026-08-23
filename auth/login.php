@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-require_once "../php/db.php";
+require_once "../config/db.php";
 
 $error = "";
 
@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             $result = $stmt->get_result();
 
-            if ($result->num_rows === 1) {
+            if ($result->num_rows == 1) {
 
                 $admin = $result->fetch_assoc();
 
@@ -109,7 +109,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             <?php endif; ?>
 
-            <form method="POST" action="">
+            <form method="POST" action="../admin/dashboard.php">
 
                 <div class="mb-3">
 
