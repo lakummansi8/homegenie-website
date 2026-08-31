@@ -71,6 +71,10 @@ $totalContacts = $contactData['total_contacts'];
     background-color: #374151;
 }
 
+.sidebar nav a.active {
+    background-color: #374151;
+}
+
     .main-content {
         flex: 1;
         padding: 30px;
@@ -108,7 +112,7 @@ $totalContacts = $contactData['total_contacts'];
     color: #1f2937;
 }
 
-    @media (max-width: 768px) {
+   @media (max-width: 768px) {
 
     .admin-container {
         flex-direction: column;
@@ -116,6 +120,27 @@ $totalContacts = $contactData['total_contacts'];
 
     .sidebar {
         width: 100%;
+        padding: 15px;
+    }
+
+    .sidebar h2 {
+        margin-bottom: 15px;
+    }
+
+    .sidebar nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .sidebar nav a {
+        margin-bottom: 0;
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+
+    .main-content {
+        padding: 20px;
     }
 
     .stats-container {
@@ -137,7 +162,7 @@ $totalContacts = $contactData['total_contacts'];
             <h2>HomeGenie</h2>
 
             <nav>
-                <a href="dashboard.php">Dashboard</a>
+                <a href="dashboard.php" class="active">Dashboard</a>
                 <a href="users.php">Manage Users</a>
                 <a href="providers.php">Manage Providers</a>
                 <a href="services.php">Manage Services</a>
@@ -187,6 +212,54 @@ $totalContacts = $contactData['total_contacts'];
                     <h3>Total Contacts</h3>
                     <p><?php echo $totalContacts; ?></p>
                 </div>
+                <div class="stats-container">
+
+    <div class="stat-card">
+        <h3>Total Users</h3>
+        <p><?php echo $totalUsers; ?></p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Total Providers</h3>
+        <p><?php echo $totalProviders; ?></p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Total Services</h3>
+        <p><?php echo $totalServices; ?></p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Total Bookings</h3>
+        <p><?php echo $totalBookings; ?></p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Total Reviews</h3>
+        <p><?php echo $totalReviews; ?></p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Total Contacts</h3>
+        <p><?php echo $totalContacts; ?></p>
+    </div>
+
+</div>   <!-- DON'T put Quick Actions inside this -->
+
+<div class="quick-actions">
+
+    <h2>Quick Actions</h2>
+
+    <div class="action-links">
+        <a href="users.php">View Users</a>
+        <a href="providers.php">View Providers</a>
+        <a href="services.php">View Services</a>
+        <a href="bookings.php">View Bookings</a>
+        <a href="reviews.php">View Reviews</a>
+        <a href="contact.php">View Contacts</a>
+    </div>
+
+</div>
 
             </div>
 
