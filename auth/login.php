@@ -1,164 +1,124 @@
 <?php
-session_start();
 
-require_once "../config/db.php";
+$error = $_GET["error"] ?? "";
 
-$error = "";
+$errorMessage = "";
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+switch ($error) {
 
-    $email = trim($_POST["email"] ?? "");
-    $password = $_POST["password"] ?? "";
+    case "empty":
+        $errorMessage = "Please enter both email and password.";
+        break;
 
-    if ($email === "" || $password === "") {
-        $error = "Please enter both email and password.";
-    } else {
+    case "invalid":
+        $errorMessage = "Invalid email or password.";
+        break;
 
-        $sql = "SELECT admin_id, full_name, email, password, account_status
-                FROM admins
-                WHERE email = ?
-                LIMIT 1";
-
-        $stmt = $conn->prepare($sql);
-
-        if ($stmt) {
-
-            $stmt->bind_param("s", $email);
-            $stmt->execute();
-
-            $result = $stmt->get_result();
-
-            if ($result->num_rows == 1) {
-
-                $admin = $result->fetch_assoc();
-
-                if ($admin["account_status"] !== "active") {
-
-                    $error = "Your admin account is inactive.";
-
-                } elseif (password_verify($password, $admin["password"])) {
-
-                    session_regenerate_id(true);
-
-                    $_SESSION["admin_id"] = $admin["admin_id"];
-                    $_SESSION["admin_name"] = $admin["full_name"];
-                    $_SESSION["admin_email"] = $admin["email"];
-                    $_SESSION["admin_logged_in"] = true;
-
-                    header("Location: dashboard.php");
-                    exit;
-
-                } else {
-
-                    $error = "Invalid email or password.";
-
-                }
-
-            } else {
-
-                $error = "Invalid email or password.";
-            }
-
-            $stmt->close();
-
-        } else {
-
-            $error = "Something went wrong. Please try again.";
-        }
-    }
+    case "inactive":
+        $errorMessage = "Your admin account is inactive.";
+        break;
 }
+
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Admin Login | HomeGenie</title>
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Admin Login - HomeGenie</title>
 
     <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet"
+        href="../css/auth/login.css?v=2"
     >
+
 </head>
+
 
 <body>
 
-<div class="container min-vh-100 d-flex align-items-center justify-content-center">
+<div class="login-container">
 
-    <div class="card shadow-sm" style="width: 100%; max-width: 420px;">
+    <div class="login-card">
 
-        <div class="card-body p-4">
+        <h2>HomeGenie Admin</h2>
 
-            <div class="text-center mb-4">
+        <p class="login-subtitle">
+            Sign in to access the Admin Panel
+        </p>
 
-                <h2 class="fw-bold">HomeGenie</h2>
 
-                <p class="text-muted mb-0">
-                    Admin Login
-                </p>
+        <?php if ($errorMessage !== ""): ?>
+
+            <div class="login-error">
+                <?php echo htmlspecialchars($errorMessage); ?>
+            </div>
+
+        <?php endif; ?>
+
+
+        <form
+            method="POST"
+            action="login-process.php"
+        >
+
+            <div class="input-group">
+
+                <label for="email">
+                    Email
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    autocomplete="email"
+                    required
+                >
 
             </div>
 
-            <?php if ($error !== ""): ?>
 
-                <div class="alert alert-danger">
-                    <?php echo htmlspecialchars($error); ?>
-                </div>
+            <div class="input-group">
 
-            <?php endif; ?>
+                <label for="password">
+                    Password
+                </label>
 
-            <form method="POST" action="../admin/dashboard.php">
-
-                <div class="mb-3">
-
-                    <label for="email" class="form-label">
-                        Email Address
-                    </label>
-
-                    <input
-                        type="email"
-                        class="form-control"
-                        id="email"
-                        name="email"
-                        placeholder="Enter admin email"
-                        required
-                    >
-
-                </div>
-
-                <div class="mb-3">
-
-                    <label for="password" class="form-label">
-                        Password
-                    </label>
-
-                    <input
-                        type="password"
-                        class="form-control"
-                        id="password"
-                        name="password"
-                        placeholder="Enter admin password"
-                        required
-                    >
-
-                </div>
-
-                <button
-                    type="submit"
-                    class="btn btn-primary w-100"
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                    required
                 >
-                    Login
-                </button>
 
-            </form>
+            </div>
 
-        </div>
+
+            <button
+                type="submit"
+                name="login"
+            >
+                Sign In
+            </button>
+
+        </form>
 
     </div>
 
 </div>
 
 </body>
+
 </html>

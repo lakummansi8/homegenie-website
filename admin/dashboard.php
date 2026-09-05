@@ -1,22 +1,27 @@
 <?php
 
-session_start();
+/*
+|--------------------------------------------------------------------------
+| ADMIN DASHBOARD
+|--------------------------------------------------------------------------
+| This page:
+| 1. Checks admin authentication through the shared admin layout.
+| 2. Gets dashboard statistics from the database.
+| 3. Sends the dashboard content to the shared Admin Layout.
+|--------------------------------------------------------------------------
+*/
+
 
 /*
 |--------------------------------------------------------------------------
-| ADMIN AUTHENTICATION CHECK
+| PAGE INFORMATION
 |--------------------------------------------------------------------------
-| Only logged-in administrators can access the dashboard.
 */
 
-if (
-    !isset($_SESSION["admin_logged_in"]) ||
-    $_SESSION["admin_logged_in"] !== true
-) {
-    header("Location: ../auth/login.html");
-    exit;
-}
-
+$pageTitle = "Dashboard";
+$pageCss = "dashboard.css";
+$assetPath = "../";
+$adminPath = "";
 
 /*
 |--------------------------------------------------------------------------
@@ -24,17 +29,7 @@ if (
 |--------------------------------------------------------------------------
 */
 
-include "../config/db.php";
-
-
-/*
-|--------------------------------------------------------------------------
-| ADMIN INFORMATION FROM SESSION
-|--------------------------------------------------------------------------
-*/
-
-$adminName = $_SESSION["admin_name"] ?? "Admin";
-$adminEmail = $_SESSION["admin_email"] ?? "";
+require_once "../config/db.php";
 
 
 /*
@@ -49,9 +44,12 @@ $userResult = $conn->query(
     "SELECT COUNT(*) AS total_users FROM users"
 );
 
-$userData = $userResult->fetch_assoc();
+$totalUsers = 0;
 
-$totalUsers = $userData["total_users"];
+if ($userResult) {
+    $userData = $userResult->fetch_assoc();
+    $totalUsers = (int) $userData["total_users"];
+}
 
 
 // Total Providers
@@ -59,9 +57,12 @@ $providerResult = $conn->query(
     "SELECT COUNT(*) AS total_providers FROM service_providers"
 );
 
-$providerData = $providerResult->fetch_assoc();
+$totalProviders = 0;
 
-$totalProviders = $providerData["total_providers"];
+if ($providerResult) {
+    $providerData = $providerResult->fetch_assoc();
+    $totalProviders = (int) $providerData["total_providers"];
+}
 
 
 // Total Services
@@ -69,9 +70,12 @@ $serviceResult = $conn->query(
     "SELECT COUNT(*) AS total_services FROM services"
 );
 
-$serviceData = $serviceResult->fetch_assoc();
+$totalServices = 0;
 
-$totalServices = $serviceData["total_services"];
+if ($serviceResult) {
+    $serviceData = $serviceResult->fetch_assoc();
+    $totalServices = (int) $serviceData["total_services"];
+}
 
 
 // Total Bookings
@@ -79,9 +83,12 @@ $bookingResult = $conn->query(
     "SELECT COUNT(*) AS total_bookings FROM bookings"
 );
 
-$bookingData = $bookingResult->fetch_assoc();
+$totalBookings = 0;
 
-$totalBookings = $bookingData["total_bookings"];
+if ($bookingResult) {
+    $bookingData = $bookingResult->fetch_assoc();
+    $totalBookings = (int) $bookingData["total_bookings"];
+}
 
 
 // Total Reviews
@@ -89,9 +96,12 @@ $reviewResult = $conn->query(
     "SELECT COUNT(*) AS total_reviews FROM reviews"
 );
 
-$reviewData = $reviewResult->fetch_assoc();
+$totalReviews = 0;
 
-$totalReviews = $reviewData["total_reviews"];
+if ($reviewResult) {
+    $reviewData = $reviewResult->fetch_assoc();
+    $totalReviews = (int) $reviewData["total_reviews"];
+}
 
 
 // Total Contact Messages
@@ -99,349 +109,185 @@ $contactResult = $conn->query(
     "SELECT COUNT(*) AS total_contacts FROM contact"
 );
 
-$contactData = $contactResult->fetch_assoc();
+$totalContacts = 0;
 
-$totalContacts = $contactData["total_contacts"];
+if ($contactResult) {
+    $contactData = $contactResult->fetch_assoc();
+    $totalContacts = (int) $contactData["total_contacts"];
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| DASHBOARD CONTENT
+|--------------------------------------------------------------------------
+|
+| Everything inside this variable will be displayed inside:
+| admin/layout/admin-layout.php
+|
+|--------------------------------------------------------------------------
+*/
+
+ob_start();
 
 ?>
 
-<!DOCTYPE html>
+<!-- =========================================================
+     DASHBOARD HEADER
+========================================================= -->
 
-<html lang="en">
+<div class="dashboard-header">
 
-<head>
+    <div>
 
-    <meta charset="UTF-8">
+        <h2>
+            Overview
+        </h2>
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+        <p class="dashboard-subtitle">
+            Welcome to the HomeGenie administration panel.
+        </p>
 
-    <title>Admin Dashboard - HomeGenie</title>
+    </div>
 
-
-    <!-- Main Website CSS -->
-
-    <link
-        rel="stylesheet"
-        href="../css/style.css"
-    >
+</div>
 
 
-    <!-- Admin Panel CSS -->
+<!-- =========================================================
+     STATISTICS
+========================================================= -->
 
-    <link
-        rel="stylesheet"
-        href="../css/admin-sidebar.css"
-    >
-
-</head>
+<div class="stats-container">
 
 
-<body>
+    <!-- USERS -->
 
+    <div class="stat-card">
 
-<div class="admin-container">
+        <div class="stat-card-content">
 
+            <span class="stat-label">
+                Total Users
+            </span>
 
-    <!-- =========================================================
-         SIDEBAR
-    ========================================================== -->
-
-    <aside class="sidebar">
-
-
-        <!-- Sidebar Brand -->
-
-        <div class="sidebar-brand">
-
-            <h2>HomeGenie</h2>
-
-            <span>Admin Panel</span>
+            <strong class="stat-value">
+                <?= $totalUsers ?>
+            </strong>
 
         </div>
 
-
-        <!-- Navigation -->
-
-        <nav>
-
-            <a
-                href="dashboard.php"
-                class="active"
-            >
-                Dashboard
-            </a>
+    </div>
 
 
-            <a href="users.php">
-                Manage Users
-            </a>
+    <!-- PROVIDERS -->
 
+    <div class="stat-card">
 
-            <a href="providers.php">
-                Manage Providers
-            </a>
+        <div class="stat-card-content">
 
+            <span class="stat-label">
+                Total Providers
+            </span>
 
-            <a href="services.php">
-                Manage Services
-            </a>
-
-
-            <a href="bookings.php">
-                Manage Bookings
-            </a>
-
-
-            <a href="reviews.php">
-                Manage Reviews
-            </a>
-
-
-            <a href="contact.php">
-                Manage Contacts
-            </a>
-
-        </nav>
-
-
-        <!-- Logout -->
-
-        <div class="logout-button">
-
-            <a href="../auth/logout.php">
-                Logout
-            </a>
+            <strong class="stat-value">
+                <?= $totalProviders ?>
+            </strong>
 
         </div>
 
+    </div>
 
-    </aside>
 
+    <!-- SERVICES -->
 
+    <div class="stat-card">
 
-    <!-- =========================================================
-         MAIN ADMIN AREA
-    ========================================================== -->
+        <div class="stat-card-content">
 
-    <main class="admin-main">
+            <span class="stat-label">
+                Total Services
+            </span>
 
+            <strong class="stat-value">
+                <?= $totalServices ?>
+            </strong>
 
-        <!-- =====================================================
-             TOP NAVBAR
-        ====================================================== -->
+        </div>
 
-        <header class="admin-navbar">
+    </div>
 
 
-            <!-- Page Title -->
+    <!-- BOOKINGS -->
 
-            <div class="navbar-left">
+    <div class="stat-card">
 
-                <h1>
-                    Admin Dashboard
-                </h1>
+        <div class="stat-card-content">
 
-            </div>
+            <span class="stat-label">
+                Total Bookings
+            </span>
 
+            <strong class="stat-value">
+                <?= $totalBookings ?>
+            </strong>
 
+        </div>
 
-            <!-- Admin Profile -->
+    </div>
 
-            <div class="admin-profile">
 
+    <!-- REVIEWS -->
 
-                <!-- Avatar -->
+    <div class="stat-card">
 
-                <div class="admin-avatar">
+        <div class="stat-card-content">
 
-                    <?php
+            <span class="stat-label">
+                Total Reviews
+            </span>
 
-                    echo strtoupper(
-                        substr($adminName, 0, 1)
-                    );
+            <strong class="stat-value">
+                <?= $totalReviews ?>
+            </strong>
 
-                    ?>
+        </div>
 
-                </div>
+    </div>
 
 
-                <!-- Admin Details -->
+    <!-- CONTACTS -->
 
-                <div class="admin-info">
+    <div class="stat-card">
 
-                    <strong>
+        <div class="stat-card-content">
 
-                        <?php
+            <span class="stat-label">
+                Total Contacts
+            </span>
 
-                        echo htmlspecialchars(
-                            $adminName
-                        );
+            <strong class="stat-value">
+                <?= $totalContacts ?>
+            </strong>
 
-                        ?>
+        </div>
 
-                    </strong>
-
-
-                    <span>
-
-                        <?php
-
-                        echo htmlspecialchars(
-                            $adminEmail
-                        );
-
-                        ?>
-
-                    </span>
-
-                </div>
-
-
-            </div>
-
-
-        </header>
-
-
-
-        <!-- =====================================================
-             DASHBOARD CONTENT
-        ====================================================== -->
-
-        <section class="admin-content">
-
-
-            <h2>
-                Overview
-            </h2>
-
-
-            <p class="dashboard-subtitle">
-
-                Welcome to the HomeGenie
-                administration panel.
-
-            </p>
-
-
-
-            <!-- =================================================
-                 STATISTICS
-            ================================================== -->
-
-            <div class="stats-container">
-
-
-                <!-- USERS -->
-
-                <div class="stat-card">
-
-                    <h3>
-                        Total Users
-                    </h3>
-
-                    <p>
-                        <?php echo $totalUsers; ?>
-                    </p>
-
-                </div>
-
-
-
-                <!-- PROVIDERS -->
-
-                <div class="stat-card">
-
-                    <h3>
-                        Total Providers
-                    </h3>
-
-                    <p>
-                        <?php echo $totalProviders; ?>
-                    </p>
-
-                </div>
-
-
-
-                <!-- SERVICES -->
-
-                <div class="stat-card">
-
-                    <h3>
-                        Total Services
-                    </h3>
-
-                    <p>
-                        <?php echo $totalServices; ?>
-                    </p>
-
-                </div>
-
-
-
-                <!-- BOOKINGS -->
-
-                <div class="stat-card">
-
-                    <h3>
-                        Total Bookings
-                    </h3>
-
-                    <p>
-                        <?php echo $totalBookings; ?>
-                    </p>
-
-                </div>
-
-
-
-                <!-- REVIEWS -->
-
-                <div class="stat-card">
-
-                    <h3>
-                        Total Reviews
-                    </h3>
-
-                    <p>
-                        <?php echo $totalReviews; ?>
-                    </p>
-
-                </div>
-
-
-
-                <!-- CONTACTS -->
-
-                <div class="stat-card">
-
-                    <h3>
-                        Total Contacts
-                    </h3>
-
-                    <p>
-                        <?php echo $totalContacts; ?>
-                    </p>
-
-                </div>
-
-
-            </div>
-
-
-        </section>
-
-
-    </main>
+    </div>
 
 
 </div>
 
 
-</body>
+<?php
 
-</html>
+$pageContent = ob_get_clean();
+
+
+/*
+|--------------------------------------------------------------------------
+| LOAD SHARED ADMIN LAYOUT
+|--------------------------------------------------------------------------
+*/
+
+require_once "layout/admin-layout.php";
+
+?>
