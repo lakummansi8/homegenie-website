@@ -7,319 +7,131 @@ $adminEmail = $_SESSION["admin_email"] ?? "";
 
 $currentPage = basename($_SERVER["PHP_SELF"]);
 $adminPath = $adminPath ?? "";
+$assetPath = $assetPath ?? "";
 
+// Returns Bootstrap classes for active vs inactive links
 function isActivePage($pageName, $currentPage)
 {
     return $pageName === $currentPage ? "active" : "";
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>
-        <?= htmlspecialchars($pageTitle ?? "Admin Panel") ?> - HomeGenie
-    </title>
-
-    <!-- Google Font -->
-    <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com"
-    >
-
-    <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossorigin
-    >
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-    >
-
-    <!-- Bootstrap -->
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
-
-    <!-- HomeGenie Core -->
-
-<link
-    rel="stylesheet"
-    href="<?= $assetPath ?>css/core/variables.css"
->
-
-<link
-    rel="stylesheet"
-    href="<?= $assetPath ?>css/core/reset.css"
->
-
-<link
-    rel="stylesheet"
-    href="<?= $assetPath ?>css/core/typography.css"
->
-
-<!-- Admin Layout -->
-
-<link
-    rel="stylesheet"
-    href="<?= $assetPath ?>css/admin/layout.css"
->
-
-<!-- Current Page CSS -->
-
-<?php if (!empty($pageCss)): ?>
-
-<link
-    rel="stylesheet"
-    href="<?= $assetPath ?>css/admin/pages/<?= htmlspecialchars($pageCss) ?>"
->
-
-<?php endif; ?>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= htmlspecialchars($pageTitle ?? "Admin Panel") ?> - HomeGenie</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Admin Layout CSS -->
+    <link rel="stylesheet" href="<?= $assetPath ?>css/admin/layout.css">
 </head>
-
 <body>
 
-<div class="admin-container">
+<!-- Top Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand text-white fw-bold d-flex align-items-center" href="<?= $adminPath ?>dashboard.php">
+            <i class="bi bi-house-gear-fill text-primary me-2 fs-4"></i> 
+            HomeGenie Admin
+        </a>
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNavBar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse justify-content-end" id="topNavBar">
+            <div class="d-flex align-items-center text-white">
+                <div class="d-flex align-items-center me-3">
+                    <i class="bi bi-person-circle fs-5 me-2"></i>
+                    <span>Hello, <strong><?= htmlspecialchars($adminName) ?></strong></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
 
-    <!-- ================================
-         SIDEBAR
-         ================================ -->
-
-    <aside class="admin-sidebar">
-
-        <div class="admin-sidebar-brand">
-
-            <a href="../dashboard.php">
-
-                <img
-                   src="<?= $assetPath ?>assets/logo.png"
-                    alt="HomeGenie Logo"
-                >
-
-                <span>HomeGenie</span>
-
-            </a>
-
+<!-- Main Container -->
+<div class="container-fluid">
+    <div class="row">
+        
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 bg-white sidebar shadow-sm d-none d-md-flex flex-column px-0 py-3">
+            <h6 class="sidebar-heading px-3 mt-2 mb-2 text-muted text-uppercase fw-bold">
+                Main Navigation
+            </h6>
+            
+            <ul class="nav flex-column mb-auto w-100">
+                <li class="nav-item">
+                    <a href="<?= $adminPath ?>dashboard.php" class="nav-link <?= isActivePage("dashboard.php", $currentPage) ?>">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="<?= $adminPath ?>pages/categories/categories.php" class="nav-link <?= isActivePage("categories.php", $currentPage) ?>">
+                        <i class="bi bi-tags"></i> Categories
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="<?= $adminPath ?>pages/services/services.php" class="nav-link <?= isActivePage("services.php", $currentPage) ?>">
+                        <i class="bi bi-tools"></i> Services
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="<?= $adminPath ?>pages/service-providers/service-providers.php" class="nav-link <?= isActivePage("service-providers.php", $currentPage) ?>">
+                        <i class="bi bi-person-badge"></i> Providers
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="<?= $adminPath ?>pages/users/users.php" class="nav-link <?= isActivePage("users.php", $currentPage) ?>">
+                        <i class="bi bi-people"></i> Customers
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="<?= $adminPath ?>pages/bookings/bookings.php" class="nav-link <?= isActivePage("bookings.php", $currentPage) ?>">
+                        <i class="bi bi-calendar-check"></i> Bookings
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="mt-auto px-3">
+                <a href="<?= $assetPath ?>auth/logout.php" class="nav-link w-100">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </div>
         </div>
 
-
-        <nav class="admin-sidebar-nav">
-
-            <div class="admin-nav-section">
-
-                <span class="admin-nav-title">
-                    Main
-                </span>
-
-
-                <a
-                   href="<?= $adminPath ?>dashboard.php"
-                    class="admin-nav-link <?= isActivePage("dashboard.php", $currentPage) ?>"
-                >
-                    <span class="admin-nav-icon">▦</span>
-                    <span>Dashboard</span>
-                </a>
-
-
-                <a
-                    href="<?= $adminPath ?>pages/categories/categories.php"
-                    class="admin-nav-link <?= isActivePage("categories.php", $currentPage) ?>"
-                >
-                    <span class="admin-nav-icon">◫</span>
-                    <span>Categories</span>
-                </a>
-
-
-                <a
-                    href="<?= $adminPath ?>pages/services.php"
-                    class="admin-nav-link <?= isActivePage("services.php", $currentPage) ?>"
-                >
-                    <span class="admin-nav-icon">◇</span>
-                    <span>Services</span>
-                </a>
-
-
-                <a
-                    href="<?= $adminPath ?>pages/locations.php"
-                    class="admin-nav-link <?= isActivePage("locations.php", $currentPage) ?>"
-                >
-                    <span class="admin-nav-icon">⌖</span>
-                    <span>Locations</span>
-                </a>
-
+        <!-- Mobile Sidebar Menu -->
+        <div class="d-md-none bg-white">
+            <h6>Menu</h6>
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                <a href="<?= $adminPath ?>dashboard.php" class="btn btn-sm <?= $currentPage === "dashboard.php" ? "btn-primary" : "btn-light border" ?>">Dashboard</a>
+                <a href="<?= $adminPath ?>pages/categories/categories.php" class="btn btn-sm <?= $currentPage === "categories.php" ? "btn-primary" : "btn-light border" ?>">Categories</a>
+                <a href="<?= $adminPath ?>pages/services/services.php" class="btn btn-sm <?= $currentPage === "services.php" ? "btn-primary" : "btn-light border" ?>">Services</a>
+                <a href="<?= $adminPath ?>pages/service-providers/service-providers.php" class="btn btn-sm <?= $currentPage === "service-providers.php" ? "btn-primary" : "btn-light border" ?>">Providers</a>
+                <a href="<?= $adminPath ?>pages/users/users.php" class="btn btn-sm <?= $currentPage === "users.php" ? "btn-primary" : "btn-light border" ?>">Customers</a>
+                <a href="<?= $adminPath ?>pages/bookings/bookings.php" class="btn btn-sm <?= $currentPage === "bookings.php" ? "btn-primary" : "btn-light border" ?>">Bookings</a>
             </div>
-
-
-            <div class="admin-nav-section">
-
-                <span class="admin-nav-title">
-                    Management
-                </span>
-
-
-                <a
-                    href="<?= $adminPath ?>pages/admin-users.php"
-                    class="admin-nav-link <?= isActivePage("admin-users.php", $currentPage) ?>"
-                >
-                    <span class="admin-nav-icon">♙</span>
-                    <span>Admin Users</span>
-                </a>
-
-
-                <a
-                    href="<?= $adminPath ?>pages/settings.php"
-                    class="admin-nav-link <?= isActivePage("settings.php", $currentPage) ?>"
-                >
-                    <span class="admin-nav-icon">⚙</span>
-                    <span>Settings</span>
-                </a>
-
-
-                <a
-                    href="<?= $adminPath ?>pages/audit-logs.php"
-                    class="admin-nav-link <?= isActivePage("audit-logs.php", $currentPage) ?>"
-                >
-                    <span class="admin-nav-icon">☷</span>
-                    <span>Audit Logs</span>
-                </a>
-
-            </div>
-
-        </nav>
-
-
-        <div class="admin-sidebar-footer">
-
-            <a
-                href="<?= $assetPath ?>auth/logout.php"
-                class="admin-logout"
-            >
-                <span>↪</span>
-                <span>Logout</span>
+            <a href="<?= $assetPath ?>auth/logout.php" class="btn btn-sm btn-outline-danger w-100">
+                <i class="bi bi-box-arrow-right me-1"></i> Logout
             </a>
-
         </div>
 
-    </aside>
-
-
-    <!-- ================================
-         MAIN AREA
-         ================================ -->
-
-    <main class="admin-main">
-
-        <!-- TOP NAVBAR -->
-
-        <header class="admin-navbar">
-
-            <div class="admin-navbar-left">
-
-                <button
-                    type="button"
-                    class="admin-menu-toggle"
-                    id="adminMenuToggle"
-                    aria-label="Toggle navigation"
-                >
-                    ☰
-                </button>
-
-                <div>
-
-                    <p class="admin-navbar-label">
-                        HomeGenie Admin
-                    </p>
-
-                    <h1 class="admin-navbar-title">
-                        <?= htmlspecialchars($pageTitle ?? "Admin Panel") ?>
-                    </h1>
-
-                </div>
-
-            </div>
-
-
-            <div class="admin-navbar-right">
-
-                <div class="admin-profile">
-
-                    <div class="admin-avatar">
-
-                        <?= strtoupper(substr($adminName, 0, 1)) ?>
-
-                    </div>
-
-
-                    <div class="admin-profile-info">
-
-                        <strong>
-                            <?= htmlspecialchars($adminName) ?>
-                        </strong>
-
-                        <span>
-                            <?= htmlspecialchars($adminEmail) ?>
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </header>
-
-
-        <!-- PAGE CONTENT -->
-
-        <section class="admin-content">
-
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10">
             <?= $pageContent ?? "" ?>
+        </div>
 
-        </section>
-
-    </main>
-
+    </div>
 </div>
 
-
 <!-- Bootstrap JS -->
-
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-></script>
-
-
-<script>
-
-    const adminMenuToggle =
-        document.getElementById("adminMenuToggle");
-
-    const adminSidebar =
-        document.querySelector(".admin-sidebar");
-
-    if (adminMenuToggle && adminSidebar) {
-
-        adminMenuToggle.addEventListener("click", function () {
-
-            adminSidebar.classList.toggle("show");
-
-        });
-
-    }
-
-</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
-</html>
+</html> 

@@ -1,499 +1,103 @@
 <?php
-
 $pageTitle = "Categories";
-$pageCss = "categories.css";
-
 $assetPath = "../../../";
 $adminPath = "../../";
 
 require_once "../../../config/db.php";
 
-
-/*
-|--------------------------------------------------------------------------
-| Fetch Categories
-|--------------------------------------------------------------------------
-*/
-
 $categories = [];
-
-$query = "
-    SELECT
-        category_id,
-        category_name,
-        category_image,
-        description,
-        category_status,
-        created_at
-    FROM categories
-    ORDER BY category_id DESC
-";
-
+$query = "SELECT category_id, category_name, category_image, description, category_status, created_at FROM categories ORDER BY category_id DESC";
 $result = $conn->query($query);
-
 if ($result) {
-
     while ($row = $result->fetch_assoc()) {
         $categories[] = $row;
     }
 }
 
-
-/*
-|--------------------------------------------------------------------------
-| Page Content
-|--------------------------------------------------------------------------
-*/
-
 ob_start();
-
 ?>
 
-<div class="categories-page">
-
-
-    <!-- Page Header -->
-
-    <div class="categories-header">
-
-        <div>
-
-            <h2>Categories</h2>
-
-            <p>
-                Manage the service categories available on HomeGenie.
-            </p>
-
-        </div>
-
-
-        <button
-            type="button"
-            class="btn btn-primary"
-            id="addCategoryBtn"
-        >
-            + Add Category
-        </button>
-
+<div class="admin-page-header">
+    <div class="header-title">
+        <h3>Categories</h3>
+        <p class="text-muted">Manage the service categories available on HomeGenie.</p>
     </div>
+    <div class="header-actions">
+        <a href="add-category.php" class="btn btn-primary">+ Add Category</a>
+    </div>
+</div>
 
+<?php if (isset($_GET["success"])): ?>
+    <div class="alert alert-success">
+        <?php 
+            if ($_GET["success"] === "category_added") echo "Category added successfully.";
+            elseif ($_GET["success"] === "category_updated") echo "Category updated successfully.";
+            elseif ($_GET["success"] === "category_deleted") echo "Category deleted successfully.";
+        ?>
+    </div>
+<?php endif; ?>
 
+<?php if (isset($_GET["error"])): ?>
+    <div class="alert alert-danger">
+        <?php
+            if ($_GET["error"] === "invalid_category") echo "Invalid category.";
+            elseif ($_GET["error"] === "category_not_found") echo "Category not found.";
+            else echo "Something went wrong.";
+        ?>
+    </div>
+<?php endif; ?>
 
-    <!-- Categories Table Card -->
-
-    <div class="categories-card">
-
-        <div class="categories-card-header">
-
-            <div>
-
-                <h3>All Categories</h3>
-
-                <p>
-                    View and manage your service categories.
-                </p>
-
-            </div>
-
-        </div>
-
-
-
+<div class="card">
+    <div class="card-header bg-dark text-white">
+        <strong>All Categories</strong>
+    </div>
+    <div class="card-body">
         <?php if (empty($categories)): ?>
-
-            <!-- Empty State -->
-
-            <div class="categories-empty">
-
-                <h4>No categories found</h4>
-
-                <p>
-                    There are currently no categories available.
-                </p>
-
-            </div>
-
-
+            <p class="text-muted">No categories found. Create your first category to get started.</p>
+            <a href="add-category.php" class="btn btn-primary">+ Add Category</a>
         <?php else: ?>
-
-            <!-- Categories Table -->
-
             <div class="table-responsive">
-
-                <table class="table categories-table">
-
-                    <thead>
-
+                <table class="table table-bordered table-striped">
+                    <thead class="table-light">
                         <tr>
-
                             <th>ID</th>
-
                             <th>Category</th>
-
                             <th>Description</th>
-
                             <th>Status</th>
-
                             <th>Created</th>
-
-                            <th colspan=2 style="text-align:center;">Actions</th>
-
+                            <th>Actions</th>
                         </tr>
-
                     </thead>
-
-
                     <tbody>
-
                         <?php foreach ($categories as $category): ?>
-
                             <tr>
-
+                                <td><?= (int)$category["category_id"] ?></td>
                                 <td>
-                                    <?= (int) $category["category_id"] ?>
+                                    <strong><?= htmlspecialchars($category["category_name"]) ?></strong>
                                 </td>
-
-
+                                <td><?= htmlspecialchars($category["description"]) ?></td>
                                 <td>
-
-                                    <div class="category-name">
-
-                                        <?php if (!empty($category["category_image"])): ?>
-
-                                            <img
-                                                src="<?= $assetPath ?>assets/categories/<?= htmlspecialchars($category["category_image"]) ?>"
-                                                alt="<?= htmlspecialchars($category["category_name"]) ?>"
-                                                class="category-image"
-                                            >
-
-                                        <?php endif; ?>
-
-
-                                        <strong>
-                                            <?= htmlspecialchars($category["category_name"]) ?>
-                                        </strong>
-
-                                    </div>
-
-                                </td>
-
-
-                                <td>
-
-                                    <?php if (!empty($category["description"])): ?>
-
-                                        <?= htmlspecialchars($category["description"]) ?>
-
-                                    <?php else: ?>
-
-                                        <span class="text-muted">
-                                            No description
-                                        </span>
-
-                                    <?php endif; ?>
-
-                                </td>
-
-
-                                <td>
-
                                     <?php if ($category["category_status"] === "Active"): ?>
-
-                                        <span class="badge bg-success">
-                                            Active
-                                        </span>
-
+                                        <span class="badge bg-success">Active</span>
                                     <?php else: ?>
-
-                                        <span class="badge bg-secondary">
-                                            Inactive
-                                        </span>
-
+                                        <span class="badge bg-secondary">Inactive</span>
                                     <?php endif; ?>
-
                                 </td>
-
-
+                                <td><?= htmlspecialchars($category["created_at"]) ?></td>
                                 <td>
-                                    <?= htmlspecialchars($category["created_at"]) ?>
+                                    <a href="edit-category.php?id=<?= (int)$category["category_id"] ?>" class="btn btn-sm btn-outline-primary">Edit</a>
+                                    <a href="delete-category.php?id=<?= (int)$category["category_id"] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?');">Delete</a>
                                 </td>
-
-
-                                    <td>
-
-                                        <button
-                                            type="button"
-                                            class="btn btn-sm btn-outline-primary"
-                                        >
-                                            Edit
-                                        </button>
-
-                                    </td>
-                                        <td>
-
-                                        <button
-                                            type="button"
-                                            class="btn btn-sm btn-outline-primary"
-                                        >
-                                            Delete
-                                        </button>
-
-                                    </td>
-
                             </tr>
-
                         <?php endforeach; ?>
-
                     </tbody>
-
                 </table>
-
             </div>
-
         <?php endif; ?>
-
     </div>
-
 </div>
-
-
-
-<!-- Add Category Modal -->
-
-<div
-    class="category-modal"
-    id="addCategoryModal"
->
-
-    <div class="category-modal-overlay"></div>
-
-
-    <div class="category-modal-content">
-
-
-        <!-- Modal Header -->
-
-        <div class="category-modal-header">
-
-            <div>
-
-                <h3>Add Category</h3>
-
-                <p>
-                    Create a new service category.
-                </p>
-
-            </div>
-
-
-            <button
-                type="button"
-                class="category-modal-close"
-                id="closeCategoryModal"
-            >
-                &times;
-            </button>
-
-        </div>
-
-
-
-        <!-- Add Category Form -->
-
-        <form
-            id="addCategoryForm"
-            method="POST"
-            action="add-category.php"
-            enctype="multipart/form-data"
-        >
-
-
-            <!-- Category Name -->
-
-            <div class="form-group">
-
-                <label for="categoryName">
-                    Category Name
-                </label>
-
-                <input
-                    type="text"
-                    id="categoryName"
-                    name="category_name"
-                    placeholder="Enter category name"
-                    required
-                >
-
-            </div>
-
-
-
-            <!-- Category Image -->
-
-            <div class="form-group">
-
-                <label for="categoryImage">
-                    Category Image
-                </label>
-
-                <input
-                    type="file"
-                    id="categoryImage"
-                    name="category_image"
-                    accept="image/png, image/jpeg, image/webp"
-                >
-
-                <small class="form-help">
-                    JPG, PNG or WEBP. Maximum size: 2 MB.
-                </small>
-
-            </div>
-
-
-
-            <!-- Description -->
-
-            <div class="form-group">
-
-                <label for="categoryDescription">
-                    Description
-                </label>
-
-                <textarea
-                    id="categoryDescription"
-                    name="description"
-                    rows="4"
-                    placeholder="Enter category description"
-                ></textarea>
-
-            </div>
-
-
-
-            <!-- Status -->
-
-            <div class="form-group">
-
-                <label for="categoryStatus">
-                    Status
-                </label>
-
-                <select
-                    id="categoryStatus"
-                    name="category_status"
-                >
-
-                    <option value="Active">
-                        Active
-                    </option>
-
-                    <option value="Inactive">
-                        Inactive
-                    </option>
-
-                </select>
-
-            </div>
-
-
-
-            <!-- Modal Actions -->
-
-            <div class="category-modal-actions">
-
-                <button
-                    type="button"
-                    class="btn btn-secondary"
-                    id="cancelCategoryBtn"
-                >
-                    Cancel
-                </button>
-
-
-                <button
-                    type="submit"
-                    class="btn btn-primary"
-                >
-                    Save Category
-                </button>
-
-            </div>
-
-        </form>
-
-    </div>
-
-</div>
-
-
-
-<script>
-
-    const addCategoryBtn =
-        document.getElementById("addCategoryBtn");
-
-    const addCategoryModal =
-        document.getElementById("addCategoryModal");
-
-    const closeCategoryModal =
-        document.getElementById("closeCategoryModal");
-
-    const cancelCategoryBtn =
-        document.getElementById("cancelCategoryBtn");
-
-    const categoryModalOverlay =
-        document.querySelector(".category-modal-overlay");
-
-
-    function openCategoryModal() {
-
-        addCategoryModal.classList.add("active");
-
-    }
-
-
-    function closeCategoryModalHandler() {
-
-        addCategoryModal.classList.remove("active");
-
-    }
-
-
-    addCategoryBtn.addEventListener(
-        "click",
-        openCategoryModal
-    );
-
-
-    closeCategoryModal.addEventListener(
-        "click",
-        closeCategoryModalHandler
-    );
-
-
-    cancelCategoryBtn.addEventListener(
-        "click",
-        closeCategoryModalHandler
-    );
-
-
-    categoryModalOverlay.addEventListener(
-        "click",
-        closeCategoryModalHandler
-    );
-
-</script>
-
 
 <?php
-
 $pageContent = ob_get_clean();
-
-
-/*
-|--------------------------------------------------------------------------
-| Load Admin Layout
-|--------------------------------------------------------------------------
-*/
-
 require_once "../../layout/admin-layout.php";
+?>
