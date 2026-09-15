@@ -1,0 +1,94 @@
+/* =================================
+   GLOBAL RESET
+   ================================= */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+
+/* Remove default spacing */
+
+html,
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol {
+    margin: 0;
+    padding: 0;
+}
+
+
+/* Base HTML */
+
+html {
+    scroll-behavior: smooth;
+}
+
+
+/* Body */
+
+body {
+    min-height: 100vh;
+    margin: 0;
+}
+
+
+/* Images */
+
+img,
+picture,
+svg,
+video {
+    display: block;
+    max-width: 100%;
+}
+
+
+/* Forms */
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+
+/* Buttons */
+
+button {
+    cursor: pointer;
+}
+
+
+/* Links */
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+
+/* Lists */
+
+ul,
+ol {
+    list-style: none;
+}
+
+
+/* Tables */
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
