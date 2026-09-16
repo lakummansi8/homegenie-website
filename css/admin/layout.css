@@ -1,191 +1,170 @@
-/* ================================
-   ADMIN LAYOUT CSS
-================================ */
-
-body {
-    margin: 0;
-    background-color: #f5f7fa;
+body { 
+    margin: 0; 
+    background-color: #f5f7fa; 
+} 
+ 
+.navbar { 
+    min-height: 60px; 
+} 
+ 
+.navbar-brand { 
+    font-size: 19px; 
+    font-weight: 600; 
+} 
+ 
+.sidebar { 
+    min-height: calc(100vh - 60px); 
+    border-right: 1px solid #e5e7eb; 
+} 
+ 
+.sidebar-heading { 
+    font-size: 11px; 
+    letter-spacing: 0.8px; 
+} 
+ 
+.sidebar .nav { 
+    padding: 0 10px; 
+} 
+ 
+.sidebar .nav-link { 
+    display: flex; 
+    align-items: center; 
+    border-radius: 9px; 
+    color: #4b5563; 
+    font-size: 14px; 
+    font-weight: 500; 
+    margin-bottom: 5px; 
+    transition: 0.2s ease; 
+} 
+ 
+.sidebar .nav-link i { 
+    width: 25px; 
+    font-size: 17px; 
+    margin-right: 8px; 
+} 
+ 
+.sidebar .nav-link:hover { 
+    background-color: #f3f6fa; 
+    color: #0d6efd; 
+} 
+ 
+.sidebar .nav-link.active { 
+    background-color: #0d6efd; 
+    color: #ffffff; 
+    font-weight: 600; 
+    box-shadow: 0 3px 8px rgba(13, 110, 253, 0.18); 
+} 
+ 
+.sidebar .nav-link.active:hover { 
+    color: #ffffff; 
+} 
+ 
+.sidebar .mt-auto { 
+    border-top: 1px solid #e5e7eb; 
+    padding-top: 15px; 
+} 
+ 
+.sidebar .mt-auto .nav-link { 
+    color: #dc3545; 
+} 
+ 
+.sidebar .mt-auto .nav-link:hover { 
+    background-color: #fff1f2; 
+} 
+ 
+.sidebar::-webkit-scrollbar { 
+    width: 5px; 
+} 
+ 
+.sidebar::-webkit-scrollbar-track { 
+    background: transparent; 
+} 
+ 
+.sidebar::-webkit-scrollbar-thumb { 
+    background-color: #d1d5db; 
+    border-radius: 10px; 
+} 
+ 
+.col-md-9.col-lg-10 { 
+    padding: 28px 30px !important; 
+} 
+ 
+.d-md-none.bg-white { 
+    padding: 16px; 
+    border-bottom: 1px solid #e5e7eb; 
+} 
+ 
+.d-md-none h6 { 
+    font-size: 11px; 
+    font-weight: 700; 
+    letter-spacing: 0.8px; 
+    color: #9ca3af; 
+} 
+ 
+.img-preview-lg { 
+    max-height: 150px; 
+} 
+ 
+.img-preview-sm { 
+    max-height: 100px; 
+} 
+ 
+@media (max-width: 767px) { 
+    .col-md-9.col-lg-10 { 
+        padding: 20px 15px !important; 
+    } 
+} 
+ 
+.admin-form-actions { 
+    display: flex; 
+    justify-content: space-between; 
+} 
+ 
+.admin-card-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+} 
+ 
+.admin-page-header { 
+    display: flex; 
+    flex-wrap: wrap; 
+    justify-content: space-between; 
+    align-items: flex-end; 
+    margin-bottom: 1.5rem; 
+    gap: 15px; 
+} 
+ 
+.header-title { 
+    flex: 1; 
+    min-width: 300px; 
+} 
+ 
+.header-actions { 
+    display: flex; 
+    justify-content: flex-end; 
+    align-items: center; 
+} 
+ 
+.admin-stats-grid { 
+    display: grid; 
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 1.5rem; 
+    margin-bottom: 1.5rem; 
+} 
+ 
+.stat-card-wrapper { 
+    width: 100%; 
+} 
+ 
+@media (max-width: 991px) { 
+    .admin-stats-grid { 
+        grid-template-columns: repeat(2, 1fr); 
+    } 
+} 
+ 
+@media (max-width: 575px) { 
+    .admin-stats-grid { 
+        grid-template-columns: 1fr; 
+    } 
 }
-
-/* Navbar */
-.navbar {
-    min-height: 60px;
-}
-
-.navbar-brand {
-    font-size: 19px;
-    font-weight: 600;
-}
-
-/* Sidebar */
-.sidebar {
-    min-height: calc(100vh - 60px);
-    border-right: 1px solid #e5e7eb;
-}
-
-/* Navigation title */
-.sidebar-heading {
-    font-size: 11px;
-    letter-spacing: 0.8px;
-}
-
-/* Menu */
-.sidebar .nav {
-    padding: 0 10px;
-}
-
-.sidebar .nav-link {
-    display: flex;
-    align-items: center;
-    border-radius: 9px;
-    color: #4b5563;
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 5px;
-    transition: 0.2s ease;
-}
-
-/* Icons */
-.sidebar .nav-link i {
-    width: 25px;
-    font-size: 17px;
-    margin-right: 8px;
-}
-
-/* Hover */
-.sidebar .nav-link:hover {
-    background-color: #f3f6fa;
-    color: #0d6efd;
-}
-
-/* Active item */
-.sidebar .nav-link.active {
-    background-color: #0d6efd;
-    color: #ffffff;
-    font-weight: 600;
-    box-shadow: 0 3px 8px rgba(13, 110, 253, 0.18);
-}
-
-.sidebar .nav-link.active:hover {
-    color: #ffffff;
-}
-
-/* Logout */
-.sidebar .mt-auto {
-    border-top: 1px solid #e5e7eb;
-    padding-top: 15px;
-}
-
-.sidebar .mt-auto .nav-link {
-    color: #dc3545;
-}
-
-.sidebar .mt-auto .nav-link:hover {
-    background-color: #fff1f2;
-}
-
-/* Sidebar scrollbar */
-.sidebar::-webkit-scrollbar {
-    width: 5px;
-}
-
-.sidebar::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.sidebar::-webkit-scrollbar-thumb {
-    background-color: #d1d5db;
-    border-radius: 10px;
-}
-
-/* Main content */
-.col-md-9.col-lg-10 {
-    padding: 28px 30px !important;
-}
-
-/* Mobile menu */
-.d-md-none.bg-white {
-    padding: 16px;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.d-md-none h6 {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.8px;
-    color: #9ca3af;
-}
-
-/* Image Preview Sizes (Moved from inline CSS) */
-.img-preview-lg {
-    max-height: 150px;
-}
-
-.img-preview-sm {
-    max-height: 100px;
-}
-
-/* Mobile responsive padding */
-@media (max-width: 767px) {
-    .col-md-9.col-lg-10 {
-        padding: 20px 15px !important;
-    }
-}
-/* Replaced Inline Utility Classes */
-.admin-form-actions {
-    display: flex;
-    justify-content: space-between;
-}
-
-.admin-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-
-/* Page Header Layout */
-.admin-page-header {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 1.5rem;
-    gap: 15px;
-}
-
-.header-title {
-    flex: 1;
-    min-width: 300px;
-}
-
-.header-actions {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-}
-
-/* Statistics Grid */
-.admin-stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
-}
-
-.stat-card-wrapper {
-    width: 100%;
-}
-
-@media (max-width: 991px) {
-    .admin-stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 575px) {
-    .admin-stats-grid {
-        grid-template-columns: 1fr;
-    }
-}
-

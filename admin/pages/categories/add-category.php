@@ -1,77 +1,90 @@
 <?php
+
 $pageTitle = "Add Category";
 $assetPath = "../../../";
 $adminPath = "../../";
+
 require_once "../../../config/db.php";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $categoryName = trim($_POST["category_name"] ?? "");
-    $description = trim($_POST["description"] ?? "");
-    $categoryStatus = trim($_POST["category_status"] ?? "Active");
 
-    if ($categoryName === "") {
-        header("Location: add-category.php?error=category_name_required");
-        exit;
+    $categoryName = trim($_POST["category_name"]);
+    $description = trim($_POST["description"]);
+    $categoryStatus = $_POST["category_status"];
+
+    // Check category name
+    if ($categoryName == "") {
+        die("Category name is required.");
     }
 
-    if ($categoryStatus !== "Active" && $categoryStatus !== "Inactive") {
-        header("Location: add-category.php?error=invalid_status");
-        exit;
+    // Check status
+    if ($categoryStatus != "Active" && $categoryStatus != "Inactive") {
+        die("Invalid category status.");
     }
 
+    // Handle category image
     $categoryImage = null;
-    if (isset($_FILES["category_image"]) && $_FILES["category_image"]["error"] !== UPLOAD_ERR_NO_FILE) {
-        if ($_FILES["category_image"]["error"] !== UPLOAD_ERR_OK) {
-            die("Failed to upload category image.");
-        }
 
-        if ($_FILES["category_image"]["size"] > 2 * 1024 * 1024) {
+    if (isset($_FILES["category_image"]) && $_FILES["category_image"]["error"] == 0) {
+
+        $imageName = $_FILES["category_image"]["name"];
+        $imageSize = $_FILES["category_image"]["size"];
+        $imageTmp = $_FILES["category_image"]["tmp_name"];
+
+        // Check image size
+        if ($imageSize > 2 * 1024 * 1024) {
             die("Category image must be smaller than 2 MB.");
         }
 
-        $allowedTypes = ["image/jpeg" => "jpg", "image/png" => "png", "image/webp" => "webp"];
-        $imageInfo = getimagesize($_FILES["category_image"]["tmp_name"]);
-        if ($imageInfo === false) {
-            die("Uploaded file is not a valid image.");
-        }
+        // Get file extension
+        $extension = strtolower(pathinfo($imageName, PATHINFO_EXTENSION));
 
-        $mimeType = $imageInfo["mime"];
-        if (!isset($allowedTypes[$mimeType])) {
+        // Check file type
+        if ($extension != "jpg" && $extension != "jpeg" && $extension != "png" && $extension != "webp") {
             die("Only JPG, PNG and WEBP images are allowed.");
         }
 
-        $extension = $allowedTypes[$mimeType];
-        $categoryImage = "category_" . time() . "_" . bin2hex(random_bytes(4)) . "." . $extension;
+        // Create a unique image name
+        $categoryImage = "category_" . time() . "." . $extension;
+
         $uploadDirectory = "../../../assets/categories/";
 
+        // Create folder if it does not exist
         if (!is_dir($uploadDirectory)) {
-            if (!mkdir($uploadDirectory, 0755, true)) {
-                die("Failed to create image upload directory.");
-            }
+            mkdir($uploadDirectory, 0755, true);
         }
 
         $uploadPath = $uploadDirectory . $categoryImage;
-        if (!move_uploaded_file($_FILES["category_image"]["tmp_name"], $uploadPath)) {
-            die("Failed to save category image.");
+
+        // Save image
+        if (!move_uploaded_file($imageTmp, $uploadPath)) {
+            die("Failed to upload category image.");
         }
     }
 
-    $stmt = $conn->prepare("INSERT INTO categories (category_name, category_image, description, category_status) VALUES (?, ?, ?, ?)");
-    if (!$stmt) {
-        die("Failed to prepare category query: " . $conn->error);
-    }
+    // Insert category into database
+    $stmt = $conn->prepare(
+        "INSERT INTO categories 
+        (category_name, category_image, description, category_status)
+        VALUES (?, ?, ?, ?)"
+    );
 
-    $stmt->bind_param("ssss", $categoryName, $categoryImage, $description, $categoryStatus);
+    $stmt->bind_param(
+        "ssss",
+        $categoryName,
+        $categoryImage,
+        $description,
+        $categoryStatus
+    );
 
     if ($stmt->execute()) {
         $stmt->close();
+
         header("Location: categories.php?success=category_added");
         exit;
     }
 
-    $error = $stmt->error;
-    $stmt->close();
-    die("Failed to add category: " . $error);
+    die("Failed to add category.");
 }
 
 ob_start();

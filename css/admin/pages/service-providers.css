@@ -1,16 +1,7 @@
-/* =========================================================
-   SERVICE PROVIDERS PAGE
-   ========================================================= */
-
 .service-providers-page {
     width: 100%;
     padding-bottom: var(--space-2xl);
 }
-
-
-/* =========================================================
-   PAGE HEADER
-   ========================================================= */
 
 .service-providers-header {
     display: flex;
@@ -38,11 +29,6 @@
     line-height: 1.5;
     color: var(--text-secondary);
 }
-
-
-/* =========================================================
-   BUTTONS
-   ========================================================= */
 
 .btn {
     display: inline-flex;
@@ -103,11 +89,6 @@
     font-size: 13px;
 }
 
-
-/* =========================================================
-   ALERTS
-   ========================================================= */
-
 .service-providers-alert {
     margin-bottom: 20px;
     padding: 13px 16px;
@@ -128,11 +109,6 @@
     border-color: rgba(220, 38, 38, 0.20);
     color: #991B1B;
 }
-
-
-/* =========================================================
-   SERVICE PROVIDERS CARD
-   ========================================================= */
 
 .service-providers-card {
     width: 100%;
@@ -163,11 +139,6 @@
     font-size: 13px;
     color: var(--text-secondary);
 }
-
-
-/* =========================================================
-   TABLE
-   ========================================================= */
 
 .table-responsive {
     width: 100%;
@@ -215,21 +186,11 @@
     text-align: right !important;
 }
 
-
-/* =========================================================
-   PROVIDER ID
-   ========================================================= */
-
 .provider-id {
     font-size: 13px;
     font-weight: 600;
     color: var(--text-secondary);
 }
-
-
-/* =========================================================
-   PROVIDER NAME
-   ========================================================= */
 
 .provider-name {
     display: flex;
@@ -256,11 +217,6 @@
     color: var(--text-secondary);
 }
 
-
-/* =========================================================
-   PROVIDER IMAGE
-   ========================================================= */
-
 .provider-image {
     width: 44px;
     height: 44px;
@@ -280,11 +236,6 @@
     font-weight: 700;
 }
 
-
-/* =========================================================
-   CONTACT
-   ========================================================= */
-
 .provider-contact {
     display: flex;
     flex-direction: column;
@@ -300,11 +251,6 @@
     font-size: 13px;
 }
 
-
-/* =========================================================
-   CATEGORY
-   ========================================================= */
-
 .provider-category {
     display: inline-flex;
     align-items: center;
@@ -318,21 +264,11 @@
     white-space: nowrap;
 }
 
-
-/* =========================================================
-   EXPERIENCE
-   ========================================================= */
-
 .provider-experience {
     color: var(--text-primary);
     font-size: 13px;
     white-space: nowrap;
 }
-
-
-/* =========================================================
-   LOCATION
-   ========================================================= */
 
 .provider-location {
     display: flex;
@@ -352,21 +288,11 @@
     color: var(--text-secondary);
 }
 
-
-/* =========================================================
-   DATE
-   ========================================================= */
-
 .provider-date {
     white-space: nowrap;
     color: var(--text-secondary);
     font-size: 13px;
 }
-
-
-/* =========================================================
-   STATUS BADGES
-   ========================================================= */
 
 .badge {
     display: inline-flex;
@@ -380,11 +306,6 @@
     line-height: 1.2;
     white-space: nowrap;
 }
-
-
-/* =========================================================
-   AVAILABILITY
-   ========================================================= */
 
 .badge-available {
     background: #DCFCE7;
@@ -401,11 +322,6 @@
     color: #4B5563;
 }
 
-
-/* =========================================================
-   ACCOUNT STATUS
-   ========================================================= */
-
 .badge-active {
     background: #DCFCE7;
     color: #166534;
@@ -420,11 +336,6 @@
     background: #FEE2E2;
     color: #991B1B;
 }
-
-
-/* =========================================================
-   ACTIONS
-   ========================================================= */
 
 .provider-actions {
     display: flex;
@@ -455,11 +366,6 @@
     background: rgba(220, 38, 38, 0.07);
     border-color: rgba(220, 38, 38, 0.55);
 }
-
-
-/* =========================================================
-   EMPTY STATE
-   ========================================================= */
 
 .service-providers-empty {
     display: flex;
@@ -500,22 +406,12 @@
     line-height: 1.6;
 }
 
-
-/* =========================================================
-   ADD / EDIT PAGE
-   ========================================================= */
-
 .edit-service-provider-page {
     width: 100%;
     max-width: 1000px;
     margin: 0 auto;
     padding-bottom: var(--space-2xl);
 }
-
-
-/* =========================================================
-   ADD / EDIT HEADER
-   ========================================================= */
 
 .edit-service-provider-header {
     display: flex;
@@ -544,11 +440,6 @@
     line-height: 1.5;
 }
 
-
-/* =========================================================
-   ADD / EDIT CARD
-   ========================================================= */
-
 .edit-service-provider-card {
     width: 100%;
     overflow: hidden;
@@ -576,11 +467,6 @@
     font-size: 13px;
 }
 
-
-/* =========================================================
-   FORM
-   ========================================================= */
-
 .edit-service-provider-form {
     padding: 24px;
 }
@@ -596,11 +482,6 @@
     font-weight: 600;
     color: var(--text-primary);
 }
-
-
-/* =========================================================
-   FORM CONTROLS
-   ========================================================= */
 
 .edit-service-provider-form input[type="text"],
 .edit-service-provider-form input[type="email"],
@@ -650,11 +531,6 @@
     cursor: pointer;
 }
 
-
-/* =========================================================
-   FORM FOCUS
-   ========================================================= */
-
 .edit-service-provider-form input[type="text"]:focus,
 .edit-service-provider-form input[type="email"]:focus,
 .edit-service-provider-form input[type="password"]:focus,
@@ -666,11 +542,6 @@
     box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.10);
 }
 
-
-/* =========================================================
-   FORM HELP TEXT
-   ========================================================= */
-
 .edit-service-provider-form .form-help {
     display: block;
     margin-top: 7px;
@@ -678,11 +549,6 @@
     font-size: 12px;
     line-height: 1.5;
 }
-
-
-/* =========================================================
-   FORM GRID
-   ========================================================= */
 
 .service-provider-form-grid {
     display: grid;
@@ -693,11 +559,6 @@
 .service-provider-form-grid .form-group-full {
     grid-column: 1 / -1;
 }
-
-
-/* =========================================================
-   CURRENT PROFILE IMAGE
-   ========================================================= */
 
 .edit-service-provider-current-image {
     display: flex;
@@ -738,11 +599,6 @@
     color: var(--text-secondary);
 }
 
-
-/* =========================================================
-   FORM ALERT
-   ========================================================= */
-
 .edit-service-provider-alert {
     margin-bottom: 20px;
     padding: 13px 16px;
@@ -764,11 +620,6 @@
     color: #991B1B;
 }
 
-
-/* =========================================================
-   FORM ACTIONS
-   ========================================================= */
-
 .edit-service-provider-actions {
     display: flex;
     align-items: center;
@@ -782,11 +633,6 @@
 .edit-service-provider-actions .btn {
     min-width: 130px;
 }
-
-
-/* =========================================================
-   RESPONSIVE
-   ========================================================= */
 
 @media (max-width: 768px) {
 
@@ -853,7 +699,6 @@
     }
 
 }
-
 
 @media (max-width: 480px) {
 

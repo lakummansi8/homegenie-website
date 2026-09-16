@@ -15,16 +15,10 @@ body {
     align-items: center;
 }
 
-
-/* Login Container */
-
 .login-container {
     width: 100%;
     padding: 20px;
 }
-
-
-/* Login Card */
 
 .login-card {
     width: 100%;
@@ -43,9 +37,6 @@ body {
     border: 1px solid #e5e5e5;
 }
 
-
-/* Heading */
-
 .login-card h2 {
     text-align: center;
 
@@ -56,15 +47,9 @@ body {
     margin-bottom: 30px;
 }
 
-
-/* Input Group */
-
 .input-group {
     margin-bottom: 20px;
 }
-
-
-/* Labels */
 
 .input-group label {
     display: block;
@@ -77,9 +62,6 @@ body {
 
     margin-bottom: 8px;
 }
-
-
-/* Inputs */
 
 .input-group input {
     width: 100%;
@@ -99,15 +81,11 @@ body {
     transition: 0.2s;
 }
 
-
 .input-group input:focus {
     border-color: #333;
 
     box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
 }
-
-
-/* Login Button */
 
 .login-card button {
     width: 100%;
@@ -133,13 +111,9 @@ body {
     transition: 0.2s;
 }
 
-
 .login-card button:hover {
     background: #000;
 }
-
-
-/* Mobile */
 
 @media (max-width: 480px) {
 
