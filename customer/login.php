@@ -47,7 +47,7 @@
     </p>
 
     <p>
-        <a href="../index.php">Back to Home</a>
+        <a href="../index.html">Back to Home</a>
     </p>
 
 </body>

@@ -26,7 +26,7 @@ $userName = $_SESSION["user_name"];
 
         <h3>Customer Menu</h3>
 
-        <p><a href="../index.php">Home</a></p>
+        <p><a href="../index.html">Home</a></p>
         <p><a href="services.php">Browse Services</a></p>
         <p><a href="my-bookings.php">My Bookings</a></p>
         <p><a href="profile.php">My Profile</a></p>
@@ -35,4 +35,4 @@ $userName = $_SESSION["user_name"];
     </div>
 
 </body>
-</html>
+</html> 
