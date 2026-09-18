@@ -1,12 +1,16 @@
 <?php
 
-if (!isset($_SESSION["provider_logged_in"]) || $_SESSION["provider_logged_in"] !== true) {
-    header("Location: ../../auth/login.php");
+if (
+    !isset($_SESSION["provider_logged_in"]) ||
+    $_SESSION["provider_logged_in"] !== true
+) {
+    header("Location: /homegenie-website/auth/login.php");
     exit;
 }
 
 $pageTitle = $pageTitle ?? "Provider Dashboard";
 $pageCss = $pageCss ?? "";
+
 ?>
 
 <!DOCTYPE html>
@@ -25,18 +29,10 @@ $pageCss = $pageCss ?? "";
         <?php echo htmlspecialchars($pageTitle); ?> - HomeGenie
     </title>
 
-    <link
-    rel="stylesheet"
-    href="/homegenie-website/css/provider/layout.css"
->
+  <link rel="stylesheet" href="/homegenie-website/css/provider/layout.css">
 
 <?php if ($pageCss !== ""): ?>
-
-    <link
-        rel="stylesheet"
-        href="/homegenie-website/css/provider/<?php echo htmlspecialchars($pageCss); ?>"
-    >
-
+    <link rel="stylesheet" href="/homegenie-website/css/provider/<?php echo htmlspecialchars($pageCss); ?>">
 <?php endif; ?>
 
 </head>
@@ -48,50 +44,53 @@ $pageCss = $pageCss ?? "";
     <aside class="provider-sidebar">
 
         <div class="provider-logo">
+
             <h2>HomeGenie</h2>
+
             <span>Provider Panel</span>
+
         </div>
 
 
         <nav class="provider-nav">
 
             <a
-                href="../dashboard.php"
+                href="dashboard.php"
                 class="provider-nav-link"
             >
                 Dashboard
             </a>
 
             <a
-                href="../profile.php"
+                href="myprofile.php"
                 class="provider-nav-link"
             >
                 My Profile
             </a>
 
             <a
-                href="../services.php"
+                href="services.php"
                 class="provider-nav-link"
             >
                 My Services
             </a>
 
             <a
-                href="../bookings.php"
+                href="bookings.php"
                 class="provider-nav-link"
             >
                 Bookings
             </a>
 
             <a
-                href="../customers.php"
+                href="customers.php"
                 class="provider-nav-link"
             >
                 Customers
             </a>
 
             <a
-                href="../reviews.php"
+                href="reviews.php"
                 class="provider-nav-link"
             >
                 Reviews
@@ -102,13 +101,12 @@ $pageCss = $pageCss ?? "";
 
         <div class="provider-sidebar-bottom">
 
-        
-<a
-    href="../auth/logout.php"
-    class="provider-logout"
->
-    Logout
-</a>
+            <a
+                href="../auth/logout.php"
+                class="provider-logout"
+            >
+                Logout
+            </a>
 
         </div>
 

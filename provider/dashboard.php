@@ -1,5 +1,4 @@
 <?php
-
 require_once "../auth/provider-auth-check.php";
 require_once "../config/db.php";
 
@@ -9,7 +8,6 @@ $stmt = $conn->prepare(
     "SELECT
         sp.full_name,
         sp.email,
-        sp.phone,
         sp.experience,
         sp.area,
         sp.city,
@@ -24,118 +22,157 @@ $stmt = $conn->prepare(
 );
 
 $stmt->bind_param("i", $providerId);
-
 $stmt->execute();
 
 $result = $stmt->get_result();
-
 $provider = $result->fetch_assoc();
 
 $stmt->close();
 
+
+$stmt = $conn->prepare(
+    "SELECT COUNT(*) AS total_services
+     FROM services
+     WHERE provider_id = ?"
+);
+
+$stmt->bind_param("i", $providerId);
+$stmt->execute();
+
+$result = $stmt->get_result();
+$serviceData = $result->fetch_assoc();
+
+$totalServices = $serviceData["total_services"];
+
+$stmt->close();
+
+
+$stmt = $conn->prepare(
+    "SELECT
+        COUNT(*) AS total_bookings,
+        SUM(CASE WHEN booking_status = 'Pending' THEN 1 ELSE 0 END) AS pending_bookings,
+        SUM(CASE WHEN booking_status = 'Confirmed' THEN 1 ELSE 0 END) AS confirmed_bookings
+     FROM bookings
+     WHERE provider_id = ?"
+);
+
+$stmt->bind_param("i", $providerId);
+$stmt->execute();
+
+$result = $stmt->get_result();
+$bookingData = $result->fetch_assoc();
+
+$totalBookings = $bookingData["total_bookings"];
+$pendingBookings = $bookingData["pending_bookings"] ?? 0;
+$confirmedBookings = $bookingData["confirmed_bookings"] ?? 0;
+
+$stmt->close();
+
+
 $pageTitle = "Provider Dashboard";
 $pageCss = "dashboard.css";
-$assetPath = "../";
-$providerPath = "./";
 
 require_once "layout/provider-layout.php";
 ?>
 
 <div class="provider-dashboard">
 
-    <div class="dashboard-header">
+    <div class="dashboard-welcome">
+        <h2>
+            Welcome, <?php echo htmlspecialchars($provider["full_name"]); ?>
+        </h2>
 
-        <div>
-            <h1>Welcome, <?php echo htmlspecialchars($provider["full_name"]); ?></h1>
+        <p>
+            Manage your services, bookings and profile from here.
+        </p>
+    </div>
 
-            <p>
-                Manage your services and bookings from here.
-            </p>
+
+    <div class="dashboard-cards">
+
+        <div class="dashboard-card">
+            <div class="card-content">
+                <span class="card-label">My Services</span>
+                <h3><?php echo $totalServices; ?></h3>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="card-content">
+                <span class="card-label">Total Bookings</span>
+                <h3><?php echo $totalBookings; ?></h3>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="card-content">
+                <span class="card-label">Pending Bookings</span>
+                <h3><?php echo $pendingBookings; ?></h3>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="card-content">
+                <span class="card-label">Confirmed Bookings</span>
+                <h3><?php echo $confirmedBookings; ?></h3>
+            </div>
         </div>
 
     </div>
 
 
-    <div class="provider-cards">
+    <div class="dashboard-section">
 
-        <div class="provider-card">
-
-            <h3>Category</h3>
-
-            <p>
-                <?php echo htmlspecialchars($provider["category_name"] ?? "Not assigned"); ?>
-            </p>
-
+        <div class="section-header">
+            <h3>My Information</h3>
         </div>
 
+        <div class="provider-info-grid">
 
-        <div class="provider-card">
+            <div class="info-item">
+                <span>Category</span>
+                <strong>
+                    <?php echo htmlspecialchars($provider["category_name"] ?? "Not Assigned"); ?>
+                </strong>
+            </div>
 
-            <h3>Experience</h3>
+            <div class="info-item">
+                <span>Experience</span>
+                <strong>
+                    <?php echo htmlspecialchars($provider["experience"]); ?>
+                </strong>
+            </div>
 
-            <p>
-                <?php echo htmlspecialchars($provider["experience"]); ?> years
-            </p>
+            <div class="info-item">
+                <span>Availability</span>
+                <strong>
+                    <?php echo htmlspecialchars($provider["availability"]); ?>
+                </strong>
+            </div>
 
-        </div>
+            <div class="info-item">
+                <span>Account Status</span>
+                <strong class="account-status">
+                    <?php echo htmlspecialchars($provider["account_status"]); ?>
+                </strong>
+            </div>
 
-
-        <div class="provider-card">
-
-            <h3>Availability</h3>
-
-            <p>
-                <?php echo htmlspecialchars($provider["availability"]); ?>
-            </p>
-
-        </div>
-
-
-        <div class="provider-card">
-
-            <h3>Account Status</h3>
-
-            <p>
-                <?php echo htmlspecialchars($provider["account_status"]); ?>
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div class="provider-info">
-
-        <h2>My Information</h2>
-
-        <div class="info-grid">
-
-            <div>
-                <strong>Email</strong>
-                <span>
+            <div class="info-item">
+                <span>Email</span>
+                <strong>
                     <?php echo htmlspecialchars($provider["email"]); ?>
-                </span>
+                </strong>
             </div>
 
-            <div>
-                <strong>Phone</strong>
-                <span>
-                    <?php echo htmlspecialchars($provider["phone"]); ?>
-                </span>
-            </div>
-
-            <div>
-                <strong>Area</strong>
-                <span>
-                    <?php echo htmlspecialchars($provider["area"]); ?>
-                </span>
-            </div>
-
-            <div>
-                <strong>City</strong>
-                <span>
-                    <?php echo htmlspecialchars($provider["city"]); ?>
-                </span>
+            <div class="info-item">
+                <span>Location</span>
+                <strong>
+                    <?php
+                    echo htmlspecialchars(
+                        $provider["area"] . ", " . $provider["city"]
+                    );
+                    ?>
+                </strong>
             </div>
 
         </div>
@@ -143,3 +180,10 @@ require_once "layout/provider-layout.php";
     </div>
 
 </div>
+
+</section>
+</main>
+</div>
+
+</body>
+</html>

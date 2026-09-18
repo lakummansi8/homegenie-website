@@ -53,6 +53,7 @@ body {
 }
 
 .provider-nav-link {
+    display: block;
     text-decoration: none;
     color: rgba(255, 255, 255, 0.85);
     padding: 12px 14px;
@@ -78,6 +79,7 @@ body {
     padding: 12px 14px;
     border-radius: 8px;
     font-size: 15px;
+    transition: 0.2s;
 }
 
 .provider-logout:hover {
@@ -150,5 +152,4 @@ body {
     .provider-content {
         padding: 20px;
     }
-
 }
