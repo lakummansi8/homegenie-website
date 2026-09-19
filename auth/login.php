@@ -15,7 +15,7 @@ switch ($error) {
         break;
 
     case "inactive":
-        $errorMessage = "Your admin account is inactive.";
+        $errorMessage = "Your account is not active.";
         break;
 }
 
@@ -33,7 +33,7 @@ switch ($error) {
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Admin Login - HomeGenie</title>
+    <title>Login - HomeGenie</title>
 
     <link
         rel="stylesheet"
@@ -42,19 +42,17 @@ switch ($error) {
 
 </head>
 
-
 <body>
 
 <div class="login-container">
 
     <div class="login-card">
 
-        <h2>HomeGenie Admin</h2>
+        <h2>HomeGenie</h2>
 
         <p class="login-subtitle">
-            Sign in to access the Admin Panel
+            Sign in to your account
         </p>
-
 
         <?php if ($errorMessage !== ""): ?>
 
@@ -63,7 +61,6 @@ switch ($error) {
             </div>
 
         <?php endif; ?>
-
 
         <form
             method="POST"
@@ -87,7 +84,6 @@ switch ($error) {
 
             </div>
 
-
             <div class="input-group">
 
                 <label for="password">
@@ -104,7 +100,6 @@ switch ($error) {
                 >
 
             </div>
-
 
             <button
                 type="submit"
