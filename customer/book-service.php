@@ -8,9 +8,9 @@ if (!isset($_SESSION["user_id"])) {
     exit;
 }
 
-$service_id = $_GET["service_id"] ?? "";
+$serviceId = $_GET["service_id"] ?? "";
 
-if ($service_id === "") {
+if ($serviceId === "") {
     header("Location: services.php");
     exit;
 }
@@ -21,7 +21,7 @@ $stmt = $conn->prepare(
      WHERE service_id = ? AND service_status = 'Active'"
 );
 
-$stmt->bind_param("i", $service_id);
+$stmt->bind_param("i", $serviceId);
 $stmt->execute();
 
 $result = $stmt->get_result();
@@ -31,6 +31,9 @@ if (!$service) {
     header("Location: services.php");
     exit;
 }
+
+$userName = $_SESSION["user_name"] ?? "Customer";
+
 ?>
 
 <!DOCTYPE html>
@@ -39,47 +42,167 @@ if (!$service) {
     <title>Book Service - HomeGenie</title>
     <link rel="stylesheet" href="customer.css">
 </head>
+
 <body>
 
-    <h2>Book Service</h2>
+<div class="customer-layout">
 
-    <div class="service-card">
+    <aside class="sidebar">
 
-        <h3>
-            <?php echo htmlspecialchars($service["service_name"]); ?>
-        </h3>
+        <div class="sidebar-brand">
+            <h1>HomeGenie</h1>
+            <p>Customer Panel</p>
+        </div>
 
-        <p>
-            <strong>Price:</strong>
-            ₹<?php echo htmlspecialchars($service["price"]); ?>
-        </p>
+        <nav class="sidebar-nav">
 
-        <br>
+            <a href="dashboard.php">
+                Dashboard
+            </a>
 
-        <form action="booking-process.php" method="POST">
+            <a href="services.php" class="active">
+                Services
+            </a>
 
-            <input type="hidden" name="service_id"
-                   value="<?php echo $service["service_id"]; ?>">
+            <a href="my-bookings.php">
+                My Bookings
+            </a>
 
-            <input type="hidden" name="provider_id"
-                   value="<?php echo $service["provider_id"]; ?>">
+            <a href="profile.php">
+                My Profile
+            </a>
 
-            <label>Booking Date</label><br>
-            <input type="date" name="booking_date" required><br><br>
+        </nav>
 
-            <label>Booking Time</label><br>
-            <input type="time" name="booking_time" required><br><br>
+        <a href="logout.php" class="logout">
+            Logout
+        </a>
 
-            <label>Booking Address</label><br>
-            <textarea name="booking_address" required></textarea><br><br>
+    </aside>
 
-            <button type="submit">Confirm Booking</button>
 
-        </form>
+    <main class="main-area">
 
-    </div>
+        <header class="top-header">
 
-    <a href="services.php">Back to Services</a>
+            <h2>Book Service</h2>
+
+            <div class="header-user">
+                <strong><?php echo htmlspecialchars($userName); ?></strong>
+                <span>Customer</span>
+            </div>
+
+        </header>
+
+
+        <div class="dashboard">
+
+            <div class="welcome">
+
+                <h1>Book a Service</h1>
+
+                <p>
+                    Enter your booking details to request this service.
+                </p>
+
+            </div>
+
+
+            <div class="booking-form-section">
+
+                <div class="selected-service">
+
+                    <span>Selected Service</span>
+
+                    <h2>
+                        <?php echo htmlspecialchars($service["service_name"]); ?>
+                    </h2>
+
+                    <p>
+                        Price:
+                        <strong>
+                            ₹<?php echo number_format($service["price"], 2); ?>
+                        </strong>
+                    </p>
+
+                </div>
+
+
+                <form action="booking-process.php" method="POST">
+
+                    <input
+                        type="hidden"
+                        name="service_id"
+                        value="<?php echo $service["service_id"]; ?>"
+                    >
+
+                    <input
+                        type="hidden"
+                        name="provider_id"
+                        value="<?php echo $service["provider_id"]; ?>"
+                    >
+
+
+                    <div class="form-field">
+
+                        <label>Booking Date</label>
+
+                        <input
+                            type="date"
+                            name="booking_date"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-field">
+
+                        <label>Booking Time</label>
+
+                        <input
+                            type="time"
+                            name="booking_time"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-field">
+
+                        <label>Booking Address</label>
+
+                        <textarea
+                            name="booking_address"
+                            required
+                            placeholder="Enter the address where the service is required"
+                        ></textarea>
+
+                    </div>
+
+
+                    <div class="form-actions">
+
+                        <a href="services.php">
+                            Back to Services
+                        </a>
+
+                        <button type="submit">
+                            Confirm Booking
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
 
 </body>
 </html>

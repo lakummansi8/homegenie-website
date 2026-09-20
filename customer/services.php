@@ -1,66 +1,187 @@
 <?php
 
 session_start();
-require_once "../config/db.php";
 
 if (!isset($_SESSION["user_id"])) {
     header("Location: login.php");
     exit;
 }
 
-$result = $conn->query(
-    "SELECT service_id, provider_id, service_name, description, price
-     FROM services
-     WHERE service_status = 'Active'"
-);
+require_once "../config/db.php";
+
+$sql = "SELECT 
+            s.service_id,
+            s.service_name,
+            s.description,
+            s.price,
+            sp.full_name AS provider_name,
+            sp.area,
+            sp.city
+        FROM services s
+        INNER JOIN service_providers sp
+            ON s.provider_id = sp.provider_id
+        WHERE sp.account_status = 'active'
+        ORDER BY s.service_id DESC";
+
+$result = $conn->query($sql);
+
+$userName = $_SESSION["user_name"] ?? "Customer";
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>HomeGenie Services</title>
+    <title>Services - HomeGenie</title>
     <link rel="stylesheet" href="customer.css">
 </head>
+
 <body>
 
-    <h2>Available Services</h2>
+<div class="customer-layout">
 
-    <?php if ($result->num_rows > 0): ?>
+    <aside class="sidebar">
 
-        <?php while ($service = $result->fetch_assoc()): ?>
+        <div class="sidebar-brand">
+            <h1>HomeGenie</h1>
+            <p>Customer Panel</p>
+        </div>
 
-            <div class="service-card">
+        <nav class="sidebar-nav">
 
-                <h3>
-                    <?php echo htmlspecialchars($service["service_name"]); ?>
-                </h3>
+            <a href="dashboard.php">
+                Dashboard
+            </a>
+
+            <a href="services.php" class="active">
+                Services
+            </a>
+
+            <a href="my-bookings.php">
+                My Bookings
+            </a>
+
+            <a href="profile.php">
+                My Profile
+            </a>
+
+        </nav>
+
+        <a href="logout.php" class="logout">
+            Logout
+        </a>
+
+    </aside>
+
+
+    <main class="main-area">
+
+        <header class="top-header">
+
+            <h2>Services</h2>
+
+            <div class="header-user">
+                <strong><?php echo htmlspecialchars($userName); ?></strong>
+                <span>Customer</span>
+            </div>
+
+        </header>
+
+
+        <div class="dashboard">
+
+            <div class="welcome">
+
+                <h1>Available Services</h1>
 
                 <p>
-                    <?php echo htmlspecialchars($service["description"]); ?>
+                    Browse services offered by HomeGenie service providers.
                 </p>
-
-                <p>
-                    <strong>Price:</strong>
-                    ₹<?php echo htmlspecialchars($service["price"]); ?>
-                </p>
-
-                <br>
-
-                <a href="book-service.php?service_id=<?php echo $service["service_id"]; ?>">
-                    <button>Book Service</button>
-                </a>
 
             </div>
 
-        <?php endwhile; ?>
 
-    <?php else: ?>
+            <div class="service-list">
 
-        <p>No services are currently available.</p>
+                <?php if ($result->num_rows > 0) { ?>
 
-    <?php endif; ?>
+                    <?php while ($service = $result->fetch_assoc()) { ?>
 
-    <a href="dashboard.php">Back to Dashboard</a>
+                        <div class="service-item">
+
+                            <div class="service-details">
+
+                                <h2>
+                                    <?php echo htmlspecialchars($service["service_name"]); ?>
+                                </h2>
+
+                                <p class="service-description">
+                                    <?php echo htmlspecialchars($service["description"]); ?>
+                                </p>
+
+                                <div class="service-info">
+
+                                    <span>
+                                        Provider:
+                                        <strong>
+                                            <?php echo htmlspecialchars($service["provider_name"]); ?>
+                                        </strong>
+                                    </span>
+
+                                    <span>
+                                        Area:
+                                        <strong>
+                                            <?php echo htmlspecialchars($service["area"]); ?>
+                                        </strong>
+                                    </span>
+
+                                    <span>
+                                        City:
+                                        <strong>
+                                            <?php echo htmlspecialchars($service["city"]); ?>
+                                        </strong>
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="service-price">
+
+                                <span>Starting Price</span>
+
+                                <strong>
+                                    ₹<?php echo number_format($service["price"], 2); ?>
+                                </strong>
+
+                               <a href="book-service.php?service_id=<?php echo $service["service_id"]; ?>">
+                                    Book Service
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    <?php } ?>
+
+                <?php } else { ?>
+
+                    <div class="empty-state">
+                        <h2>No Services Available</h2>
+                        <p>
+                            There are currently no services available.
+                        </p>
+                    </div>
+
+                <?php } ?>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
 
 </body>
 </html>
