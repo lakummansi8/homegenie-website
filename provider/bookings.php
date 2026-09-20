@@ -37,12 +37,10 @@ require_once "layout/provider-layout.php";
 <div class="bookings-page">
 
     <div class="bookings-header">
-
         <div>
             <h2>Bookings</h2>
             <p>Manage bookings received from customers.</p>
         </div>
-
     </div>
 
     <?php if (isset($_GET["updated"])): ?>
@@ -80,23 +78,29 @@ require_once "layout/provider-layout.php";
                     <?php while ($booking = $result->fetch_assoc()): ?>
 
                         <?php
-                        $status = $booking["booking_status"];
+
+                        $status = trim($booking["booking_status"] ?? "");
+
+                        if ($status === "") {
+                            $status = "Pending";
+                        }
+
                         ?>
 
                         <tr>
 
                             <td>
                                 <strong>
-                                    <?php echo htmlspecialchars($booking["customer_name"]); ?>
+                                    <?php echo htmlspecialchars($booking["customer_name"] ?? "Unknown"); ?>
                                 </strong>
                             </td>
 
                             <td>
-                                <?php echo htmlspecialchars($booking["customer_phone"]); ?>
+                                <?php echo htmlspecialchars($booking["customer_phone"] ?? "Not Available"); ?>
                             </td>
 
                             <td>
-                                <?php echo htmlspecialchars($booking["service_name"]); ?>
+                                <?php echo htmlspecialchars($booking["service_name"] ?? "Unknown Service"); ?>
                             </td>
 
                             <td>
@@ -121,7 +125,10 @@ require_once "layout/provider-layout.php";
 
                                     <div class="booking-actions">
 
-                                        <form method="POST" action="update-booking.php">
+                                        <form
+                                            method="POST"
+                                            action="update-booking.php"
+                                        >
 
                                             <input
                                                 type="hidden"
@@ -144,7 +151,10 @@ require_once "layout/provider-layout.php";
 
                                         </form>
 
-                                        <form method="POST" action="update-booking.php">
+                                        <form
+                                            method="POST"
+                                            action="update-booking.php"
+                                        >
 
                                             <input
                                                 type="hidden"
@@ -169,11 +179,14 @@ require_once "layout/provider-layout.php";
 
                                     </div>
 
-                                <?php elseif ($status === "Confirmed"): ?>
+                                <?php elseif ($status === "Accepted"): ?>
 
                                     <div class="booking-actions">
 
-                                        <form method="POST" action="update-booking.php">
+                                        <form
+                                            method="POST"
+                                            action="update-booking.php"
+                                        >
 
                                             <input
                                                 type="hidden"
@@ -196,7 +209,10 @@ require_once "layout/provider-layout.php";
 
                                         </form>
 
-                                        <form method="POST" action="update-booking.php">
+                                        <form
+                                            method="POST"
+                                            action="update-booking.php"
+                                        >
 
                                             <input
                                                 type="hidden"

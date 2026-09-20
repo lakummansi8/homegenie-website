@@ -90,7 +90,7 @@
     color: #b45309;
 }
 
-.booking-status.confirmed {
+.booking-status.accepted {
     background: #ecfdf5;
     color: #047857;
 }
@@ -113,6 +113,7 @@
 .booking-actions {
     display: flex;
     gap: 8px;
+    align-items: center;
 }
 
 .booking-actions form {
@@ -121,7 +122,8 @@
 
 .accept-button,
 .reject-button,
-.update-button {
+.complete-button,
+.cancel-button {
     border: none;
     padding: 7px 12px;
     border-radius: 6px;
@@ -151,36 +153,29 @@
     background: #fee2e2;
 }
 
-.status-form {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.complete-button {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
 }
 
-.status-select {
-    padding: 7px 10px;
+.complete-button:hover {
+    background: #dbeafe;
+}
+
+.cancel-button {
+    background: #f3f4f6;
+    color: #6b7280;
     border: 1px solid #d1d5db;
-    border-radius: 6px;
-    background: #ffffff;
-    color: #374151;
-    font-family: inherit;
+}
+
+.cancel-button:hover {
+    background: #e5e7eb;
+}
+
+.no-action {
+    color: #9ca3af;
     font-size: 13px;
-    cursor: pointer;
-}
-
-.status-select:focus {
-    outline: none;
-    border-color: #0f766e;
-}
-
-.update-button {
-    background: #0f766e;
-    color: #ffffff;
-    border: 1px solid #0f766e;
-}
-
-.update-button:hover {
-    background: #115e59;
 }
 
 .no-bookings {
@@ -210,13 +205,13 @@
         padding: 18px;
     }
 
-    .status-form {
+    .booking-actions {
         flex-direction: column;
         align-items: stretch;
     }
 
-    .status-select,
-    .update-button {
+    .booking-actions button {
         width: 100%;
     }
+
 }

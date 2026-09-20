@@ -28,7 +28,12 @@ $stmt = $conn->prepare(
      LIMIT 1"
 );
 
-$stmt->bind_param("ii", $bookingId, $providerId);
+$stmt->bind_param(
+    "ii",
+    $bookingId,
+    $providerId
+);
+
 $stmt->execute();
 
 $result = $stmt->get_result();
@@ -41,23 +46,33 @@ if (!$booking) {
     exit;
 }
 
-$currentStatus = $booking["booking_status"];
+$currentStatus = trim($booking["booking_status"] ?? "");
+
+if ($currentStatus === "") {
+    $currentStatus = "Pending";
+}
 
 $newStatus = "";
 
 if ($currentStatus === "Pending") {
 
     if ($action === "accept") {
-        $newStatus = "Confirmed";
+
+        $newStatus = "Accepted";
+
     } elseif ($action === "reject") {
+
         $newStatus = "Rejected";
     }
 
-} elseif ($currentStatus === "Confirmed") {
+} elseif ($currentStatus === "Accepted") {
 
     if ($action === "complete") {
+
         $newStatus = "Completed";
+
     } elseif ($action === "cancel") {
+
         $newStatus = "Cancelled";
     }
 }
@@ -67,21 +82,41 @@ if ($newStatus === "") {
     exit;
 }
 
-$stmt = $conn->prepare(
-    "UPDATE bookings
-     SET booking_status = ?
-     WHERE booking_id = ?
-     AND provider_id = ?
-     AND booking_status = ?"
-);
+if ($booking["booking_status"] === null || trim($booking["booking_status"]) === "") {
 
-$stmt->bind_param(
-    "siis",
-    $newStatus,
-    $bookingId,
-    $providerId,
-    $currentStatus
-);
+    $stmt = $conn->prepare(
+        "UPDATE bookings
+         SET booking_status = ?
+         WHERE booking_id = ?
+         AND provider_id = ?
+         AND (booking_status IS NULL OR booking_status = '')"
+    );
+
+    $stmt->bind_param(
+        "sii",
+        $newStatus,
+        $bookingId,
+        $providerId
+    );
+
+} else {
+
+    $stmt = $conn->prepare(
+        "UPDATE bookings
+         SET booking_status = ?
+         WHERE booking_id = ?
+         AND provider_id = ?
+         AND booking_status = ?"
+    );
+
+    $stmt->bind_param(
+        "siis",
+        $newStatus,
+        $bookingId,
+        $providerId,
+        $currentStatus
+    );
+}
 
 $stmt->execute();
 

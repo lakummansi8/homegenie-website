@@ -1,0 +1,147 @@
+.reviews-page {
+    width: 100%;
+}
+
+.reviews-header {
+    margin-bottom: 24px;
+}
+
+.reviews-header h2 {
+    margin-bottom: 6px;
+    font-size: 28px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.reviews-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 15px;
+}
+
+.reviews-section {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 24px;
+}
+
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.review-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 9px;
+    padding: 20px;
+    background: #ffffff;
+}
+
+.review-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.customer-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.customer-info strong {
+    color: #1f2937;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.customer-info span {
+    margin-top: 4px;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.review-date {
+    color: #9ca3af;
+    font-size: 13px;
+}
+
+.review-rating {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-top: 14px;
+}
+
+.star {
+    color: #d1d5db;
+    font-size: 18px;
+}
+
+.star.filled {
+    color: #f59e0b;
+}
+
+.rating-number {
+    margin-left: 8px;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.review-comment {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.review-comment p {
+    margin: 0;
+    color: #4b5563;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.review-comment .no-comment {
+    color: #9ca3af;
+    font-style: italic;
+}
+
+.no-reviews {
+    text-align: center;
+    padding: 50px 20px;
+}
+
+.no-reviews h3 {
+    margin-bottom: 8px;
+    color: #1f2937;
+    font-size: 20px;
+}
+
+.no-reviews p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+@media (max-width: 700px) {
+
+    .reviews-header h2 {
+        font-size: 24px;
+    }
+
+    .reviews-section {
+        padding: 18px;
+    }
+
+    .review-card {
+        padding: 18px;
+    }
+
+    .review-top {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+}

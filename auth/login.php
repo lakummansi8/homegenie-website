@@ -48,6 +48,10 @@ switch ($error) {
 
     <div class="login-card">
 
+        <a href="../index.php" class="back-button">
+            ← Back to Home
+        </a>
+
         <h2>HomeGenie</h2>
 
         <p class="login-subtitle">

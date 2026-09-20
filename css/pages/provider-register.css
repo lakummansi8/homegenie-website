@@ -1,0 +1,261 @@
+.provider-register-page {
+    width: 100%;
+}
+
+
+/* Hero */
+
+.provider-hero {
+    min-height: 420px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 70px 30px;
+    background: #f0fdfa;
+}
+
+.provider-hero-content {
+    max-width: 800px;
+}
+
+.section-label {
+    display: block;
+    color: #0f766e;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    margin-bottom: 12px;
+}
+
+.provider-hero h1 {
+    font-size: 48px;
+    line-height: 1.2;
+    color: #111827;
+    margin-bottom: 20px;
+}
+
+.provider-hero h1 span {
+    display: block;
+    color: #0f766e;
+}
+
+.provider-hero p {
+    max-width: 650px;
+    margin: 0 auto;
+    color: #6b7280;
+    font-size: 17px;
+    line-height: 1.7;
+}
+
+
+/* Common */
+
+.provider-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 80px 30px;
+}
+
+.section-heading {
+    margin-bottom: 40px;
+}
+
+.section-heading h2,
+.form-heading h2 {
+    color: #111827;
+    font-size: 34px;
+    margin-bottom: 10px;
+}
+
+.section-heading p,
+.form-heading p {
+    color: #6b7280;
+    line-height: 1.6;
+}
+
+
+/* Benefits */
+
+.provider-benefits {
+    background: #ffffff;
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.benefit-card {
+    padding: 28px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+}
+
+.benefit-card h3 {
+    color: #0f766e;
+    font-size: 19px;
+    margin-bottom: 10px;
+}
+
+.benefit-card p {
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+
+/* Form */
+
+.provider-form-section {
+    background: #f8fafc;
+}
+
+.form-heading {
+    margin-bottom: 35px;
+}
+
+.provider-form {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 35px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group.full-width {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 7px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 11px 13px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-family: "Outfit", sans-serif;
+    font-size: 14px;
+    color: #111827;
+    background: #ffffff;
+    outline: none;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #0f766e;
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+.submit-button {
+    border: none;
+    background: #0f766e;
+    color: #ffffff;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-family: "Outfit", sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.submit-button:hover {
+    background: #115e59;
+}
+
+
+/* Messages */
+
+.form-message {
+    padding: 13px 16px;
+    border-radius: 6px;
+    margin-bottom: 25px;
+    font-size: 14px;
+}
+
+.form-message.success {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #047857;
+}
+
+.form-message.error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+}
+
+
+/* Tablet */
+
+@media (max-width: 900px) {
+
+    .benefits-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .provider-hero h1 {
+        font-size: 42px;
+    }
+
+}
+
+
+/* Mobile */
+
+@media (max-width: 768px) {
+
+    .provider-container {
+        padding: 60px 20px;
+    }
+
+    .provider-hero {
+        min-height: 380px;
+        padding: 60px 20px;
+    }
+
+    .provider-hero h1 {
+        font-size: 34px;
+    }
+
+    .provider-hero p {
+        font-size: 16px;
+    }
+
+    .section-heading h2,
+    .form-heading h2 {
+        font-size: 29px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .provider-form {
+        padding: 25px 20px;
+    }
+
+}
