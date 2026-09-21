@@ -1,51 +1,151 @@
 <?php
+
 session_start();
+
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Customer Registration - HomeGenie</title>
-    <link rel="stylesheet" href="customer.css">
+
+    <link rel="stylesheet" href="customer.css?v=10">
+
 </head>
+
 <body>
 
-    <h2>Create Customer Account</h2>
+<div class="customer-register-page">
 
-    <form action="register-process.php" method="POST">
+    <div class="customer-register-card">
 
-        <label>Full Name</label><br>
-        <input type="text" name="full_name" required><br><br>
+        <a href="../index.php" class="customer-register-back">
+            ← Back to Home
+        </a>
 
-        <label>Email</label><br>
-        <input type="email" name="email" required><br><br>
+        <div class="customer-register-heading">
 
-        <label>Phone</label><br>
-        <input type="text" name="phone" required><br><br>
+            <h1>HomeGenie</h1>
+            <p>Create your customer account</p>
 
-        <label>Password</label><br>
-        <input type="password" name="password" required><br><br>
+        </div>
 
-        <label>Address</label><br>
-        <textarea name="address" required></textarea><br><br>
+        <form action="register-process.php" method="POST">
 
-        <label>City</label><br>
-        <input type="text" name="city" required><br><br>
+            <div class="customer-register-row">
 
-        <button type="submit">Register</button>
+                <div class="customer-register-field">
 
-    </form>
+                    <label>Full Name</label>
 
-    <br>
+                    <input
+                        type="text"
+                        name="full_name"
+                        placeholder="Enter your full name"
+                        required
+                    >
 
-    <p>
-        Already have an account?
-        <a href="login.php">Login</a>
-    </p>
+                </div>
 
-    <p>
-        <a href="../index.html">Back to Home</a>
-    </p>
+                <div class="customer-register-field">
+
+                    <label>Email</label>
+
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="Enter your email"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="customer-register-row">
+
+                <div class="customer-register-field">
+
+                    <label>Phone</label>
+
+                    <input
+                        type="text"
+                        name="phone"
+                        placeholder="Enter your phone number"
+                        required
+                    >
+
+                </div>
+
+                <div class="customer-register-field">
+
+                    <label>City</label>
+
+                    <input
+                        type="text"
+                        name="city"
+                        placeholder="Enter your city"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="customer-register-field">
+
+                <label>Password</label>
+
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Create a password"
+                    required
+                >
+
+            </div>
+
+            <div class="customer-register-field">
+
+                <label>Address</label>
+
+                <textarea
+                    name="address"
+                    placeholder="Enter your complete address"
+                    required
+                ></textarea>
+
+            </div>
+
+            <button
+                type="submit"
+                name="register"
+                class="customer-register-button"
+            >
+                Create Account
+            </button>
+
+        </form>
+
+        <div class="customer-register-login">
+
+            Already have an account?
+
+            <a href="../auth/login.php">
+                Sign In
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
 
 </body>
+
 </html>
