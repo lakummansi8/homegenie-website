@@ -2,7 +2,7 @@
 $pageTitle = "Add Booking";
 $assetPath = "../../../";
 $adminPath = "../../";
-require_once __DIR__ . "/../../../config/db.php";
+require_once "../../../config/db.php";
 
 $userId = "";
 $providerId = "";
@@ -11,91 +11,99 @@ $bookingDate = "";
 $bookingTime = "";
 $bookingAddress = "";
 $bookingStatus = "pending";
-$errors = [];
+$error = "";
 
-$customers = [];
-$customerQuery = "SELECT user_id, full_name, email FROM users WHERE account_status = 'active' ORDER BY full_name ASC";
-$customerResult = $conn->query($customerQuery);
-if ($customerResult) {
-    while ($row = $customerResult->fetch_assoc()) {
-        $customers[] = $row;
-    }
-}
+if(isset($_POST['submit']))
+{
+    $userId = $_POST['user_id'];
+    $providerId = $_POST['provider_id'];
+    $serviceId = $_POST['service_id'];
+    $bookingDate = $_POST['booking_date'];
+    $bookingTime = $_POST['booking_time'];
+    $bookingAddress = $_POST['booking_address'];
+    $bookingStatus = $_POST['booking_status'];
 
-$providers = [];
-$providerQuery = "SELECT provider_id, full_name, category_id FROM service_providers WHERE account_status = 'active' ORDER BY full_name ASC";
-$providerResult = $conn->query($providerQuery);
-if ($providerResult) {
-    while ($row = $providerResult->fetch_assoc()) {
-        $providers[] = $row;
-    }
-}
+    if($userId == "")
+        $error = "Please select a customer.";
 
-$services = [];
-$serviceQuery = "SELECT service_id, service_name, provider_id, category_id, price FROM services WHERE service_status = 'active' ORDER BY service_name ASC";
-$serviceResult = $conn->query($serviceQuery);
-if ($serviceResult) {
-    while ($row = $serviceResult->fetch_assoc()) {
-        $services[] = $row;
-    }
-}
+    elseif($providerId == "")
+        $error = "Please select a service provider.";
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $userId = (int)($_POST["user_id"] ?? 0);
-    $providerId = (int)($_POST["provider_id"] ?? 0);
-    $serviceId = (int)($_POST["service_id"] ?? 0);
-    $bookingDate = trim($_POST["booking_date"] ?? "");
-    $bookingTime = trim($_POST["booking_time"] ?? "");
-    $bookingAddress = trim($_POST["booking_address"] ?? "");
-    $bookingStatus = strtolower(trim($_POST["booking_status"] ?? "pending"));
+    elseif($serviceId == "")
+        $error = "Please select a service.";
 
-    if ($userId <= 0) $errors[] = "Please select a customer.";
-    if ($providerId <= 0) $errors[] = "Please select a service provider.";
-    if ($serviceId <= 0) $errors[] = "Please select a service.";
-    if ($bookingDate === "") $errors[] = "Please select a booking date.";
-    if ($bookingTime === "") $errors[] = "Please select a booking time.";
-    if ($bookingAddress === "") $errors[] = "Please enter the booking address.";
-    
-    $allowedStatuses = ["pending", "confirmed", "completed", "cancelled"];
-    if (!in_array($bookingStatus, $allowedStatuses, true)) $errors[] = "Invalid booking status.";
+    elseif($bookingDate == "")
+        $error = "Please select a booking date.";
 
-    if (empty($errors)) {
-        $stmt = $conn->prepare("SELECT user_id FROM users WHERE user_id = ? AND account_status = 'active' LIMIT 1");
-        $stmt->bind_param("i", $userId);
-        $stmt->execute();
-        if ($stmt->get_result()->num_rows === 0) $errors[] = "Selected customer was not found.";
-        $stmt->close();
+    elseif($bookingTime == "")
+        $error = "Please select a booking time.";
+
+    elseif($bookingAddress == "")
+        $error = "Please enter the booking address.";
+
+    else
+    {
+        $q = "select * from users where user_id = $userId";
+        $res = mysqli_query($conn,$q);
+
+        if(mysqli_num_rows($res) == 0)
+        {
+            $error = "Customer not found.";
+        }
     }
 
-    if (empty($errors)) {
-        $stmt = $conn->prepare("SELECT provider_id FROM service_providers WHERE provider_id = ? AND account_status = 'active' LIMIT 1");
-        $stmt->bind_param("i", $providerId);
-        $stmt->execute();
-        if ($stmt->get_result()->num_rows === 0) $errors[] = "Selected service provider was not found.";
-        $stmt->close();
+    if($error == "")
+    {
+        $q = "select * from service_providers where provider_id = $providerId";
+        $res = mysqli_query($conn,$q);
+
+        if(mysqli_num_rows($res) == 0)
+        {
+            $error = "Service provider not found.";
+        }
     }
 
-    if (empty($errors)) {
-        $stmt = $conn->prepare("SELECT service_id FROM services WHERE service_id = ? AND provider_id = ? AND service_status = 'active' LIMIT 1");
-        $stmt->bind_param("ii", $serviceId, $providerId);
-        $stmt->execute();
-        if ($stmt->get_result()->num_rows === 0) $errors[] = "The selected service does not belong to the selected provider.";
-        $stmt->close();
+    if($error == "")
+    {
+        $q = "select * from services where service_id = $serviceId and provider_id = $providerId";
+        $res = mysqli_query($conn,$q);
+
+        if(mysqli_num_rows($res) == 0)
+        {
+            $error = "Selected service does not belong to this provider.";
+        }
     }
 
-    if (empty($errors)) {
-        $stmt = $conn->prepare("INSERT INTO bookings (user_id, provider_id, service_id, booking_date, booking_time, booking_address, booking_status) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("iiissss", $userId, $providerId, $serviceId, $bookingDate, $bookingTime, $bookingAddress, $bookingStatus);
-        
-        if ($stmt->execute()) {
-            $stmt->close();
+    if($error == "")
+    {
+        $q = "insert into bookings(user_id,provider_id,service_id,booking_date,booking_time,booking_address,booking_status)
+              values('$userId','$providerId','$serviceId','$bookingDate','$bookingTime','$bookingAddress','$bookingStatus')";
+
+        $res = mysqli_query($conn,$q);
+
+        if($res)
+        {
             header("Location: bookings.php?success=booking_added");
             exit;
         }
-        $errors[] = "Unable to create booking. Please try again.";
-        $stmt->close();
+        else
+        {
+            $error = "Unable to create booking.";
+        }
     }
 }
+
+
+$q1 = "select * from users where account_status = 'active'";
+$res1 = mysqli_query($conn,$q1);
+
+
+$q2 = "select * from service_providers where account_status = 'active'";
+$res2 = mysqli_query($conn,$q2);
+
+
+$q3 = "select * from services where service_status = 'active'";
+$res3 = mysqli_query($conn,$q3);
 
 ob_start();
 ?>
@@ -110,13 +118,11 @@ ob_start();
     </div>
 </div>
 
-<?php if (!empty($errors)): ?>
+<?php if ($error != ""): ?>
     <div class="alert alert-danger">
         <strong>Please fix the following errors:</strong>
         <ul class="mb-0">
-            <?php foreach ($errors as $error): ?>
-                <li><?= htmlspecialchars($error) ?></li>
-            <?php endforeach; ?>
+            <li><?php print $error; ?></li>
         </ul>
     </div>
 <?php endif; ?>
@@ -132,22 +138,40 @@ ob_start();
                     <label class="form-label">Customer *</label>
                     <select class="form-select" name="user_id" required>
                         <option value="">Select Customer</option>
-                        <?php foreach ($customers as $customer): ?>
-                            <option value="<?= (int)$customer["user_id"] ?>" <?= $userId == $customer["user_id"] ? "selected" : "" ?>>
-                                <?= htmlspecialchars($customer["full_name"]) ?> - <?= htmlspecialchars($customer["email"]) ?>
+
+                        <?php while($user = mysqli_fetch_array($res1)) { ?>
+
+                            <option value="<?php print $user['user_id']; ?>"
+                                <?php if($userId == $user['user_id']) print "selected"; ?>>
+
+                                <?php print $user['full_name']; ?>
+                                - <?php print $user['email']; ?>
+
                             </option>
-                        <?php endforeach; ?>
+
+                        <?php } ?>
+
                     </select>
                 </div>
+
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Service Provider *</label>
+
                     <select class="form-select" name="provider_id" id="provider_id" required>
+
                         <option value="">Select Provider</option>
-                        <?php foreach ($providers as $provider): ?>
-                            <option value="<?= (int)$provider["provider_id"] ?>" <?= $providerId == $provider["provider_id"] ? "selected" : "" ?>>
-                                <?= htmlspecialchars($provider["full_name"]) ?>
+
+                        <?php while($provider = mysqli_fetch_array($res2)) { ?>
+
+                            <option value="<?php print $provider['provider_id']; ?>"
+                                <?php if($providerId == $provider['provider_id']) print "selected"; ?>>
+
+                                <?php print $provider['full_name']; ?>
+
                             </option>
-                        <?php endforeach; ?>
+
+                        <?php } ?>
+
                     </select>
                 </div>
             </div>
@@ -155,22 +179,51 @@ ob_start();
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Service *</label>
+
                     <select class="form-select" name="service_id" id="service_id" required>
+
                         <option value="">Select Service</option>
-                        <?php foreach ($services as $service): ?>
-                            <option value="<?= (int)$service["service_id"] ?>" data-provider="<?= (int)$service["provider_id"] ?>" <?= $serviceId == $service["service_id"] ? "selected" : "" ?>>
-                                <?= htmlspecialchars($service["service_name"]) ?>
+
+                        <?php while($service = mysqli_fetch_array($res3)) { ?>
+
+                            <option value="<?php print $service['service_id']; ?>"
+                                data-provider="<?php print $service['provider_id']; ?>"
+                                <?php if($serviceId == $service['service_id']) print "selected"; ?>>
+
+                                <?php print $service['service_name']; ?>
+
                             </option>
-                        <?php endforeach; ?>
+
+                        <?php } ?>
+
                     </select>
                 </div>
+
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Booking Status *</label>
+
                     <select class="form-select" name="booking_status" required>
-                        <option value="pending" <?= $bookingStatus === "pending" ? "selected" : "" ?>>Pending</option>
-                        <option value="confirmed" <?= $bookingStatus === "confirmed" ? "selected" : "" ?>>Confirmed</option>
-                        <option value="completed" <?= $bookingStatus === "completed" ? "selected" : "" ?>>Completed</option>
-                        <option value="cancelled" <?= $bookingStatus === "cancelled" ? "selected" : "" ?>>Cancelled</option>
+
+                        <option value="pending"
+                            <?php if($bookingStatus == "pending") print "selected"; ?>>
+                            Pending
+                        </option>
+
+                        <option value="confirmed"
+                            <?php if($bookingStatus == "confirmed") print "selected"; ?>>
+                            Confirmed
+                        </option>
+
+                        <option value="completed"
+                            <?php if($bookingStatus == "completed") print "selected"; ?>>
+                            Completed
+                        </option>
+
+                        <option value="cancelled"
+                            <?php if($bookingStatus == "cancelled") print "selected"; ?>>
+                            Cancelled
+                        </option>
+
                     </select>
                 </div>
             </div>
@@ -178,24 +231,46 @@ ob_start();
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Booking Date *</label>
-                    <input type="date" class="form-control" name="booking_date" value="<?= htmlspecialchars($bookingDate) ?>" required>
+
+                    <input type="date"
+                           class="form-control"
+                           name="booking_date"
+                           value="<?php print $bookingDate; ?>"
+                           required>
                 </div>
+
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Booking Time *</label>
-                    <input type="time" class="form-control" name="booking_time" value="<?= htmlspecialchars($bookingTime) ?>" required>
+
+                    <input type="time"
+                           class="form-control"
+                           name="booking_time"
+                           value="<?php print $bookingTime; ?>"
+                           required>
                 </div>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Booking Address *</label>
-                <textarea class="form-control" name="booking_address" rows="4" required><?= htmlspecialchars($bookingAddress) ?></textarea>
+
+                <textarea class="form-control"
+                          name="booking_address"
+                          rows="4"
+                          required><?php print $bookingAddress; ?></textarea>
             </div>
 
             <hr>
+
             <div class="admin-form-actions">
                 <a href="bookings.php" class="btn btn-secondary">Cancel</a>
-                <button type="submit" class="btn btn-primary">Create Booking</button>
+
+                <button type="submit"
+                        name="submit"
+                        class="btn btn-primary">
+                    Create Booking
+                </button>
             </div>
+
         </form>
     </div>
 </div>

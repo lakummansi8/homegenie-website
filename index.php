@@ -1,7 +1,7 @@
 <?php
 
 require_once "config/db.php";
-
+/*hello*/
 $pageTitle = "HomeGenie";
 $pageCss = "home.css";
 

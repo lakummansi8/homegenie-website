@@ -2,40 +2,29 @@
 
 require_once "../../../config/db.php";
 
-$id = (int)($_GET["id"] ?? 0);
+$id = $_GET['id'];
 
-if ($id <= 0) {
+if($id == "")
+{
     header("Location: bookings.php?error=invalid_booking");
     exit;
 }
 
+$q1 = "delete from reviews where booking_id = $id";
+$res1 = mysqli_query($conn,$q1);
 
-/* Delete related review */
+$q2 = "delete from bookings where booking_id = $id";
+$res2 = mysqli_query($conn,$q2);
 
-$stmt = $conn->prepare(
-    "DELETE FROM reviews WHERE booking_id = ?"
-);
-
-$stmt->bind_param("i", $id);
-$stmt->execute();
-$stmt->close();
-
-
-/* Delete booking */
-
-$stmt = $conn->prepare(
-    "DELETE FROM bookings WHERE booking_id = ?"
-);
-
-$stmt->bind_param("i", $id);
-
-if ($stmt->execute()) {
+if($res2)
+{
     header("Location: bookings.php?success=booking_deleted");
     exit;
 }
+else
+{
+    header("Location: bookings.php?error=delete_failed");
+    exit;
+}
 
-$stmt->close();
-
-header("Location: bookings.php?error=delete_failed");
-exit;
 ?>
