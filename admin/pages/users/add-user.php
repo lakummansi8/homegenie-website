@@ -1,7 +1,9 @@
 <?php
+
 $pageTitle = "Add Customer";
 $assetPath = "../../../";
 $adminPath = "../../";
+
 require_once "../../../config/db.php";
 
 $fullName = "";
@@ -11,59 +13,77 @@ $password = "";
 $address = "";
 $city = "";
 $accountStatus = "Active";
-$errors = [];
+$error = "";
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $fullName = trim($_POST["full_name"] ?? "");
-    $email = trim($_POST["email"] ?? "");
-    $phone = trim($_POST["phone"] ?? "");
-    $password = $_POST["password"] ?? "";
-    $address = trim($_POST["address"] ?? "");
-    $city = trim($_POST["city"] ?? "");
-    $accountStatus = trim($_POST["account_status"] ?? "Active");
+if(isset($_POST['submit']))
+{
+    $fullName = $_POST['full_name'];
+    $email = $_POST['email'];
+    $phone = $_POST['phone'];
+    $password = $_POST['password'];
+    $address = $_POST['address'];
+    $city = $_POST['city'];
+    $accountStatus = $_POST['account_status'];
 
-    if ($fullName === "") $errors[] = "Customer name is required.";
-    if ($email === "") $errors[] = "Email address is required.";
-    elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = "Please enter a valid email address.";
-    
-    if ($phone === "") $errors[] = "Phone number is required.";
-    if ($password === "") $errors[] = "Password is required.";
-    elseif (strlen($password) < 6) $errors[] = "Password must be at least 6 characters.";
-    
-    if ($address === "") $errors[] = "Address is required.";
-    if ($city === "") $errors[] = "City is required.";
+    if($fullName == "")
+    {
+        $error = "Customer name is required.";
+    }
+    elseif($email == "")
+    {
+        $error = "Email address is required.";
+    }
+    elseif($phone == "")
+    {
+        $error = "Phone number is required.";
+    }
+    elseif($password == "")
+    {
+        $error = "Password is required.";
+    }
+    elseif(strlen($password) < 6)
+    {
+        $error = "Password must be at least 6 characters.";
+    }
+    elseif($address == "")
+    {
+        $error = "Address is required.";
+    }
+    elseif($city == "")
+    {
+        $error = "City is required.";
+    }
 
-    $allowedStatuses = ["Active", "Blocked"];
-    if (!in_array($accountStatus, $allowedStatuses, true)) $errors[] = "Invalid account status.";
+    if($error == "")
+    {
+        $sql = "SELECT * FROM users WHERE email = '$email'";
+        $result = mysqli_query($conn, $sql);
 
-    if (empty($errors)) {
-        $emailCheck = $conn->prepare("SELECT user_id FROM users WHERE email = ? LIMIT 1");
-        if ($emailCheck) {
-            $emailCheck->bind_param("s", $email);
-            $emailCheck->execute();
-            if ($emailCheck->get_result()->num_rows > 0) $errors[] = "A customer with this email address already exists.";
-            $emailCheck->close();
-        } else {
-            $errors[] = "Unable to verify email address.";
+        if(mysqli_num_rows($result) > 0)
+        {
+            $error = "A customer with this email address already exists.";
         }
     }
 
-    if (empty($errors)) {
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $conn->prepare("INSERT INTO users (full_name, email, phone, password, address, city, account_status) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        
-        if ($stmt) {
-            $stmt->bind_param("sssssss", $fullName, $email, $phone, $hashedPassword, $address, $city, $accountStatus);
-            if ($stmt->execute()) {
-                $stmt->close();
-                header("Location: users.php?success=user_added");
-                exit;
-            } else {
-                $errors[] = "Unable to add customer. Please try again.";
-            }
-            $stmt->close();
-        } else {
-            $errors[] = "Unable to prepare customer registration.";
+    if($error == "")
+    {
+        $password = password_hash($password, PASSWORD_DEFAULT);
+
+        $sql = "INSERT INTO users
+                (full_name, email, phone, password, address, city, account_status)
+                VALUES
+                ('$fullName', '$email', '$phone', '$password', '$address', '$city', '$accountStatus')";
+
+        $result = mysqli_query($conn, $sql);
+
+        if($result)
+        {
+            header("Location: users.php?success=user_added");
+            exit;
+        }
+        else
+        {
+            $error = "Unable to add customer. Please try again.";
         }
     }
 }
@@ -81,16 +101,16 @@ ob_start();
     </div>
 </div>
 
-<?php if (!empty($errors)): ?>
+<?php if($error != "") { ?>
+
     <div class="alert alert-danger">
         <strong>Please fix the following:</strong>
         <ul class="mb-0">
-            <?php foreach ($errors as $error): ?>
-                <li><?= htmlspecialchars($error) ?></li>
-            <?php endforeach; ?>
+            <li><?php echo $error; ?></li>
         </ul>
     </div>
-<?php endif; ?>
+
+<?php } ?>
 
 <div class="card">
     <div class="card-header bg-dark text-white">
@@ -99,7 +119,7 @@ ob_start();
     <div class="card-body">
         <form method="POST" autocomplete="off">
             <h5 class="mb-3">Basic Information</h5>
-            
+
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Full Name *</label>
@@ -138,21 +158,27 @@ ob_start();
             </div>
 
             <h5 class="mt-4 mb-3">Address</h5>
+
             <div class="mb-3">
                 <label class="form-label">Full Address *</label>
                 <textarea class="form-control" name="address" rows="4" required maxlength="500"><?= htmlspecialchars($address) ?></textarea>
             </div>
 
             <hr>
+
             <div class="admin-form-actions">
                 <a href="users.php" class="btn btn-secondary">Cancel</a>
-                <button type="submit" class="btn btn-primary">Add Customer</button>
+                <button type="submit" name="submit" class="btn btn-primary">Add Customer</button>
             </div>
+
         </form>
     </div>
 </div>
 
 <?php
+
 $pageContent = ob_get_clean();
+
 require_once "../../layout/admin-layout.php";
+
 ?>

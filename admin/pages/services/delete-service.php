@@ -1,120 +1,55 @@
 <?php
 
-$pageTitle = "Delete Service";
-$pageCss = "services.css";
-
-$assetPath = "../../../";
-$adminPath = "../../";
-
 require_once "../../../config/db.php";
 
 
-/*
-|--------------------------------------------------------------------------
-| Get Service ID
-|--------------------------------------------------------------------------
-*/
+$id = $_GET['id'];
 
-$serviceId = (int)($_GET["id"] ?? 0);
-
-if ($serviceId <= 0) {
+if($id == "")
+{
     header("Location: services.php?error=invalid_service");
     exit;
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| Fetch Service
-|--------------------------------------------------------------------------
-*/
+$q = "select * from services where service_id = $id";
+$res = mysqli_query($conn,$q);
 
-$stmt = $conn->prepare("
-    SELECT
-        service_id,
-        service_name,
-        service_image
-    FROM services
-    WHERE service_id = ?
-    LIMIT 1
-");
 
-$stmt->bind_param("i", $serviceId);
-$stmt->execute();
-
-$result = $stmt->get_result();
-
-if ($result->num_rows === 0) {
-
-    $stmt->close();
-
+if(mysqli_num_rows($res) == 0)
+{
     header("Location: services.php?error=service_not_found");
     exit;
 }
 
-$service = $result->fetch_assoc();
 
-$stmt->close();
-
-
-/*
-|--------------------------------------------------------------------------
-| Delete Service
-|--------------------------------------------------------------------------
-*/
-
-$deleteStmt = $conn->prepare("
-    DELETE FROM services
-    WHERE service_id = ?
-");
-
-$deleteStmt->bind_param("i", $serviceId);
-
-if ($deleteStmt->execute()) {
-
-    $deleteStmt->close();
+$service = mysqli_fetch_array($res);
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Delete Service Image
-    |--------------------------------------------------------------------------
-    */
+$q = "delete from services where service_id = $id";
+$res = mysqli_query($conn,$q);
 
-    if (!empty($service["service_image"])) {
 
-        $imagePath =
-            "../../../assets/services/" .
-            $service["service_image"];
+if($res)
+{
+    if($service['service_image'] != "")
+    {
+        $imagePath = "../../../assets/services/" . $service['service_image'];
 
-        if (
-            file_exists($imagePath) &&
-            is_file($imagePath)
-        ) {
+        if(file_exists($imagePath))
+        {
             unlink($imagePath);
         }
     }
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Redirect
-    |--------------------------------------------------------------------------
-    */
-
-    header(
-        "Location: services.php?success=service_deleted"
-    );
-
-    exit;
-
-} else {
-
-    $deleteStmt->close();
-
-    header(
-        "Location: services.php?error=service_delete_failed"
-    );
-
+    header("Location: services.php?success=service_deleted");
     exit;
 }
+else
+{
+    header("Location: services.php?error=service_delete_failed");
+    exit;
+}
+
+?>

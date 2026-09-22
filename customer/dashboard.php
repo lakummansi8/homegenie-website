@@ -3,13 +3,14 @@
 session_start();
 
 if (!isset($_SESSION["user_id"])) {
-    header("Location: login.php");
+    header("Location: ../auth/login.php");
     exit;
 }
 
 require_once "../config/db.php";
 
 $userId = $_SESSION["user_id"];
+
 
 $stmt = $conn->prepare(
     "SELECT full_name, email, phone, address, city, account_status
@@ -72,154 +73,157 @@ $stmt->execute();
 
 $cancelledBookings = $stmt->get_result()->fetch_assoc()["total"];
 
+
+$pageTitle = "Customer Dashboard";
+
+require_once "layout/customer-layout.php";
+
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Customer Dashboard - HomeGenie</title>
-    <link rel="stylesheet" href="customer.css">
-</head>
 
-<body>
+<div class="welcome">
 
-<div class="customer-layout">
+    <h1>
+        Welcome, <?php echo htmlspecialchars($userName); ?>
+    </h1>
 
-    <aside class="sidebar">
+    <p>
+        Manage your services, bookings and profile from here.
+    </p>
 
-        <div class="sidebar-brand">
-            <h1>HomeGenie</h1>
-            <p>Customer Panel</p>
-        </div>
-
-        <nav class="sidebar-nav">
-
-            <a href="dashboard.php" class="active">
-                Dashboard
-            </a>
-
-            <a href="services.php">
-                Services
-            </a>
-
-            <a href="my-bookings.php">
-                My Bookings
-            </a>
-
-            <a href="profile.php">
-                My Profile
-            </a>
-
-        </nav>
-
-        <a href="logout.php" class="logout">
-            Logout
-        </a>
-
-    </aside>
+</div>
 
 
-    <main class="main-area">
+<div class="stats">
 
-        <header class="top-header">
+    <div class="stat-card">
 
-            <h2>Customer Dashboard</h2>
+        <p>Total Bookings</p>
 
-            <div class="header-user">
-                <strong><?php echo htmlspecialchars($userName); ?></strong>
-                <span>Customer</span>
-            </div>
+        <strong>
+            <?php echo $totalBookings; ?>
+        </strong>
 
-        </header>
-
-
-        <div class="dashboard">
-
-            <div class="welcome">
-
-                <h1>
-                    Welcome, <?php echo htmlspecialchars($userName); ?>
-                </h1>
-
-                <p>
-                    Manage your services, bookings and profile from here.
-                </p>
-
-            </div>
+    </div>
 
 
-            <div class="stats">
+    <div class="stat-card">
 
-                <div class="stat-card">
-                    <p>Total Bookings</p>
-                    <strong><?php echo $totalBookings; ?></strong>
-                </div>
+        <p>Pending Bookings</p>
 
-                <div class="stat-card">
-                    <p>Pending Bookings</p>
-                    <strong><?php echo $pendingBookings; ?></strong>
-                </div>
+        <strong>
+            <?php echo $pendingBookings; ?>
+        </strong>
 
-                <div class="stat-card">
-                    <p>Completed Bookings</p>
-                    <strong><?php echo $completedBookings; ?></strong>
-                </div>
-
-                <div class="stat-card">
-                    <p>Cancelled Bookings</p>
-                    <strong><?php echo $cancelledBookings; ?></strong>
-                </div>
-
-            </div>
+    </div>
 
 
-            <div class="information">
+    <div class="stat-card">
 
-                <h2>My Information</h2>
+        <p>Completed Bookings</p>
 
-                <div class="information-grid">
+        <strong>
+            <?php echo $completedBookings; ?>
+        </strong>
 
-                    <div>
-                        <span>Full Name</span>
-                        <p><?php echo htmlspecialchars($user["full_name"]); ?></p>
-                    </div>
+    </div>
 
-                    <div>
-                        <span>Phone</span>
-                        <p><?php echo htmlspecialchars($user["phone"]); ?></p>
-                    </div>
 
-                    <div>
-                        <span>Account Status</span>
-                        <p class="active-status">
-                            <?php echo htmlspecialchars($user["account_status"]); ?>
-                        </p>
-                    </div>
+    <div class="stat-card">
 
-                    <div>
-                        <span>Email</span>
-                        <p><?php echo htmlspecialchars($user["email"]); ?></p>
-                    </div>
+        <p>Cancelled Bookings</p>
 
-                    <div>
-                        <span>City</span>
-                        <p><?php echo htmlspecialchars($user["city"]); ?></p>
-                    </div>
+        <strong>
+            <?php echo $cancelledBookings; ?>
+        </strong>
 
-                    <div>
-                        <span>Address</span>
-                        <p><?php echo htmlspecialchars($user["address"]); ?></p>
-                    </div>
+    </div>
 
-                </div>
+</div>
 
-            </div>
+
+<div class="information">
+
+    <h2>My Information</h2>
+
+    <div class="information-grid">
+
+        <div>
+
+            <span>Full Name</span>
+
+            <p>
+                <?php echo htmlspecialchars($user["full_name"]); ?>
+            </p>
 
         </div>
 
-    </main>
+
+        <div>
+
+            <span>Phone</span>
+
+            <p>
+                <?php echo htmlspecialchars($user["phone"]); ?>
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <span>Account Status</span>
+
+            <p class="active-status">
+                <?php echo htmlspecialchars($user["account_status"]); ?>
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <span>Email</span>
+
+            <p>
+                <?php echo htmlspecialchars($user["email"]); ?>
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <span>City</span>
+
+            <p>
+                <?php echo htmlspecialchars($user["city"]); ?>
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <span>Address</span>
+
+            <p>
+                <?php echo htmlspecialchars($user["address"]); ?>
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+</div>
+
+</main>
 
 </div>
 
 </body>
+
 </html>

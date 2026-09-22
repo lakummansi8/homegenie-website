@@ -1,10 +1,13 @@
 <?php
+
 $pageTitle = "Add Service Provider";
 $assetPath = "../../../";
 $adminPath = "../../";
+
 require_once "../../../config/db.php";
 
-$errors = [];
+$errors = "";
+
 $fullName = "";
 $email = "";
 $phone = "";
@@ -17,131 +20,157 @@ $availability = "Available";
 $accountStatus = "Pending";
 $categoryId = "";
 
+
+// Get categories
+$q = "select * from categories where category_status = 'Active'";
+$categoryResult = mysqli_query($conn,$q);
+
 $categories = [];
-$categoryQuery = "SELECT category_id, category_name FROM categories WHERE category_status = 'Active' ORDER BY category_name ASC";
-$categoryResult = $conn->query($categoryQuery);
-if ($categoryResult) {
-    while ($row = $categoryResult->fetch_assoc()) {
-        $categories[] = $row;
+
+while($category = mysqli_fetch_array($categoryResult))
+{
+    $categories[] = $category;
+}
+
+
+// Form submitted
+if($_SERVER["REQUEST_METHOD"] == "POST")
+{
+    $fullName = $_POST["full_name"];
+    $email = $_POST["email"];
+    $phone = $_POST["phone"];
+    $password = $_POST["password"];
+    $gender = $_POST["gender"];
+    $experience = $_POST["experience"];
+    $address = $_POST["address"];
+    $area = $_POST["area"];
+    $city = $_POST["city"];
+    $availability = $_POST["availability"];
+    $accountStatus = $_POST["account_status"];
+    $categoryId = $_POST["category_id"];
+
+
+    // Basic validation
+    if($fullName == "")
+    {
+        $errors = "Full name is required.";
+    }
+    elseif($email == "")
+    {
+        $errors = "Email is required.";
+    }
+    elseif($phone == "")
+    {
+        $errors = "Phone number is required.";
+    }
+    elseif($password == "")
+    {
+        $errors = "Password is required.";
+    }
+    elseif(strlen($password) < 6)
+    {
+        $errors = "Password must be at least 6 characters.";
+    }
+    elseif($categoryId == "")
+    {
+        $errors = "Please select a category.";
+    }
+
+
+    // Check email
+    if($errors == "")
+    {
+        $q = "select * from service_providers where email = '$email'";
+        $res = mysqli_query($conn,$q);
+
+        if(mysqli_num_rows($res) > 0)
+        {
+            $errors = "A service provider with this email already exists.";
+        }
+    }
+
+
+    // Add provider
+    if($errors == "")
+    {
+        $profileImage = "";
+
+        if($_FILES["profile_image"]["name"] != "")
+        {
+            $imageName = $_FILES["profile_image"]["name"];
+
+            move_uploaded_file(
+                $_FILES["profile_image"]["tmp_name"],
+                "../../../assets/providers/" . $imageName
+            );
+
+            $profileImage = $imageName;
+        }
+
+
+        $password = password_hash($password,PASSWORD_DEFAULT);
+
+
+        $q = "insert into service_providers
+        (
+            full_name,
+            email,
+            phone,
+            password,
+            gender,
+            experience,
+            address,
+            area,
+            city,
+            availability,
+            account_status,
+            profile_image,
+            category_id
+        )
+        values
+        (
+            '$fullName',
+            '$email',
+            '$phone',
+            '$password',
+            '$gender',
+            '$experience',
+            '$address',
+            '$area',
+            '$city',
+            '$availability',
+            '$accountStatus',
+            '$profileImage',
+            '$categoryId'
+        )";
+
+
+        $res = mysqli_query($conn,$q);
+
+
+        if($res)
+        {
+            header("Location: service-providers.php?success=provider_added");
+            exit;
+        }
+        else
+        {
+            $errors = "Unable to add service provider.";
+        }
     }
 }
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $fullName = trim($_POST["full_name"] ?? "");
-    $email = trim($_POST["email"] ?? "");
-    $phone = trim($_POST["phone"] ?? "");
-    $password = $_POST["password"] ?? "";
-    $gender = trim($_POST["gender"] ?? "");
-    $experience = trim($_POST["experience"] ?? "");
-    $address = trim($_POST["address"] ?? "");
-    $area = trim($_POST["area"] ?? "");
-    $city = trim($_POST["city"] ?? "");
-    $availability = trim($_POST["availability"] ?? "Available");
-    $accountStatus = trim($_POST["account_status"] ?? "Pending");
-    $categoryId = (int)($_POST["category_id"] ?? 0);
-
-    if ($fullName === "") $errors[] = "Full name is required.";
-    if ($email === "") $errors[] = "Email is required.";
-    elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = "Please enter a valid email address.";
-    
-    if ($phone === "") $errors[] = "Phone number is required.";
-    if ($password === "") $errors[] = "Password is required.";
-    elseif (strlen($password) < 6) $errors[] = "Password must be at least 6 characters.";
-    
-    if ($categoryId <= 0) $errors[] = "Please select a category.";
-    if ($experience !== "" && !is_numeric($experience)) $errors[] = "Experience must be a valid number.";
-    if (!in_array($availability, ["Available", "Busy", "Offline"], true)) $errors[] = "Invalid availability selected.";
-    if (!in_array($accountStatus, ["Pending", "Active", "Blocked"], true)) $errors[] = "Invalid account status selected.";
-
-    if ($categoryId > 0) {
-        $categoryCheck = $conn->prepare("SELECT category_id FROM categories WHERE category_id = ? AND category_status = 'Active' LIMIT 1");
-        if ($categoryCheck) {
-            $categoryCheck->bind_param("i", $categoryId);
-            $categoryCheck->execute();
-            if ($categoryCheck->get_result()->num_rows === 0) $errors[] = "Selected category is invalid.";
-            $categoryCheck->close();
-        } else {
-            $errors[] = "Unable to verify selected category.";
-        }
-    }
-
-    if ($email !== "") {
-        $emailCheck = $conn->prepare("SELECT provider_id FROM service_providers WHERE email = ? LIMIT 1");
-        if ($emailCheck) {
-            $emailCheck->bind_param("s", $email);
-            $emailCheck->execute();
-            if ($emailCheck->get_result()->num_rows > 0) $errors[] = "A service provider with this email already exists.";
-            $emailCheck->close();
-        }
-    }
-
-    $profileImage = null;
-    if (isset($_FILES["profile_image"]) && $_FILES["profile_image"]["error"] !== UPLOAD_ERR_NO_FILE) {
-        if ($_FILES["profile_image"]["error"] !== UPLOAD_ERR_OK) {
-            $errors[] = "There was an error uploading the profile image.";
-        } else {
-            $fileSize = $_FILES["profile_image"]["size"];
-            $fileTmp = $_FILES["profile_image"]["tmp_name"];
-            $fileName = $_FILES["profile_image"]["name"];
-            $allowedExtensions = ["jpg", "jpeg", "png", "webp"];
-            $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-
-            if (!in_array($fileExtension, $allowedExtensions, true)) $errors[] = "Profile image must be JPG, JPEG, PNG, or WEBP.";
-            if ($fileSize > 5 * 1024 * 1024) $errors[] = "Profile image must not exceed 5 MB.";
-
-            if (empty($errors)) {
-                $imageInfo = getimagesize($fileTmp);
-                if ($imageInfo === false) $errors[] = "The uploaded profile image is not valid.";
-            }
-
-            if (empty($errors)) {
-                $profileImage = uniqid("provider_", true) . "." . $fileExtension;
-            }
-        }
-    }
-
-    if (empty($errors)) {
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        $experienceValue = ($experience === "" ? null : (int)$experience);
-
-        $stmt = $conn->prepare("
-            INSERT INTO service_providers (
-                full_name, email, phone, password, gender, experience, address, area, city, availability, account_status, profile_image, category_id
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ");
-
-        if ($stmt) {
-            $stmt->bind_param("sssssiisssssi", $fullName, $email, $phone, $hashedPassword, $gender, $experienceValue, $address, $area, $city, $availability, $accountStatus, $profileImage, $categoryId);
-            if ($stmt->execute()) {
-                if ($profileImage !== null) {
-                    $uploadDirectory = "../../../assets/providers/";
-                    if (!is_dir($uploadDirectory)) mkdir($uploadDirectory, 0755, true);
-                    $uploadPath = $uploadDirectory . $profileImage;
-                    move_uploaded_file($_FILES["profile_image"]["tmp_name"], $uploadPath);
-                }
-                $stmt->close();
-                header("Location: service-providers.php?success=provider_added");
-                exit;
-            } else {
-                $errors[] = "Unable to add service provider.";
-                $profileImage = null;
-            }
-            $stmt->close();
-        } else {
-            $errors[] = "Unable to prepare service provider data.";
-        }
-    }
-}
 
 ob_start();
+
 ?>
 
-<div class="admin-page-header">
-    <div class="header-title">
+<div class="row mb-4">
+    <div class="col-md-8">
         <h3>Add Service Provider</h3>
         <p class="text-muted">Add a new service provider to HomeGenie.</p>
     </div>
-    <div class="header-actions">
+    <div class="col-md-4 text-md-end">
         <a href="service-providers.php" class="btn btn-secondary">&larr; Back to Service Providers</a>
     </div>
 </div>
@@ -150,9 +179,7 @@ ob_start();
     <div class="alert alert-danger">
         <strong>Please fix the following errors:</strong>
         <ul class="mb-0">
-            <?php foreach ($errors as $error): ?>
-                <li><?= htmlspecialchars($error) ?></li>
-            <?php endforeach; ?>
+            <li><?php print $errors; ?></li>
         </ul>
     </div>
 <?php endif; ?>
@@ -257,7 +284,7 @@ ob_start();
             </div>
 
             <hr>
-            <div class="admin-form-actions">
+            <div class="d-flex justify-content-between">
                 <a href="service-providers.php" class="btn btn-secondary">Cancel</a>
                 <button type="submit" class="btn btn-primary">Add Service Provider</button>
             </div>
@@ -266,6 +293,9 @@ ob_start();
 </div>
 
 <?php
+
 $pageContent = ob_get_clean();
+
 require_once "../../layout/admin-layout.php";
+
 ?>

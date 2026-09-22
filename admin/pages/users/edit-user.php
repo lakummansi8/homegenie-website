@@ -1,88 +1,104 @@
 <?php
+
 $pageTitle = "Edit Customer";
 $assetPath = "../../../";
 $adminPath = "../../";
+
 require_once "../../../config/db.php";
 
-$userId = (int)($_GET["id"] ?? $_POST["user_id"] ?? 0);
-if ($userId <= 0) {
+$userId = $_GET['id'];
+
+if($userId == "")
+{
     header("Location: users.php");
     exit;
 }
 
-$fullName = "";
-$email = "";
-$phone = "";
-$address = "";
-$city = "";
-$accountStatus = "Active";
-$errors = [];
+$sql = "SELECT * FROM users WHERE user_id = $userId";
+$result = mysqli_query($conn, $sql);
 
-$stmt = $conn->prepare("SELECT user_id, full_name, email, phone, address, city, account_status FROM users WHERE user_id = ? LIMIT 1");
-if (!$stmt) die("Unable to prepare customer query.");
-$stmt->bind_param("i", $userId);
-$stmt->execute();
-$result = $stmt->get_result();
-if ($result->num_rows === 0) {
-    $stmt->close();
+if(mysqli_num_rows($result) == 0)
+{
     header("Location: users.php");
     exit;
 }
-$user = $result->fetch_assoc();
-$stmt->close();
 
-$fullName = $user["full_name"] ?? "";
-$email = $user["email"] ?? "";
-$phone = $user["phone"] ?? "";
-$address = $user["address"] ?? "";
-$city = $user["city"] ?? "";
-$accountStatus = $user["account_status"] ?? "Active";
+$user = mysqli_fetch_array($result);
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $fullName = trim($_POST["full_name"] ?? "");
-    $email = trim($_POST["email"] ?? "");
-    $phone = trim($_POST["phone"] ?? "");
-    $address = trim($_POST["address"] ?? "");
-    $city = trim($_POST["city"] ?? "");
-    $accountStatus = trim($_POST["account_status"] ?? "Active");
+$fullName = $user['full_name'];
+$email = $user['email'];
+$phone = $user['phone'];
+$address = $user['address'];
+$city = $user['city'];
+$accountStatus = $user['account_status'];
 
-    if ($fullName === "") $errors[] = "Customer name is required.";
-    if ($email === "") $errors[] = "Email address is required.";
-    elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = "Please enter a valid email address.";
-    
-    if ($phone === "") $errors[] = "Phone number is required.";
-    if ($address === "") $errors[] = "Address is required.";
-    if ($city === "") $errors[] = "City is required.";
+$error = "";
 
-    $allowedStatuses = ["Active", "Blocked"];
-    if (!in_array($accountStatus, $allowedStatuses, true)) $errors[] = "Invalid account status.";
+if(isset($_POST['submit']))
+{
+    $fullName = $_POST['full_name'];
+    $email = $_POST['email'];
+    $phone = $_POST['phone'];
+    $address = $_POST['address'];
+    $city = $_POST['city'];
+    $accountStatus = $_POST['account_status'];
 
-    if (empty($errors)) {
-        $emailCheck = $conn->prepare("SELECT user_id FROM users WHERE email = ? AND user_id != ? LIMIT 1");
-        if ($emailCheck) {
-            $emailCheck->bind_param("si", $email, $userId);
-            $emailCheck->execute();
-            if ($emailCheck->get_result()->num_rows > 0) $errors[] = "Another customer is already using this email address.";
-            $emailCheck->close();
-        } else {
-            $errors[] = "Unable to verify email address.";
+    if($fullName == "")
+    {
+        $error = "Customer name is required.";
+    }
+    elseif($email == "")
+    {
+        $error = "Email address is required.";
+    }
+    elseif($phone == "")
+    {
+        $error = "Phone number is required.";
+    }
+    elseif($address == "")
+    {
+        $error = "Address is required.";
+    }
+    elseif($city == "")
+    {
+        $error = "City is required.";
+    }
+
+    if($error == "")
+    {
+        $sql = "SELECT * FROM users
+                WHERE email = '$email'
+                AND user_id != $userId";
+
+        $result = mysqli_query($conn, $sql);
+
+        if(mysqli_num_rows($result) > 0)
+        {
+            $error = "Another customer is already using this email address.";
         }
     }
 
-    if (empty($errors)) {
-        $updateStmt = $conn->prepare("UPDATE users SET full_name = ?, email = ?, phone = ?, address = ?, city = ?, account_status = ? WHERE user_id = ?");
-        if ($updateStmt) {
-            $updateStmt->bind_param("ssssssi", $fullName, $email, $phone, $address, $city, $accountStatus, $userId);
-            if ($updateStmt->execute()) {
-                $updateStmt->close();
-                header("Location: users.php?success=user_updated");
-                exit;
-            } else {
-                $errors[] = "Unable to update customer. Please try again.";
-            }
-            $updateStmt->close();
-        } else {
-            $errors[] = "Unable to prepare customer update.";
+    if($error == "")
+    {
+        $sql = "UPDATE users SET
+                full_name = '$fullName',
+                email = '$email',
+                phone = '$phone',
+                address = '$address',
+                city = '$city',
+                account_status = '$accountStatus'
+                WHERE user_id = $userId";
+
+        $result = mysqli_query($conn, $sql);
+
+        if($result)
+        {
+            header("Location: users.php?success=user_updated");
+            exit;
+        }
+        else
+        {
+            $error = "Unable to update customer. Please try again.";
         }
     }
 }
@@ -100,16 +116,16 @@ ob_start();
     </div>
 </div>
 
-<?php if (!empty($errors)): ?>
+<?php if($error != "") { ?>
+
     <div class="alert alert-danger">
         <strong>Please fix the following:</strong>
         <ul class="mb-0">
-            <?php foreach ($errors as $error): ?>
-                <li><?= htmlspecialchars($error) ?></li>
-            <?php endforeach; ?>
+            <li><?php echo $error; ?></li>
         </ul>
     </div>
-<?php endif; ?>
+
+<?php } ?>
 
 <div class="card">
     <div class="card-header bg-dark text-white">
@@ -118,7 +134,7 @@ ob_start();
     <div class="card-body">
         <form method="POST" autocomplete="off">
             <input type="hidden" name="user_id" value="<?= $userId ?>">
-            
+
             <h5 class="mb-3">Basic Information</h5>
             <div class="row">
                 <div class="col-md-6 mb-3">
@@ -161,13 +177,16 @@ ob_start();
             <hr>
             <div class="admin-form-actions">
                 <a href="users.php" class="btn btn-secondary">Cancel</a>
-                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <button type="submit" name="submit" class="btn btn-primary">Save Changes</button>
             </div>
         </form>
     </div>
 </div>
 
 <?php
+
 $pageContent = ob_get_clean();
+
 require_once "../../layout/admin-layout.php";
+
 ?>

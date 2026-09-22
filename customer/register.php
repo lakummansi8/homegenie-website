@@ -61,6 +61,7 @@ session_start();
                         name="email"
                         placeholder="Enter your email"
                         required
+                        autocomplete="off"
                     >
 
                 </div>
@@ -106,6 +107,7 @@ session_start();
                     name="password"
                     placeholder="Create a password"
                     required
+                    autocomplete="new-password"
                 >
 
             </div>

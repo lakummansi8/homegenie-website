@@ -1,15 +1,15 @@
 <?php
 
 session_start();
-require_once "../config/db.php";
 
 if (!isset($_SESSION["user_id"])) {
-    header("Location: login.php");
+    header("Location: ../auth/login.php");
     exit;
 }
 
+require_once "../config/db.php";
+
 $userId = $_SESSION["user_id"];
-$userName = $_SESSION["user_name"] ?? "Customer";
 
 $stmt = $conn->prepare(
     "SELECT full_name, email, phone, address, city
@@ -22,173 +22,125 @@ $stmt->execute();
 
 $user = $stmt->get_result()->fetch_assoc();
 
+$pageTitle = "My Profile";
+
+require_once "layout/customer-layout.php";
+
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>My Profile - HomeGenie</title>
-    <link rel="stylesheet" href="customer.css">
-</head>
+<div class="welcome">
 
-<body>
+    <h1>My Profile</h1>
 
-<div class="customer-layout">
+    <p>
+        Update your personal account information.
+    </p>
 
-    <aside class="sidebar">
+</div>
 
-        <div class="sidebar-brand">
-            <h1>HomeGenie</h1>
-            <p>Customer Panel</p>
-        </div>
 
-        <nav class="sidebar-nav">
+<?php if (isset($_GET["updated"])): ?>
 
-            <a href="dashboard.php">
-                Dashboard
-            </a>
+    <div class="success-message">
+        Profile updated successfully!
+    </div>
 
-            <a href="services.php">
-                Services
-            </a>
+<?php endif; ?>
 
-            <a href="my-bookings.php">
-                My Bookings
-            </a>
 
-            <a href="profile.php" class="active">
-                My Profile
-            </a>
+<div class="profile-section">
 
-        </nav>
+    <h2>Personal Information</h2>
 
-        <a href="logout.php" class="logout">
-            Logout
-        </a>
+    <form action="update-profile.php" method="POST">
 
-    </aside>
+        <div class="profile-grid">
 
-    <main class="main-area">
+            <div class="profile-item">
 
-        <header class="top-header">
+                <label>Full Name</label>
 
-            <h2>My Profile</h2>
-
-            <div class="header-user">
-                <strong><?php echo htmlspecialchars($userName); ?></strong>
-                <span>Customer</span>
-            </div>
-
-        </header>
-
-        <div class="dashboard">
-
-            <div class="welcome">
-
-                <h1>My Profile</h1>
-
-                <p>
-                    Update your personal account information.
-                </p>
+                <input
+                    type="text"
+                    name="full_name"
+                    value="<?php echo htmlspecialchars($user["full_name"]); ?>"
+                    required
+                >
 
             </div>
 
-            <?php if (isset($_GET["updated"])): ?>
 
-                <div class="success-message">
-                    Profile updated successfully!
-                </div>
+            <div class="profile-item">
 
-            <?php endif; ?>
+                <label>Email</label>
 
-            <div class="profile-section">
+                <input
+                    type="email"
+                    name="email"
+                    value="<?php echo htmlspecialchars($user["email"]); ?>"
+                    required
+                >
 
-                <h2>Personal Information</h2>
+            </div>
 
-                <form action="update-profile.php" method="POST">
 
-                    <div class="profile-grid">
+            <div class="profile-item">
 
-                        <div class="profile-item">
+                <label>Phone</label>
 
-                            <label>Full Name</label>
+                <input
+                    type="text"
+                    name="phone"
+                    value="<?php echo htmlspecialchars($user["phone"]); ?>"
+                    required
+                >
 
-                            <input
-                                type="text"
-                                name="full_name"
-                                value="<?php echo htmlspecialchars($user["full_name"]); ?>"
-                                required
-                            >
+            </div>
 
-                        </div>
 
-                        <div class="profile-item">
+            <div class="profile-item">
 
-                            <label>Email</label>
+                <label>City</label>
 
-                            <input
-                                type="email"
-                                name="email"
-                                value="<?php echo htmlspecialchars($user["email"]); ?>"
-                                required
-                            >
+                <input
+                    type="text"
+                    name="city"
+                    value="<?php echo htmlspecialchars($user["city"]); ?>"
+                    required
+                >
 
-                        </div>
+            </div>
 
-                        <div class="profile-item">
 
-                            <label>Phone</label>
+            <div class="profile-item profile-address">
 
-                            <input
-                                type="text"
-                                name="phone"
-                                value="<?php echo htmlspecialchars($user["phone"]); ?>"
-                                required
-                            >
+                <label>Address</label>
 
-                        </div>
-
-                        <div class="profile-item">
-
-                            <label>City</label>
-
-                            <input
-                                type="text"
-                                name="city"
-                                value="<?php echo htmlspecialchars($user["city"]); ?>"
-                                required
-                            >
-
-                        </div>
-
-                        <div class="profile-item profile-address">
-
-                            <label>Address</label>
-
-                            <textarea
-                                name="address"
-                                required
-                            ><?php echo htmlspecialchars($user["address"]); ?></textarea>
-
-                        </div>
-
-                    </div>
-
-                    <div class="form-actions">
-
-                        <button type="submit">
-                            Save Changes
-                        </button>
-
-                    </div>
-
-                </form>
+                <textarea
+                    name="address"
+                    required
+                ><?php echo htmlspecialchars($user["address"]); ?></textarea>
 
             </div>
 
         </div>
 
-    </main>
+
+        <div class="form-actions">
+
+            <button type="submit">
+                Save Changes
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+</div>
+</main>
 
 </div>
 

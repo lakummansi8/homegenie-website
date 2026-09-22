@@ -6,85 +6,59 @@ $adminPath = "../../";
 
 require_once "../../../config/db.php";
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+$categoryName = "";
+$description = "";
+$categoryStatus = "Active";
+$error = "";
 
-    $categoryName = trim($_POST["category_name"]);
-    $description = trim($_POST["description"]);
-    $categoryStatus = $_POST["category_status"];
+if(isset($_POST['submit']))
+{
+    $categoryName = $_POST['category_name'];
+    $description = $_POST['description'];
+    $categoryStatus = $_POST['category_status'];
 
-    // Check category name
-    if ($categoryName == "") {
-        die("Category name is required.");
+    if($categoryName == "")
+    {
+        $error = "Category name is required.";
+    }
+    elseif($categoryStatus != "Active" && $categoryStatus != "Inactive")
+    {
+        $error = "Invalid category status.";
     }
 
-    // Check status
-    if ($categoryStatus != "Active" && $categoryStatus != "Inactive") {
-        die("Invalid category status.");
-    }
+    if($error == "")
+    {
+        $categoryImage = "";
 
-    // Handle category image
-    $categoryImage = null;
+        if($_FILES['category_image']['name'] != "")
+        {
+            $imageName = $_FILES['category_image']['name'];
 
-    if (isset($_FILES["category_image"]) && $_FILES["category_image"]["error"] == 0) {
+            move_uploaded_file(
+                $_FILES['category_image']['tmp_name'],
+                "../../../assets/categories/" . $imageName
+            );
 
-        $imageName = $_FILES["category_image"]["name"];
-        $imageSize = $_FILES["category_image"]["size"];
-        $imageTmp = $_FILES["category_image"]["tmp_name"];
-
-        // Check image size
-        if ($imageSize > 2 * 1024 * 1024) {
-            die("Category image must be smaller than 2 MB.");
+            $categoryImage = $imageName;
         }
 
-        // Get file extension
-        $extension = strtolower(pathinfo($imageName, PATHINFO_EXTENSION));
-
-        // Check file type
-        if ($extension != "jpg" && $extension != "jpeg" && $extension != "png" && $extension != "webp") {
-            die("Only JPG, PNG and WEBP images are allowed.");
-        }
-
-        // Create a unique image name
-        $categoryImage = "category_" . time() . "." . $extension;
-
-        $uploadDirectory = "../../../assets/categories/";
-
-        // Create folder if it does not exist
-        if (!is_dir($uploadDirectory)) {
-            mkdir($uploadDirectory, 0755, true);
-        }
-
-        $uploadPath = $uploadDirectory . $categoryImage;
-
-        // Save image
-        if (!move_uploaded_file($imageTmp, $uploadPath)) {
-            die("Failed to upload category image.");
-        }
-    }
-
-    // Insert category into database
-    $stmt = $conn->prepare(
-        "INSERT INTO categories 
+        $q = "insert into categories
         (category_name, category_image, description, category_status)
-        VALUES (?, ?, ?, ?)"
-    );
+        values
+        ('$categoryName','$categoryImage','$description','$categoryStatus')";
 
-    $stmt->bind_param(
-        "ssss",
-        $categoryName,
-        $categoryImage,
-        $description,
-        $categoryStatus
-    );
+        $res = mysqli_query($conn,$q);
 
-    if ($stmt->execute()) {
-        $stmt->close();
-
-        header("Location: categories.php?success=category_added");
-        exit;
+        if($res)
+        {
+            header("Location: categories.php?success=category_added");
+            exit;
+        }
+        else
+        {
+            $error = "Unable to add category.";
+        }
     }
-
-    die("Failed to add category.");
 }
 
 ob_start();
@@ -143,7 +117,7 @@ ob_start();
             <hr>
             <div class="admin-form-actions">
                 <a href="categories.php" class="btn btn-secondary">Cancel</a>
-                <button type="submit" class="btn btn-primary">Save Category</button>
+                <button type="submit" name="submit" class="btn btn-primary">Save Category</button>
             </div>
         </form>
     </div>

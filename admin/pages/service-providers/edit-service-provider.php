@@ -2,31 +2,27 @@
 $pageTitle = "Edit Service Provider";
 $assetPath = "../../../";
 $adminPath = "../../";
+
 require_once "../../../config/db.php";
 
-$providerId = (int)($_GET["id"] ?? $_POST["provider_id"] ?? 0);
-if ($providerId <= 0) {
+$providerId = $_GET["id"];
+
+if($providerId == "")
+{
     header("Location: service-providers.php?error=invalid_provider");
     exit;
 }
 
-$errors = [];
+$q = "select * from service_providers where provider_id = $providerId";
+$res = mysqli_query($conn,$q);
 
-$stmt = $conn->prepare("SELECT * FROM service_providers WHERE provider_id = ? LIMIT 1");
-if (!$stmt) {
+if(mysqli_num_rows($res) == 0)
+{
     header("Location: service-providers.php?error=provider_not_found");
     exit;
 }
-$stmt->bind_param("i", $providerId);
-$stmt->execute();
-$result = $stmt->get_result();
-if ($result->num_rows === 0) {
-    $stmt->close();
-    header("Location: service-providers.php?error=provider_not_found");
-    exit;
-}
-$provider = $result->fetch_assoc();
-$stmt->close();
+
+$provider = mysqli_fetch_array($res);
 
 $fullName = $provider["full_name"];
 $email = $provider["email"];
@@ -41,145 +37,164 @@ $accountStatus = $provider["account_status"];
 $categoryId = $provider["category_id"];
 $currentProfileImage = $provider["profile_image"];
 
-$categories = [];
-$categoryQuery = "SELECT category_id, category_name FROM categories WHERE category_status = 'Active' ORDER BY category_name ASC";
-$categoryResult = $conn->query($categoryQuery);
-if ($categoryResult) {
-    while ($row = $categoryResult->fetch_assoc()) {
-        $categories[] = $row;
-    }
+$errors = array();
+
+$q = "select * from categories where category_status = 'Active'";
+$categoryResult = mysqli_query($conn,$q);
+
+$categories = array();
+
+while($category = mysqli_fetch_array($categoryResult))
+{
+    $categories[] = $category;
 }
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $fullName = trim($_POST["full_name"] ?? "");
-    $email = trim($_POST["email"] ?? "");
-    $phone = trim($_POST["phone"] ?? "");
-    $password = $_POST["password"] ?? "";
-    $gender = trim($_POST["gender"] ?? "");
-    $experience = trim($_POST["experience"] ?? "");
-    $address = trim($_POST["address"] ?? "");
-    $area = trim($_POST["area"] ?? "");
-    $city = trim($_POST["city"] ?? "");
-    $availability = trim($_POST["availability"] ?? "");
-    $accountStatus = trim($_POST["account_status"] ?? "");
-    $categoryId = (int)($_POST["category_id"] ?? 0);
 
-    if ($fullName === "") $errors[] = "Full name is required.";
-    if ($email === "") $errors[] = "Email is required.";
-    elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = "Please enter a valid email address.";
-    
-    if ($phone === "") $errors[] = "Phone number is required.";
-    if ($password !== "" && strlen($password) < 6) $errors[] = "New password must be at least 6 characters.";
-    if ($categoryId <= 0) $errors[] = "Please select a category.";
-    if ($experience !== "" && !is_numeric($experience)) $errors[] = "Experience must be a valid number.";
-    
-    if (!in_array($availability, ["Available", "Busy", "Offline"], true)) $errors[] = "Invalid availability selected.";
-    if (!in_array($accountStatus, ["Pending", "Active", "Blocked"], true)) $errors[] = "Invalid account status selected.";
+if($_SERVER["REQUEST_METHOD"] == "POST")
+{
+    $fullName = $_POST["full_name"];
+    $email = $_POST["email"];
+    $phone = $_POST["phone"];
+    $password = $_POST["password"];
+    $gender = $_POST["gender"];
+    $experience = $_POST["experience"];
+    $address = $_POST["address"];
+    $area = $_POST["area"];
+    $city = $_POST["city"];
+    $availability = $_POST["availability"];
+    $accountStatus = $_POST["account_status"];
+    $categoryId = $_POST["category_id"];
 
-    if ($categoryId > 0) {
-        $categoryCheck = $conn->prepare("SELECT category_id FROM categories WHERE category_id = ? AND category_status = 'Active' LIMIT 1");
-        if ($categoryCheck) {
-            $categoryCheck->bind_param("i", $categoryId);
-            $categoryCheck->execute();
-            if ($categoryCheck->get_result()->num_rows === 0) $errors[] = "Selected category is invalid.";
-            $categoryCheck->close();
-        } else {
-            $errors[] = "Unable to verify selected category.";
+    if($fullName == "")
+    {
+        $errors[] = "Full name is required.";
+    }
+    elseif($email == "")
+    {
+        $errors[] = "Email is required.";
+    }
+    elseif($phone == "")
+    {
+        $errors[] = "Phone number is required.";
+    }
+    elseif($categoryId == "")
+    {
+        $errors[] = "Please select a category.";
+    }
+    elseif($availability != "Available" && $availability != "Busy" && $availability != "Offline")
+    {
+        $errors[] = "Invalid availability selected.";
+    }
+    elseif($accountStatus != "Pending" && $accountStatus != "Active" && $accountStatus != "Blocked")
+    {
+        $errors[] = "Invalid account status selected.";
+    }
+
+    if($password != "" && strlen($password) < 6)
+    {
+        $errors[] = "New password must be at least 6 characters.";
+    }
+
+    if($experience != "" && !is_numeric($experience))
+    {
+        $errors[] = "Experience must be a valid number.";
+    }
+
+
+    if(count($errors) == 0)
+    {
+        $q = "select * from service_providers
+              where email = '$email'
+              and provider_id != $providerId";
+
+        $emailResult = mysqli_query($conn,$q);
+
+        if(mysqli_num_rows($emailResult) > 0)
+        {
+            $errors[] = "Another service provider already uses this email.";
         }
     }
 
-    if ($email !== "") {
-        $emailCheck = $conn->prepare("SELECT provider_id FROM service_providers WHERE email = ? AND provider_id != ? LIMIT 1");
-        if ($emailCheck) {
-            $emailCheck->bind_param("si", $email, $providerId);
-            $emailCheck->execute();
-            if ($emailCheck->get_result()->num_rows > 0) $errors[] = "Another service provider already uses this email.";
-            $emailCheck->close();
-        }
+
+    $newProfileImage = $currentProfileImage;
+
+    if($_FILES["profile_image"]["name"] != "")
+    {
+        $imageName = $_FILES["profile_image"]["name"];
+
+        move_uploaded_file(
+            $_FILES["profile_image"]["tmp_name"],
+            "../../../assets/providers/" . $imageName
+        );
+
+        $newProfileImage = $imageName;
     }
 
-    $newProfileImage = null;
-    if (isset($_FILES["profile_image"]) && $_FILES["profile_image"]["error"] !== UPLOAD_ERR_NO_FILE) {
-        if ($_FILES["profile_image"]["error"] !== UPLOAD_ERR_OK) {
-            $errors[] = "There was an error uploading the profile image.";
-        } else {
-            $fileSize = $_FILES["profile_image"]["size"];
-            $fileTmp = $_FILES["profile_image"]["tmp_name"];
-            $fileName = $_FILES["profile_image"]["name"];
-            $allowedExtensions = ["jpg", "jpeg", "png", "webp"];
-            $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
-            if (!in_array($fileExtension, $allowedExtensions, true)) $errors[] = "Profile image must be JPG, JPEG, PNG, or WEBP.";
-            if ($fileSize > 5 * 1024 * 1024) $errors[] = "Profile image must not exceed 5 MB.";
-
-            if (empty($errors)) {
-                $imageInfo = getimagesize($fileTmp);
-                if ($imageInfo === false) $errors[] = "The uploaded profile image is not valid.";
-            }
-
-            if (empty($errors)) {
-                $newProfileImage = uniqid("provider_", true) . "." . $fileExtension;
-            }
+    if(count($errors) == 0)
+    {
+        if($password != "")
+        {
+            $password = password_hash($password,PASSWORD_DEFAULT);
         }
-    }
-
-    if (empty($errors)) {
-        $experienceValue = ($experience === "" ? null : (int)$experience);
-        $updateStmt = null;
-
-        if ($password !== "") {
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-            if ($newProfileImage !== null) {
-                $updateStmt = $conn->prepare("UPDATE service_providers SET full_name = ?, email = ?, phone = ?, password = ?, gender = ?, experience = ?, address = ?, area = ?, city = ?, availability = ?, account_status = ?, profile_image = ?, category_id = ? WHERE provider_id = ?");
-                $updateStmt->bind_param("sssssiisssssii", $fullName, $email, $phone, $hashedPassword, $gender, $experienceValue, $address, $area, $city, $availability, $accountStatus, $newProfileImage, $categoryId, $providerId);
-            } else {
-                $updateStmt = $conn->prepare("UPDATE service_providers SET full_name = ?, email = ?, phone = ?, password = ?, gender = ?, experience = ?, address = ?, area = ?, city = ?, availability = ?, account_status = ?, category_id = ? WHERE provider_id = ?");
-                $updateStmt->bind_param("sssssiissssii", $fullName, $email, $phone, $hashedPassword, $gender, $experienceValue, $address, $area, $city, $availability, $accountStatus, $categoryId, $providerId);
-            }
-        } else {
-            if ($newProfileImage !== null) {
-                $updateStmt = $conn->prepare("UPDATE service_providers SET full_name = ?, email = ?, phone = ?, gender = ?, experience = ?, address = ?, area = ?, city = ?, availability = ?, account_status = ?, profile_image = ?, category_id = ? WHERE provider_id = ?");
-                $updateStmt->bind_param("ssssissssssii", $fullName, $email, $phone, $gender, $experienceValue, $address, $area, $city, $availability, $accountStatus, $newProfileImage, $categoryId, $providerId);
-            } else {
-                $updateStmt = $conn->prepare("UPDATE service_providers SET full_name = ?, email = ?, phone = ?, gender = ?, experience = ?, address = ?, area = ?, city = ?, availability = ?, account_status = ?, category_id = ? WHERE provider_id = ?");
-                $updateStmt->bind_param("ssssisssssii", $fullName, $email, $phone, $gender, $experienceValue, $address, $area, $city, $availability, $accountStatus, $categoryId, $providerId);
-            }
+        else
+        {
+            $password = $provider["password"];
         }
 
-        if ($updateStmt) {
-            if ($updateStmt->execute()) {
-                $updateStmt->close();
-                if ($newProfileImage !== null) {
-                    $uploadDirectory = "../../../assets/providers/";
-                    if (!is_dir($uploadDirectory)) mkdir($uploadDirectory, 0755, true);
-                    $uploadPath = $uploadDirectory . $newProfileImage;
-                    if (move_uploaded_file($_FILES["profile_image"]["tmp_name"], $uploadPath)) {
-                        if (!empty($currentProfileImage) && file_exists($uploadDirectory . $currentProfileImage)) {
-                            unlink($uploadDirectory . $currentProfileImage);
-                        }
-                    }
+        $q = "update service_providers set
+              full_name='$fullName',
+              email='$email',
+              phone='$phone',
+              password='$password',
+              gender='$gender',
+              experience='$experience',
+              address='$address',
+              area='$area',
+              city='$city',
+              availability='$availability',
+              account_status='$accountStatus',
+              profile_image='$newProfileImage',
+              category_id='$categoryId'
+              where provider_id=$providerId";
+
+        $res = mysqli_query($conn,$q);
+
+        if($res)
+        {
+            if(
+                $currentProfileImage != "" &&
+                $newProfileImage != $currentProfileImage
+            )
+            {
+                $oldImage = "../../../assets/providers/" . $currentProfileImage;
+
+                if(file_exists($oldImage))
+                {
+                    unlink($oldImage);
                 }
-                header("Location: service-providers.php?success=provider_updated");
-                exit;
-            } else {
-                $errors[] = "Unable to update service provider.";
-                $updateStmt->close();
             }
-        } else {
-            $errors[] = "Unable to prepare service provider update.";
+
+            header("Location: service-providers.php?success=provider_updated");
+            exit;
+        }
+        else
+        {
+            $errors[] = "Unable to update service provider.";
         }
     }
 }
+
 
 ob_start();
 ?>
 
-<div class="admin-page-header">
-    <div class="header-title">
+<div class="row mb-4">
+    <div class="col-md-8">
         <h3>Edit Service Provider</h3>
         <p class="text-muted">Update the service provider's account and professional details.</p>
     </div>
-    <div class="header-actions">
+    <div class="col-md-4 text-md-end">
         <a href="service-providers.php" class="btn btn-secondary">&larr; Back to Providers</a>
     </div>
 </div>
@@ -296,14 +311,14 @@ ob_start();
                     
                     <?php if (!empty($currentProfileImage)): ?>
                         <div class="mt-2">
-                            <img src="../../../assets/providers/<?= htmlspecialchars($currentProfileImage) ?>" alt="Profile" class="img-thumbnail img-preview-sm">
+                            <img src="../../../assets/providers/<?= htmlspecialchars($currentProfileImage) ?>" alt="Profile" class="img-thumbnail" style="max-height: 100px;">
                         </div>
                     <?php endif; ?>
                 </div>
             </div>
 
             <hr>
-            <div class="admin-form-actions">
+            <div class="d-flex justify-content-between">
                 <a href="service-providers.php" class="btn btn-secondary">Cancel</a>
                 <button type="submit" class="btn btn-primary">Update Service Provider</button>
             </div>

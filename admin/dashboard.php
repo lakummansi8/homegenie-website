@@ -1,49 +1,56 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| ADMIN DASHBOARD (Student Edition)
-|--------------------------------------------------------------------------
-*/
-
 $pageTitle = "Dashboard";
 $assetPath = "../";
 $adminPath = "";
 
 require_once "../config/db.php";
 
-/* Total Statistics */
-$totalUsers = 0;
-$totalProviders = 0;
-$totalServices = 0;
-$totalBookings = 0;
 
-$userResult = $conn->query("SELECT COUNT(*) AS count FROM users");
-if ($userResult) $totalUsers = $userResult->fetch_assoc()["count"];
+/* Total Customers */
 
-$providerResult = $conn->query("SELECT COUNT(*) AS count FROM service_providers");
-if ($providerResult) $totalProviders = $providerResult->fetch_assoc()["count"];
+$q = "select count(*) as count from users";
+$res = mysqli_query($conn,$q);
+$row = mysqli_fetch_array($res);
+$totalUsers = $row['count'];
 
-$serviceResult = $conn->query("SELECT COUNT(*) AS count FROM services");
-if ($serviceResult) $totalServices = $serviceResult->fetch_assoc()["count"];
 
-$bookingResult = $conn->query("SELECT COUNT(*) AS count FROM bookings");
-if ($bookingResult) $totalBookings = $bookingResult->fetch_assoc()["count"];
+/* Total Providers */
+
+$q = "select count(*) as cnt from service_providers";
+$res = mysqli_query($conn,$q);
+$row = mysqli_fetch_array($res);
+$totalProviders = $row['cnt'];
+
+
+/* Total Services */
+
+$q = "select count(*) as count from services";
+$res = mysqli_query($conn,$q);
+$row = mysqli_fetch_array($res);
+$totalServices = $row['count'];
+
+
+/* Total Bookings */
+
+$q = "select count(*) as count from bookings";
+$res = mysqli_query($conn,$q);
+$row = mysqli_fetch_array($res);
+$totalBookings = $row['count'];
+
 
 /* Recent Bookings */
-$recentBookings = [];
-$recentBookingResult = $conn->query(
-    "SELECT b.booking_id, b.booking_date, b.booking_status, u.full_name AS user_name, sp.full_name AS provider_name
-     FROM bookings b
-     LEFT JOIN users u ON b.user_id = u.user_id
-     LEFT JOIN service_providers sp ON b.provider_id = sp.provider_id
-     ORDER BY b.booking_id DESC LIMIT 5"
-);
-if ($recentBookingResult) {
-    while ($row = $recentBookingResult->fetch_assoc()) {
-        $recentBookings[] = $row;
-    }
-}
+
+$q = "select b.booking_id, b.booking_date, b.booking_status,
+u.full_name as user_name,
+sp.full_name as provider_name
+from bookings b
+left join users u on b.user_id = u.user_id
+left join service_providers sp on b.provider_id = sp.provider_id
+order by b.booking_id desc
+limit 5";
+
+$recentBookings = mysqli_query($conn,$q);
 
 ob_start();
 ?>
@@ -104,9 +111,13 @@ ob_start();
         <strong>Recent Bookings</strong>
     </div>
     <div class="card-body">
-        <?php if (empty($recentBookings)): ?>
+
+        <?php if(mysqli_num_rows($recentBookings) == 0) { ?>
+
             <p class="text-muted">No bookings yet.</p>
-        <?php else: ?>
+
+        <?php } else { ?>
+
             <div class="table-responsive">
                 <table class="table table-bordered table-striped">
                     <thead class="table-light">
@@ -119,34 +130,85 @@ ob_start();
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($recentBookings as $booking): ?>
+
+                        <?php while($booking = mysqli_fetch_array($recentBookings)) { ?>
+
                             <tr>
-                                <td><?= (int)$booking["booking_id"] ?></td>
-                                <td><?= htmlspecialchars($booking["user_name"] ?: "Unknown") ?></td>
-                                <td><?= htmlspecialchars($booking["provider_name"] ?: "Unavailable") ?></td>
-                                <td><?= htmlspecialchars($booking["booking_date"]) ?></td>
+                                <td><?= $booking['booking_id'] ?></td>
+
                                 <td>
                                     <?php
-                                        $status = strtolower($booking["booking_status"]);
-                                        $badgeClass = "bg-secondary";
-                                        if ($status == "pending") $badgeClass = "bg-warning text-dark";
-                                        if ($status == "confirmed") $badgeClass = "bg-primary";
-                                        if ($status == "completed") $badgeClass = "bg-success";
-                                        if ($status == "cancelled" || $status == "canceled") $badgeClass = "bg-danger";
+                                    if($booking['user_name'] != "")
+                                    {
+                                        print $booking['user_name'];
+                                    }
+                                    else
+                                    {
+                                        print "Unknown";
+                                    }
                                     ?>
-                                    <span class="badge <?= $badgeClass ?>"><?= htmlspecialchars(ucfirst($status)) ?></span>
+                                </td>
+
+                                <td>
+                                    <?php
+                                    if($booking['provider_name'] != "")
+                                    {
+                                        print $booking['provider_name'];
+                                    }
+                                    else
+                                    {
+                                        print "Unavailable";
+                                    }
+                                    ?>
+                                </td>
+
+                                <td><?= $booking['booking_date'] ?></td>
+
+                                <td>
+                                    <?php
+
+                                    $status = strtolower($booking['booking_status']);
+                                    $badgeClass = "bg-secondary";
+
+                                    if($status == "pending")
+                                    {
+                                        $badgeClass = "bg-warning text-dark";
+                                    }
+                                    elseif($status == "confirmed")
+                                    {
+                                        $badgeClass = "bg-primary";
+                                    }
+                                    elseif($status == "completed")
+                                    {
+                                        $badgeClass = "bg-success";
+                                    }
+                                    elseif($status == "cancelled" || $status == "canceled")
+                                    {
+                                        $badgeClass = "bg-danger";
+                                    }
+
+                                    ?>
+
+                                    <span class="badge <?= $badgeClass ?>"><?= ucfirst($status) ?></span>
                                 </td>
                             </tr>
-                        <?php endforeach; ?>
+
+                        <?php } ?>
+
                     </tbody>
                 </table>
             </div>
+
             <a href="<?= $adminPath ?>pages/bookings/bookings.php" class="btn btn-outline-dark btn-sm">View All Bookings</a>
-        <?php endif; ?>
+
+        <?php } ?>
+
     </div>
 </div>
 
 <?php
+
 $pageContent = ob_get_clean();
 require_once "layout/admin-layout.php";
+
 ?>
