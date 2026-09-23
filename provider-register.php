@@ -1,4 +1,8 @@
+```php
 <?php
+
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
 
 require_once "config/db.php";
 
@@ -7,15 +11,17 @@ $pageCss = "provider-register.css";
 
 
 $categoriesQuery = "
-    SELECT
-        category_id,
-        category_name
+    SELECT category_id, category_name
     FROM categories
     WHERE category_status = 'Active'
     ORDER BY category_name ASC
 ";
 
 $categoriesResult = $conn->query($categoriesQuery);
+
+if (!$categoriesResult) {
+    die("Categories query failed: " . $conn->error);
+}
 
 
 $message = "";
@@ -55,7 +61,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     } else {
 
-
         $checkQuery = "
             SELECT provider_id
             FROM service_providers
@@ -64,6 +69,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         ";
 
         $checkStmt = $conn->prepare($checkQuery);
+
+        if (!$checkStmt) {
+            die("Check query failed: " . $conn->error);
+        }
+
         $checkStmt->bind_param("s", $email);
         $checkStmt->execute();
 
@@ -76,7 +86,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $messageType = "error";
 
         } else {
-
 
             $hashedPassword = password_hash(
                 $password,
@@ -107,6 +116,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             $insertStmt = $conn->prepare($insertQuery);
 
+            if (!$insertStmt) {
+                die("Insert query failed: " . $conn->error);
+            }
+
 
             $insertStmt->bind_param(
                 "sssssissssi",
@@ -131,15 +144,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             } else {
 
-                $message = "Something went wrong. Please try again.";
+                $message = "Something went wrong: " . $insertStmt->error;
                 $messageType = "error";
 
             }
 
+
+            $insertStmt->close();
         }
 
-    }
 
+        $checkStmt->close();
+    }
 }
 
 ?>
@@ -250,12 +266,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </section>
 
 
-    <!-- Registration -->
+    <!-- Registration Form -->
 
     <section class="provider-form-section">
 
         <div class="provider-container">
-
 
             <div class="form-heading">
 
@@ -292,8 +307,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             >
 
 
-                <div class="form-row">
+                <!-- Full Name + Email -->
 
+                <div class="form-row">
 
                     <div class="form-group">
 
@@ -329,12 +345,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                     </div>
 
-
                 </div>
 
 
-                <div class="form-row">
+                <!-- Phone + Password -->
 
+                <div class="form-row">
 
                     <div class="form-group">
 
@@ -371,12 +387,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                     </div>
 
-
                 </div>
 
 
-                <div class="form-row">
+                <!-- Gender + Experience -->
 
+                <div class="form-row">
 
                     <div class="form-group">
 
@@ -428,12 +444,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                     </div>
 
-
                 </div>
 
 
-                <div class="form-row">
+                <!-- Category + Availability -->
 
+                <div class="form-row">
 
                     <div class="form-group">
 
@@ -451,23 +467,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                 Select Category
                             </option>
 
-                            <?php if ($categoriesResult): ?>
+                            <?php while ($category = $categoriesResult->fetch_assoc()): ?>
 
-                                <?php while ($category = $categoriesResult->fetch_assoc()): ?>
+                                <option
+                                    value="<?php echo (int)$category["category_id"]; ?>"
+                                >
+                                    <?php echo htmlspecialchars($category["category_name"]); ?>
+                                </option>
 
-                                    <option
-                                        value="<?php echo (int)$category["category_id"]; ?>"
-                                    >
-                                        <?php
-                                        echo htmlspecialchars(
-                                            $category["category_name"]
-                                        );
-                                        ?>
-                                    </option>
-
-                                <?php endwhile; ?>
-
-                            <?php endif; ?>
+                            <?php endwhile; ?>
 
                         </select>
 
@@ -502,12 +510,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                     </div>
 
-
                 </div>
 
 
-                <div class="form-row">
+                <!-- Area + City -->
 
+                <div class="form-row">
 
                     <div class="form-group">
 
@@ -542,9 +550,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                     </div>
 
-
                 </div>
 
+
+                <!-- Address -->
 
                 <div class="form-group full-width">
 
@@ -563,6 +572,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 </div>
 
 
+                <!-- Submit -->
+
                 <button
                     type="submit"
                     class="submit-button"
@@ -573,7 +584,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             </form>
 
-
         </div>
 
     </section>
@@ -583,3 +593,4 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
 <?php include "includes/footer.php"; ?>
+```

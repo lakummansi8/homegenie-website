@@ -1,9 +1,22 @@
+```php
 <?php
 
-require_once "../auth/provider-auth-check.php";
+session_start();
+
+if (
+    !isset($_SESSION["provider_logged_in"]) ||
+    $_SESSION["provider_logged_in"] !== true
+) {
+    header("Location: /homegenie-website/auth/login.php");
+    exit;
+}
+
 require_once "../config/db.php";
 
 $providerId = $_SESSION["provider_id"];
+
+$pageTitle = "Reviews";
+$pageCss = "reviews.css";
 
 $stmt = $conn->prepare(
     "SELECT
@@ -21,7 +34,7 @@ $stmt = $conn->prepare(
      LEFT JOIN services s
         ON b.service_id = s.service_id
      WHERE r.provider_id = ?
-     ORDER BY r.created_at DESC"
+     ORDER BY r.review_id DESC"
 );
 
 $stmt->bind_param("i", $providerId);
@@ -29,130 +42,91 @@ $stmt->execute();
 
 $result = $stmt->get_result();
 
-$pageTitle = "Reviews";
-$pageCss = "reviews.css";
-
 require_once "layout/provider-layout.php";
 ?>
 
-<div class="reviews-page">
+<div class="reviews-container">
 
-    <div class="reviews-header">
+    <?php if ($result->num_rows > 0): ?>
 
-        <div>
-            <h2>Reviews</h2>
-            <p>View reviews received from your customers.</p>
-        </div>
+        <div class="reviews-grid">
 
-    </div>
+            <?php while ($review = $result->fetch_assoc()): ?>
 
-    <div class="reviews-section">
+                <div class="review-card">
 
-        <?php if ($result->num_rows > 0): ?>
+                    <div class="review-header">
 
-            <div class="reviews-list">
+                        <div>
+                            <h3>
+                                <?php echo htmlspecialchars($review["customer_name"]); ?>
+                            </h3>
 
-                <?php while ($review = $result->fetch_assoc()): ?>
-
-                    <div class="review-card">
-
-                        <div class="review-top">
-
-                            <div class="customer-info">
-
-                                <strong>
-                                    <?php echo htmlspecialchars($review["customer_name"] ?? "Unknown Customer"); ?>
-                                </strong>
-
-                                <span>
-                                    <?php echo htmlspecialchars($review["service_name"] ?? "Unknown Service"); ?>
-                                </span>
-
-                            </div>
-
-                            <div class="review-date">
-
-                                <?php
-                                echo date(
-                                    "d M Y",
-                                    strtotime($review["created_at"])
-                                );
-                                ?>
-
-                            </div>
-
+                            <p>
+                                <?php echo htmlspecialchars($review["service_name"]); ?>
+                            </p>
                         </div>
 
                         <div class="review-rating">
 
                             <?php
-                            $rating = (int)$review["rating"];
-
-                            for ($i = 1; $i <= 5; $i++):
-
-                                if ($i <= $rating):
+                            for ($i = 1; $i <= 5; $i++) {
+                                if ($i <= $review["rating"]) {
+                                    echo "★";
+                                } else {
+                                    echo "☆";
+                                }
+                            }
                             ?>
-
-                                    <span class="star filled">★</span>
-
-                                <?php else: ?>
-
-                                    <span class="star">★</span>
-
-                                <?php
-                                endif;
-
-                            endfor;
-                            ?>
-
-                            <span class="rating-number">
-                                <?php echo $rating; ?>/5
-                            </span>
-
-                        </div>
-
-                        <div class="review-comment">
-
-                            <?php if (!empty($review["review_comment"])): ?>
-
-                                <p>
-                                    <?php echo htmlspecialchars($review["review_comment"]); ?>
-                                </p>
-
-                            <?php else: ?>
-
-                                <p class="no-comment">
-                                    No comment provided.
-                                </p>
-
-                            <?php endif; ?>
 
                         </div>
 
                     </div>
 
-                <?php endwhile; ?>
+                    <div class="review-comment">
 
-            </div>
+                        <p>
+                            <?php echo htmlspecialchars($review["review_comment"]); ?>
+                        </p>
 
-        <?php else: ?>
+                    </div>
 
-            <div class="no-reviews">
+                    <div class="review-date">
 
-                <h3>No Reviews Found</h3>
+                        <?php
+                        echo date(
+                            "d M Y",
+                            strtotime($review["created_at"])
+                        );
+                        ?>
 
-                <p>You have not received any customer reviews yet.</p>
+                    </div>
 
-            </div>
+                </div>
 
-        <?php endif; ?>
+            <?php endwhile; ?>
 
-    </div>
+        </div>
+
+    <?php else: ?>
+
+        <div class="empty-review">
+
+            <h3>No Reviews Yet</h3>
+
+            <p>
+                You have not received any customer reviews yet.
+            </p>
+
+        </div>
+
+    <?php endif; ?>
 
 </div>
 
-</section>
 </main>
 </div>
+
 </body>
 </html>
+```
