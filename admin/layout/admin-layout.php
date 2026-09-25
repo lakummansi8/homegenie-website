@@ -1,4 +1,3 @@
-```php
 <?php
 
 require_once __DIR__ . "/../../auth/auth-check.php";
@@ -10,6 +9,10 @@ $currentPage = basename($_SERVER["PHP_SELF"]);
 
 $adminPath = $adminPath ?? "";
 $assetPath = $assetPath ?? "";
+
+$pageTitle = $pageTitle ?? "Admin Panel";
+$pageCss = $pageCss ?? "";
+
 
 function isActivePage($pageName, $currentPage)
 {
@@ -31,8 +34,9 @@ function isActivePage($pageName, $currentPage)
     >
 
     <title>
-        <?= htmlspecialchars($pageTitle ?? "Admin Panel") ?> - HomeGenie
+        <?php echo htmlspecialchars($pageTitle); ?> - HomeGenie
     </title>
+
 
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -44,14 +48,27 @@ function isActivePage($pageName, $currentPage)
         href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
     >
 
+
     <link
         rel="stylesheet"
-        href="<?= $assetPath ?>css/admin/layout.css"
+        href="<?php echo $assetPath; ?>css/admin/layout.css"
     >
+
+
+    <?php if ($pageCss != ""): ?>
+
+        <link
+            rel="stylesheet"
+            href="<?php echo $assetPath; ?>css/admin/pages/<?php echo htmlspecialchars($pageCss); ?>"
+        >
+
+    <?php endif; ?>
 
 </head>
 
+
 <body>
+
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
 
@@ -59,7 +76,7 @@ function isActivePage($pageName, $currentPage)
 
         <a
             class="navbar-brand text-white fw-bold d-flex align-items-center"
-            href="<?= $adminPath ?>dashboard.php"
+            href="<?php echo $adminPath; ?>dashboard.php"
         >
 
             <i class="bi bi-house-gear-fill text-primary me-2 fs-4"></i>
@@ -67,6 +84,7 @@ function isActivePage($pageName, $currentPage)
             HomeGenie Admin
 
         </a>
+
 
         <button
             class="navbar-toggler"
@@ -78,6 +96,7 @@ function isActivePage($pageName, $currentPage)
             <span class="navbar-toggler-icon"></span>
 
         </button>
+
 
         <div
             class="collapse navbar-collapse justify-content-end"
@@ -93,7 +112,7 @@ function isActivePage($pageName, $currentPage)
                     <span>
                         Hello,
                         <strong>
-                            <?= htmlspecialchars($adminName) ?>
+                            <?php echo htmlspecialchars($adminName); ?>
                         </strong>
                     </span>
 
@@ -113,11 +132,9 @@ function isActivePage($pageName, $currentPage)
     <div class="row">
 
 
-        <!-- Sidebar -->
+        <!-- SIDEBAR -->
 
-        <div
-            class="col-md-3 col-lg-2 bg-white sidebar shadow-sm d-none d-md-flex flex-column px-0 py-3"
-        >
+        <div class="col-md-3 col-lg-2 bg-white sidebar shadow-sm d-none d-md-flex flex-column px-0 py-3">
 
             <h6 class="sidebar-heading px-3 mt-2 mb-2 text-muted text-uppercase fw-bold">
                 Main Navigation
@@ -129,8 +146,8 @@ function isActivePage($pageName, $currentPage)
                 <li class="nav-item">
 
                     <a
-                        href="<?= $adminPath ?>dashboard.php"
-                        class="nav-link <?= isActivePage("dashboard.php", $currentPage) ?>"
+                        href="<?php echo $adminPath; ?>dashboard.php"
+                        class="nav-link <?php echo isActivePage("dashboard.php", $currentPage); ?>"
                     >
 
                         <i class="bi bi-speedometer2"></i>
@@ -145,8 +162,8 @@ function isActivePage($pageName, $currentPage)
                 <li class="nav-item">
 
                     <a
-                        href="<?= $adminPath ?>pages/categories/categories.php"
-                        class="nav-link <?= isActivePage("categories.php", $currentPage) ?>"
+                        href="<?php echo $adminPath; ?>pages/categories/categories.php"
+                        class="nav-link <?php echo isActivePage("categories.php", $currentPage); ?>"
                     >
 
                         <i class="bi bi-tags"></i>
@@ -161,8 +178,8 @@ function isActivePage($pageName, $currentPage)
                 <li class="nav-item">
 
                     <a
-                        href="<?= $adminPath ?>pages/services/services.php"
-                        class="nav-link <?= isActivePage("services.php", $currentPage) ?>"
+                        href="<?php echo $adminPath; ?>pages/services/services.php"
+                        class="nav-link <?php echo isActivePage("services.php", $currentPage); ?>"
                     >
 
                         <i class="bi bi-tools"></i>
@@ -177,8 +194,8 @@ function isActivePage($pageName, $currentPage)
                 <li class="nav-item">
 
                     <a
-                        href="<?= $adminPath ?>pages/service-providers/service-providers.php"
-                        class="nav-link <?= isActivePage("service-providers.php", $currentPage) ?>"
+                        href="<?php echo $adminPath; ?>pages/service-providers/service-providers.php"
+                        class="nav-link <?php echo isActivePage("service-providers.php", $currentPage); ?>"
                     >
 
                         <i class="bi bi-person-badge"></i>
@@ -193,8 +210,8 @@ function isActivePage($pageName, $currentPage)
                 <li class="nav-item">
 
                     <a
-                        href="<?= $adminPath ?>pages/users/users.php"
-                        class="nav-link <?= isActivePage("users.php", $currentPage) ?>"
+                        href="<?php echo $adminPath; ?>pages/users/users.php"
+                        class="nav-link <?php echo isActivePage("users.php", $currentPage); ?>"
                     >
 
                         <i class="bi bi-people"></i>
@@ -209,29 +226,13 @@ function isActivePage($pageName, $currentPage)
                 <li class="nav-item">
 
                     <a
-                        href="<?= $adminPath ?>pages/bookings/bookings.php"
-                        class="nav-link <?= isActivePage("bookings.php", $currentPage) ?>"
+                        href="<?php echo $adminPath; ?>pages/bookings/bookings.php"
+                        class="nav-link <?php echo isActivePage("bookings.php", $currentPage); ?>"
                     >
 
                         <i class="bi bi-calendar-check"></i>
 
                         Bookings
-
-                    </a>
-
-                </li>
-
-
-                <li class="nav-item">
-
-                    <a
-                        href="<?= $adminPath ?>pages/reviews/reviews.php"
-                        class="nav-link <?= isActivePage("reviews.php", $currentPage) ?>"
-                    >
-
-                        <i class="bi bi-star"></i>
-
-                        Reviews
 
                     </a>
 
@@ -243,7 +244,7 @@ function isActivePage($pageName, $currentPage)
             <div class="mt-auto px-3">
 
                 <a
-                    href="<?= $assetPath ?>auth/logout.php"
+                    href="<?php echo $assetPath; ?>auth/logout.php"
                     class="nav-link w-100"
                 >
 
@@ -258,74 +259,67 @@ function isActivePage($pageName, $currentPage)
         </div>
 
 
-        <!-- Mobile Menu -->
+        <!-- MOBILE MENU -->
 
         <div class="d-md-none bg-white">
 
             <h6>Menu</h6>
 
+
             <div class="d-flex flex-wrap gap-2 mb-3">
 
                 <a
-                    href="<?= $adminPath ?>dashboard.php"
-                    class="btn btn-sm <?= $currentPage === "dashboard.php" ? "btn-primary" : "btn-light border" ?>"
+                    href="<?php echo $adminPath; ?>dashboard.php"
+                    class="btn btn-sm <?php echo $currentPage === "dashboard.php" ? "btn-primary" : "btn-light border"; ?>"
                 >
                     Dashboard
                 </a>
 
 
                 <a
-                    href="<?= $adminPath ?>pages/categories/categories.php"
-                    class="btn btn-sm <?= $currentPage === "categories.php" ? "btn-primary" : "btn-light border" ?>"
+                    href="<?php echo $adminPath; ?>pages/categories/categories.php"
+                    class="btn btn-sm <?php echo $currentPage === "categories.php" ? "btn-primary" : "btn-light border"; ?>"
                 >
                     Categories
                 </a>
 
 
                 <a
-                    href="<?= $adminPath ?>pages/services/services.php"
-                    class="btn btn-sm <?= $currentPage === "services.php" ? "btn-primary" : "btn-light border" ?>"
+                    href="<?php echo $adminPath; ?>pages/services/services.php"
+                    class="btn btn-sm <?php echo $currentPage === "services.php" ? "btn-primary" : "btn-light border"; ?>"
                 >
                     Services
                 </a>
 
 
                 <a
-                    href="<?= $adminPath ?>pages/service-providers/service-providers.php"
-                    class="btn btn-sm <?= $currentPage === "service-providers.php" ? "btn-primary" : "btn-light border" ?>"
+                    href="<?php echo $adminPath; ?>pages/service-providers/service-providers.php"
+                    class="btn btn-sm <?php echo $currentPage === "service-providers.php" ? "btn-primary" : "btn-light border"; ?>"
                 >
                     Providers
                 </a>
 
 
                 <a
-                    href="<?= $adminPath ?>pages/users/users.php"
-                    class="btn btn-sm <?= $currentPage === "users.php" ? "btn-primary" : "btn-light border" ?>"
+                    href="<?php echo $adminPath; ?>pages/users/users.php"
+                    class="btn btn-sm <?php echo $currentPage === "users.php" ? "btn-primary" : "btn-light border"; ?>"
                 >
                     Customers
                 </a>
 
 
                 <a
-                    href="<?= $adminPath ?>pages/bookings/bookings.php"
-                    class="btn btn-sm <?= $currentPage === "bookings.php" ? "btn-primary" : "btn-light border" ?>"
+                    href="<?php echo $adminPath; ?>pages/bookings/bookings.php"
+                    class="btn btn-sm <?php echo $currentPage === "bookings.php" ? "btn-primary" : "btn-light border"; ?>"
                 >
                     Bookings
-                </a>
-
-
-                <a
-                    href="<?= $adminPath ?>pages/reviews/reviews.php"
-                    class="btn btn-sm <?= $currentPage === "reviews.php" ? "btn-primary" : "btn-light border" ?>"
-                >
-                    Reviews
                 </a>
 
             </div>
 
 
             <a
-                href="<?= $assetPath ?>auth/logout.php"
+                href="<?php echo $assetPath; ?>auth/logout.php"
                 class="btn btn-sm btn-outline-danger w-100"
             >
 
@@ -338,13 +332,14 @@ function isActivePage($pageName, $currentPage)
         </div>
 
 
-        <!-- Main Content -->
+        <!-- MAIN CONTENT -->
 
         <div class="col-md-9 col-lg-10">
 
-            <?= $pageContent ?? "" ?>
+            <?php echo $pageContent ?? ""; ?>
 
         </div>
+
 
     </div>
 
@@ -355,7 +350,7 @@ function isActivePage($pageName, $currentPage)
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
 ></script>
 
+
 </body>
 
 </html>
-```

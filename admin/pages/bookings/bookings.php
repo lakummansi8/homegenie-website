@@ -69,6 +69,9 @@ ob_start();
                     </thead>
                     <tbody>
 
+                     <?php $srno = 1;?>
+
+
                         <?php while($row = mysqli_fetch_array($res)) { ?>
 
                             <?php
@@ -89,7 +92,7 @@ ob_start();
                             ?>
 
                             <tr>
-                                <td>#<?php print $row['booking_id']; ?></td>
+                                <td><?php print $srno; ?></td>
 
                                 <td>
                                     <strong>
@@ -146,6 +149,7 @@ ob_start();
                                     <a href="delete-booking.php?id=<?php print $row['booking_id']; ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?');">Delete</a>
                                 </td>
                             </tr>
+                             <?php $srno++; ?>
 
                         <?php } ?>
 

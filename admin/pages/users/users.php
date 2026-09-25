@@ -69,13 +69,14 @@ ob_start();
 
                     <tbody>
 
+                     <?php $srno = 1;?>
                         <?php while($user = mysqli_fetch_array($result)) { ?>
+
+                        
 
                             <tr>
 
-                                <td>
-                                    #<?php echo $user['user_id']; ?>
-                                </td>
+                                <td><?php print $srno; ?></td>
 
                                 <td>
                                     <strong>
@@ -143,6 +144,7 @@ ob_start();
                                 </td>
 
                             </tr>
+                              <?php $srno++; ?>
 
                         <?php } ?>
 
@@ -151,6 +153,7 @@ ob_start();
                 </table>
 
             </div>
+           
 
         <?php } ?>
 

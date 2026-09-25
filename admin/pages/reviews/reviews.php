@@ -1,4 +1,3 @@
-```php
 <?php
 
 $pageTitle = "Reviews";
@@ -77,13 +76,13 @@ ob_start();
 
                         <tbody>
 
+                             <?php $srno = 1;?>
+
                             <?php while ($review = $result->fetch_assoc()) { ?>
 
                                 <tr>
 
-                                    <td>
-                                        <?php echo $review["review_id"]; ?>
-                                    </td>
+                                    <td><?php print $srno; ?></td>
 
                                     <td>
                                         <?php echo htmlspecialchars($review["customer_name"] ?? "Unknown"); ?>
@@ -135,6 +134,7 @@ ob_start();
                                     </td>
 
                                 </tr>
+                                 <?php $srno++; ?>
 
                             <?php } ?>
 
@@ -164,4 +164,3 @@ $pageContent = ob_get_clean();
 
 require_once "../../layout/admin-layout.php";
 ?>
-```
