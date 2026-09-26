@@ -2,7 +2,8 @@
 
 session_start();
 
-if (!isset($_SESSION["user_id"])) {
+if (!isset($_SESSION["user_id"]))
+{
     header("Location: ../auth/login.php");
     exit;
 }
@@ -12,218 +13,308 @@ require_once "../config/db.php";
 $userId = $_SESSION["user_id"];
 
 
-$stmt = $conn->prepare(
-    "SELECT full_name, email, phone, address, city, account_status
-     FROM users
-     WHERE user_id = ?"
-);
+/* Get Customer */
 
-$stmt->bind_param("i", $userId);
-$stmt->execute();
+$q = "select * from users where user_id = $userId";
+$res = mysqli_query($conn, $q);
 
-$user = $stmt->get_result()->fetch_assoc();
+$user = mysqli_fetch_array($res);
 
 $userName = $user["full_name"];
 
 
-$stmt = $conn->prepare(
-    "SELECT COUNT(*) AS total
-     FROM bookings
-     WHERE user_id = ?"
-);
+/* Total Bookings */
 
-$stmt->bind_param("i", $userId);
-$stmt->execute();
+$q = "select * from bookings where user_id = $userId";
+$res = mysqli_query($conn, $q);
 
-$totalBookings = $stmt->get_result()->fetch_assoc()["total"];
+$totalBookings = mysqli_num_rows($res);
 
 
-$stmt = $conn->prepare(
-    "SELECT COUNT(*) AS total
-     FROM bookings
-     WHERE user_id = ? AND booking_status = 'Pending'"
-);
+/* Pending Bookings */
 
-$stmt->bind_param("i", $userId);
-$stmt->execute();
+$q = "select * from bookings
+      where user_id = $userId
+      and booking_status = 'Pending'";
 
-$pendingBookings = $stmt->get_result()->fetch_assoc()["total"];
+$res = mysqli_query($conn, $q);
 
-
-$stmt = $conn->prepare(
-    "SELECT COUNT(*) AS total
-     FROM bookings
-     WHERE user_id = ? AND booking_status = 'Completed'"
-);
-
-$stmt->bind_param("i", $userId);
-$stmt->execute();
-
-$completedBookings = $stmt->get_result()->fetch_assoc()["total"];
+$pendingBookings = mysqli_num_rows($res);
 
 
-$stmt = $conn->prepare(
-    "SELECT COUNT(*) AS total
-     FROM bookings
-     WHERE user_id = ? AND booking_status = 'Cancelled'"
-);
+/* Completed Bookings */
 
-$stmt->bind_param("i", $userId);
-$stmt->execute();
+$q = "select * from bookings
+      where user_id = $userId
+      and booking_status = 'Completed'";
 
-$cancelledBookings = $stmt->get_result()->fetch_assoc()["total"];
+$res = mysqli_query($conn, $q);
+
+$completedBookings = mysqli_num_rows($res);
+
+
+/* Cancelled Bookings */
+
+$q = "select * from bookings
+      where user_id = $userId
+      and booking_status = 'Cancelled'";
+
+$res = mysqli_query($conn, $q);
+
+$cancelledBookings = mysqli_num_rows($res);
 
 
 $pageTitle = "Customer Dashboard";
 
-require_once "layout/customer-layout.php";
+$pageCss = "dashboard.css";
+
+
+ob_start();
 
 ?>
 
 
-<div class="welcome">
-
-    <h1>
-        Welcome, <?php echo htmlspecialchars($userName); ?>
-    </h1>
-
-    <p>
-        Manage your services, bookings and profile from here.
-    </p>
-
-</div>
+<div class="customer-dashboard">
 
 
-<div class="stats">
+    <!-- Welcome -->
 
-    <div class="stat-card">
+    <div class="dashboard-heading">
 
-        <p>Total Bookings</p>
+        <h1>
+            Welcome, <?php echo htmlspecialchars($userName); ?>
+        </h1>
 
-        <strong>
-            <?php echo $totalBookings; ?>
-        </strong>
+        <p>
+            Manage your services, bookings and profile from here.
+        </p>
 
     </div>
 
 
-    <div class="stat-card">
+    <!-- Booking Summary -->
 
-        <p>Pending Bookings</p>
+    <div class="dashboard-card">
 
-        <strong>
-            <?php echo $pendingBookings; ?>
-        </strong>
+        <div class="dashboard-card-header">
 
-    </div>
-
-
-    <div class="stat-card">
-
-        <p>Completed Bookings</p>
-
-        <strong>
-            <?php echo $completedBookings; ?>
-        </strong>
-
-    </div>
-
-
-    <div class="stat-card">
-
-        <p>Cancelled Bookings</p>
-
-        <strong>
-            <?php echo $cancelledBookings; ?>
-        </strong>
-
-    </div>
-
-</div>
-
-
-<div class="information">
-
-    <h2>My Information</h2>
-
-    <div class="information-grid">
-
-        <div>
-
-            <span>Full Name</span>
-
-            <p>
-                <?php echo htmlspecialchars($user["full_name"]); ?>
-            </p>
+            <h2>
+                Booking Summary
+            </h2>
 
         </div>
 
 
-        <div>
-
-            <span>Phone</span>
-
-            <p>
-                <?php echo htmlspecialchars($user["phone"]); ?>
-            </p>
-
-        </div>
+        <div class="booking-summary">
 
 
-        <div>
+            <div class="summary-box">
 
-            <span>Account Status</span>
+                <p>
+                    Total Bookings
+                </p>
 
-            <p class="active-status">
-                <?php echo htmlspecialchars($user["account_status"]); ?>
-            </p>
+                <h3>
+                    <?php echo $totalBookings; ?>
+                </h3>
 
-        </div>
-
-
-        <div>
-
-            <span>Email</span>
-
-            <p>
-                <?php echo htmlspecialchars($user["email"]); ?>
-            </p>
-
-        </div>
+            </div>
 
 
-        <div>
+            <div class="summary-box">
 
-            <span>City</span>
+                <p>
+                    Pending Bookings
+                </p>
 
-            <p>
-                <?php echo htmlspecialchars($user["city"]); ?>
-            </p>
+                <h3>
+                    <?php echo $pendingBookings; ?>
+                </h3>
 
-        </div>
+            </div>
 
 
-        <div>
+            <div class="summary-box">
 
-            <span>Address</span>
+                <p>
+                    Completed Bookings
+                </p>
 
-            <p>
-                <?php echo htmlspecialchars($user["address"]); ?>
-            </p>
+                <h3>
+                    <?php echo $completedBookings; ?>
+                </h3>
+
+            </div>
+
+
+            <div class="summary-box">
+
+                <p>
+                    Cancelled Bookings
+                </p>
+
+                <h3>
+                    <?php echo $cancelledBookings; ?>
+                </h3>
+
+            </div>
+
 
         </div>
 
     </div>
 
-</div>
+
+    <!-- My Information -->
+
+    <div class="dashboard-card">
+
+        <div class="dashboard-card-header">
+
+            <h2>
+                My Information
+            </h2>
+
+
+            <a
+                href="profile.php"
+                class="edit-button"
+            >
+                Edit Profile
+            </a>
+
+        </div>
+
+
+        <div class="information">
+
+
+            <div class="information-row">
+
+
+                <div class="information-item">
+
+                    <label>
+                        Full Name
+                    </label>
+
+                    <p>
+                        <?php
+                        echo htmlspecialchars(
+                            $user["full_name"]
+                        );
+                        ?>
+                    </p>
+
+                </div>
+
+
+                <div class="information-item">
+
+                    <label>
+                        Email
+                    </label>
+
+                    <p>
+                        <?php
+                        echo htmlspecialchars(
+                            $user["email"]
+                        );
+                        ?>
+                    </p>
+
+                </div>
+
+
+                <div class="information-item">
+
+                    <label>
+                        Phone
+                    </label>
+
+                    <p>
+                        <?php
+                        echo htmlspecialchars(
+                            $user["phone"]
+                        );
+                        ?>
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="information-row">
+
+
+                <div class="information-item">
+
+                    <label>
+                        City
+                    </label>
+
+                    <p>
+                        <?php
+                        echo htmlspecialchars(
+                            $user["city"]
+                        );
+                        ?>
+                    </p>
+
+                </div>
+
+
+                <div class="information-item">
+
+                    <label>
+                        Account Status
+                    </label>
+
+                    <p class="status">
+                        <?php
+                        echo htmlspecialchars(
+                            $user["account_status"]
+                        );
+                        ?>
+                    </p>
+
+                </div>
+
+
+                <div class="information-item">
+
+                    <label>
+                        Address
+                    </label>
+
+                    <p>
+                        <?php
+                        echo htmlspecialchars(
+                            $user["address"]
+                        );
+                        ?>
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+    </div>
 
 
 </div>
 
-</main>
 
-</div>
+<?php
 
-</body>
+$pageContent = ob_get_clean();
 
-</html>
+require_once "layout/customer-layout.php";
+
+?>

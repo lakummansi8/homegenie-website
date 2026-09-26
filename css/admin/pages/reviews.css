@@ -1,0 +1,290 @@
+/* =========================================
+   REVIEWS PAGE
+========================================= */
+
+.reviews-page {
+    width: 100%;
+}
+
+/* PAGE HEADER */
+
+.reviews-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.reviews-heading {
+    flex: 1;
+}
+
+.reviews-eyebrow {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #0F766E;
+}
+
+.reviews-heading h2 {
+    margin: 0 0 5px;
+    font-size: 26px;
+    font-weight: 600;
+    color: #212529;
+}
+
+.reviews-heading p {
+    margin: 0;
+    font-size: 13px;
+    color: #6C757D;
+}
+
+
+/* CARD */
+
+.reviews-card {
+    margin-top: 24px;
+    background: #ffffff;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+}
+
+
+/* CARD HEADER */
+
+.reviews-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: #212529;
+    color: #ffffff;
+    border-radius: 8px 8px 0 0;
+}
+
+.reviews-card-eyebrow {
+    display: block;
+    margin-bottom: 2px;
+    font-size: 11px;
+    color: #ADB5BD;
+    font-weight: 500;
+}
+
+.reviews-card-header h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+
+/* REVIEW COUNT */
+
+.reviews-count {
+    padding: 4px 9px;
+    background: #ffffff;
+    color: #212529;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+
+/* TABLE */
+
+.reviews-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.reviews-table {
+    width: 100%;
+    min-width: 950px;
+    border-collapse: collapse;
+    margin: 0;
+}
+
+.reviews-table th {
+    padding: 12px 14px;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 600;
+    color: #212529;
+    background: #F8F9FA;
+    border-bottom: 1px solid #DEE2E6;
+    white-space: nowrap;
+}
+
+.reviews-table td {
+    padding: 12px 14px;
+    vertical-align: middle;
+    font-size: 13px;
+    color: #343A40;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.reviews-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.reviews-table tbody tr:hover {
+    background: #FAFAFA;
+}
+
+
+/* COLUMN WIDTHS */
+
+.reviews-table th:nth-child(1) {
+    width: 60px;
+}
+
+.reviews-table th:nth-child(2) {
+    width: 180px;
+}
+
+.reviews-table th:nth-child(3) {
+    width: 180px;
+}
+
+.reviews-table th:nth-child(4) {
+    width: 160px;
+}
+
+.reviews-table th:nth-child(5) {
+    width: 130px;
+}
+
+.reviews-table th:nth-child(6) {
+    width: 300px;
+}
+
+.reviews-table th:nth-child(7) {
+    width: 120px;
+}
+
+
+/* REVIEW ID */
+
+.review-id {
+    display: inline-block;
+    min-width: 28px;
+    padding: 5px 7px;
+    text-align: center;
+    color: #495057;
+    background: #F3F4F6;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+/* CUSTOMER */
+
+.review-customer {
+    display: block;
+    color: #212529;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* PROVIDER */
+
+.review-provider {
+    display: block;
+    color: #343A40;
+    font-size: 13px;
+}
+
+
+/* SERVICE */
+
+.review-service {
+    display: block;
+    color: #343A40;
+    font-size: 13px;
+}
+
+
+/* RATING */
+
+.review-rating {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    white-space: nowrap;
+}
+
+.review-stars {
+    color: #F59E0B;
+    font-size: 16px;
+    letter-spacing: 1px;
+}
+
+.review-rating-number {
+    color: #6C757D;
+    font-size: 12px;
+}
+
+
+/* REVIEW COMMENT */
+
+.review-comment {
+    max-width: 300px;
+    color: #495057;
+    font-size: 13px;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+
+/* DATE */
+
+.review-date {
+    display: inline-block;
+    color: #6C757D;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+
+/* EMPTY */
+
+.reviews-empty {
+    padding: 35px 20px;
+}
+
+.reviews-empty h4 {
+    margin: 0 0 7px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #212529;
+}
+
+.reviews-empty p {
+    margin: 0;
+    font-size: 13px;
+    color: #6C757D;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 768px) {
+
+    .reviews-heading h2 {
+        font-size: 24px;
+    }
+
+    .reviews-card-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .reviews-table {
+        min-width: 950px;
+    }
+
+}

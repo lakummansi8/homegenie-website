@@ -1,9 +1,9 @@
+php
 <?php
 
 require_once __DIR__ . "/../../auth/auth-check.php";
 
 $adminName = $_SESSION["admin_name"] ?? "Admin";
-$adminEmail = $_SESSION["admin_email"] ?? "";
 
 $currentPage = basename($_SERVER["PHP_SELF"]);
 
@@ -12,12 +12,6 @@ $assetPath = $assetPath ?? "";
 
 $pageTitle = $pageTitle ?? "Admin Panel";
 $pageCss = $pageCss ?? "";
-
-
-function isActivePage($pageName, $currentPage)
-{
-    return $pageName === $currentPage ? "active" : "";
-}
 
 ?>
 
@@ -28,211 +22,220 @@ function isActivePage($pageName, $currentPage)
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
         <?php echo htmlspecialchars($pageTitle); ?> - HomeGenie
     </title>
 
-
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
-
+    <!-- Font Awesome -->
     <link
         rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     >
 
-
+    <!-- Admin Layout CSS -->
     <link
         rel="stylesheet"
         href="<?php echo $assetPath; ?>css/admin/layout.css"
     >
 
-
-    <?php if ($pageCss != ""): ?>
+    <?php if ($pageCss != "") { ?>
 
         <link
             rel="stylesheet"
-            href="<?php echo $assetPath; ?>css/admin/pages/<?php echo htmlspecialchars($pageCss); ?>"
+            href="<?php echo $assetPath; ?>css/admin/pages/<?php echo $pageCss; ?>"
         >
 
-    <?php endif; ?>
+    <?php } ?>
 
 </head>
 
-
 <body>
 
+    <!-- TOP NAVBAR -->
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
+    <nav class="top-navbar">
 
-    <div class="container-fluid px-4">
+        <div class="navbar-left">
 
-        <a
-            class="navbar-brand text-white fw-bold d-flex align-items-center"
-            href="<?php echo $adminPath; ?>dashboard.php"
-        >
+            <a
+                href="<?php echo $adminPath; ?>dashboard.php"
+                class="navbar-brand"
+            >
 
-            <i class="bi bi-house-gear-fill text-primary me-2 fs-4"></i>
+                <i class="fa-solid fa-house-gear"></i>
 
-            HomeGenie Admin
+                <span>HomeGenie Admin</span>
 
-        </a>
+            </a>
 
+        </div>
 
-        <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#topNavBar"
-        >
+        <div class="navbar-right">
 
-            <span class="navbar-toggler-icon"></span>
+            <div class="admin-info">
 
-        </button>
+                <i class="fa-solid fa-circle-user"></i>
 
-
-        <div
-            class="collapse navbar-collapse justify-content-end"
-            id="topNavBar"
-        >
-
-            <div class="d-flex align-items-center text-white">
-
-                <div class="d-flex align-items-center me-3">
-
-                    <i class="bi bi-person-circle fs-5 me-2"></i>
-
-                    <span>
-                        Hello,
-                        <strong>
-                            <?php echo htmlspecialchars($adminName); ?>
-                        </strong>
-                    </span>
-
-                </div>
+                <span>
+                    Hello,
+                    <strong>
+                        <?php echo htmlspecialchars($adminName); ?>
+                    </strong>
+                </span>
 
             </div>
 
         </div>
 
-    </div>
+        <button
+            type="button"
+            class="mobile-menu-button"
+            onclick="showMobileMenu()"
+        >
 
-</nav>
+            <i class="fa-solid fa-bars"></i>
+
+        </button>
+
+    </nav>
 
 
-<div class="container-fluid">
+    <!-- PAGE AREA -->
 
-    <div class="row">
+    <div class="admin-container">
 
 
         <!-- SIDEBAR -->
 
-        <div class="col-md-3 col-lg-2 bg-white sidebar shadow-sm d-none d-md-flex flex-column px-0 py-3">
+        <aside class="sidebar">
 
-            <h6 class="sidebar-heading px-3 mt-2 mb-2 text-muted text-uppercase fw-bold">
+            <div class="sidebar-title">
                 Main Navigation
-            </h6>
+            </div>
 
 
-            <ul class="nav flex-column mb-auto w-100">
+            <ul class="sidebar-menu">
 
-                <li class="nav-item">
+
+                <!-- Dashboard -->
+
+                <li>
 
                     <a
                         href="<?php echo $adminPath; ?>dashboard.php"
-                        class="nav-link <?php echo isActivePage("dashboard.php", $currentPage); ?>"
+                        class="sidebar-link <?php echo ($currentPage == "dashboard.php") ? "active" : ""; ?>"
                     >
 
-                        <i class="bi bi-speedometer2"></i>
+                        <i class="fa-solid fa-gauge"></i>
 
-                        Dashboard
+                        <span>Dashboard</span>
 
                     </a>
 
                 </li>
 
 
-                <li class="nav-item">
+                <!-- Categories -->
+
+                <li>
 
                     <a
                         href="<?php echo $adminPath; ?>pages/categories/categories.php"
-                        class="nav-link <?php echo isActivePage("categories.php", $currentPage); ?>"
+                        class="sidebar-link <?php echo ($currentPage == "categories.php") ? "active" : ""; ?>"
                     >
 
-                        <i class="bi bi-tags"></i>
+                        <i class="fa-solid fa-tags"></i>
 
-                        Categories
+                        <span>Categories</span>
 
                     </a>
 
                 </li>
 
 
-                <li class="nav-item">
+                <!-- Services -->
+
+                <li>
 
                     <a
                         href="<?php echo $adminPath; ?>pages/services/services.php"
-                        class="nav-link <?php echo isActivePage("services.php", $currentPage); ?>"
+                        class="sidebar-link <?php echo ($currentPage == "services.php") ? "active" : ""; ?>"
                     >
 
-                        <i class="bi bi-tools"></i>
+                        <i class="fa-solid fa-screwdriver-wrench"></i>
 
-                        Services
+                        <span>Services</span>
 
                     </a>
 
                 </li>
 
 
-                <li class="nav-item">
+                <!-- Providers -->
+
+                <li>
 
                     <a
                         href="<?php echo $adminPath; ?>pages/service-providers/service-providers.php"
-                        class="nav-link <?php echo isActivePage("service-providers.php", $currentPage); ?>"
+                        class="sidebar-link <?php echo ($currentPage == "service-providers.php") ? "active" : ""; ?>"
                     >
 
-                        <i class="bi bi-person-badge"></i>
+                        <i class="fa-solid fa-user-tie"></i>
 
-                        Providers
+                        <span>Providers</span>
 
                     </a>
 
                 </li>
 
 
-                <li class="nav-item">
+                <!-- Customers -->
+
+                <li>
 
                     <a
                         href="<?php echo $adminPath; ?>pages/users/users.php"
-                        class="nav-link <?php echo isActivePage("users.php", $currentPage); ?>"
+                        class="sidebar-link <?php echo ($currentPage == "users.php") ? "active" : ""; ?>"
                     >
 
-                        <i class="bi bi-people"></i>
+                        <i class="fa-solid fa-users"></i>
 
-                        Customers
+                        <span>Customers</span>
 
                     </a>
 
                 </li>
 
 
-                <li class="nav-item">
+                <!-- Bookings -->
+
+                <li>
 
                     <a
                         href="<?php echo $adminPath; ?>pages/bookings/bookings.php"
-                        class="nav-link <?php echo isActivePage("bookings.php", $currentPage); ?>"
+                        class="sidebar-link <?php echo ($currentPage == "bookings.php") ? "active" : ""; ?>"
                     >
 
-                        <i class="bi bi-calendar-check"></i>
+                        <i class="fa-solid fa-calendar-check"></i>
 
-                        Bookings
+                        <span>Bookings</span>
+
+                    </a>
+
+                </li>
+
+                 <li>
+
+                    <a
+                        href="<?php echo $adminPath; ?>pages/reviews/reviews.php"
+                        class="sidebar-link <?php echo ($currentPage == "reviews.php") ? "active" : ""; ?>"
+                    >
+
+                       <i class="fa-solid fa-star"></i>
+
+                        <span>reviews</span>
 
                     </a>
 
@@ -241,36 +244,43 @@ function isActivePage($pageName, $currentPage)
             </ul>
 
 
-            <div class="mt-auto px-3">
+            <!-- LOGOUT -->
+
+            <div class="logout-area">
 
                 <a
                     href="<?php echo $assetPath; ?>auth/logout.php"
-                    class="nav-link w-100"
+                    class="logout-link"
                 >
 
-                    <i class="bi bi-box-arrow-right"></i>
+                    <i class="fa-solid fa-right-from-bracket"></i>
 
-                    Logout
+                    <span>Logout</span>
 
                 </a>
 
             </div>
 
-        </div>
+        </aside>
 
 
         <!-- MOBILE MENU -->
 
-        <div class="d-md-none bg-white">
+        <div
+            class="mobile-menu"
+            id="mobileMenu"
+        >
 
-            <h6>Menu</h6>
+            <div class="mobile-menu-title">
+                Menu
+            </div>
 
 
-            <div class="d-flex flex-wrap gap-2 mb-3">
+            <div class="mobile-menu-links">
 
                 <a
                     href="<?php echo $adminPath; ?>dashboard.php"
-                    class="btn btn-sm <?php echo $currentPage === "dashboard.php" ? "btn-primary" : "btn-light border"; ?>"
+                    class="<?php echo ($currentPage == "dashboard.php") ? "mobile-active" : ""; ?>"
                 >
                     Dashboard
                 </a>
@@ -278,7 +288,7 @@ function isActivePage($pageName, $currentPage)
 
                 <a
                     href="<?php echo $adminPath; ?>pages/categories/categories.php"
-                    class="btn btn-sm <?php echo $currentPage === "categories.php" ? "btn-primary" : "btn-light border"; ?>"
+                    class="<?php echo ($currentPage == "categories.php") ? "mobile-active" : ""; ?>"
                 >
                     Categories
                 </a>
@@ -286,7 +296,7 @@ function isActivePage($pageName, $currentPage)
 
                 <a
                     href="<?php echo $adminPath; ?>pages/services/services.php"
-                    class="btn btn-sm <?php echo $currentPage === "services.php" ? "btn-primary" : "btn-light border"; ?>"
+                    class="<?php echo ($currentPage == "services.php") ? "mobile-active" : ""; ?>"
                 >
                     Services
                 </a>
@@ -294,7 +304,7 @@ function isActivePage($pageName, $currentPage)
 
                 <a
                     href="<?php echo $adminPath; ?>pages/service-providers/service-providers.php"
-                    class="btn btn-sm <?php echo $currentPage === "service-providers.php" ? "btn-primary" : "btn-light border"; ?>"
+                    class="<?php echo ($currentPage == "service-providers.php") ? "mobile-active" : ""; ?>"
                 >
                     Providers
                 </a>
@@ -302,7 +312,7 @@ function isActivePage($pageName, $currentPage)
 
                 <a
                     href="<?php echo $adminPath; ?>pages/users/users.php"
-                    class="btn btn-sm <?php echo $currentPage === "users.php" ? "btn-primary" : "btn-light border"; ?>"
+                    class="<?php echo ($currentPage == "users.php") ? "mobile-active" : ""; ?>"
                 >
                     Customers
                 </a>
@@ -310,7 +320,7 @@ function isActivePage($pageName, $currentPage)
 
                 <a
                     href="<?php echo $adminPath; ?>pages/bookings/bookings.php"
-                    class="btn btn-sm <?php echo $currentPage === "bookings.php" ? "btn-primary" : "btn-light border"; ?>"
+                    class="<?php echo ($currentPage == "bookings.php") ? "mobile-active" : ""; ?>"
                 >
                     Bookings
                 </a>
@@ -320,10 +330,10 @@ function isActivePage($pageName, $currentPage)
 
             <a
                 href="<?php echo $assetPath; ?>auth/logout.php"
-                class="btn btn-sm btn-outline-danger w-100"
+                class="mobile-logout"
             >
 
-                <i class="bi bi-box-arrow-right me-1"></i>
+                <i class="fa-solid fa-right-from-bracket"></i>
 
                 Logout
 
@@ -334,22 +344,34 @@ function isActivePage($pageName, $currentPage)
 
         <!-- MAIN CONTENT -->
 
-        <div class="col-md-9 col-lg-10">
+        <main class="main-content">
 
             <?php echo $pageContent ?? ""; ?>
 
-        </div>
-
+        </main>
 
     </div>
 
-</div>
 
+    <script>
 
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-></script>
+        function showMobileMenu() {
 
+            var menu = document.getElementById("mobileMenu");
+
+            if (menu.style.display == "block") {
+
+                menu.style.display = "none";
+
+            } else {
+
+                menu.style.display = "block";
+
+            }
+
+        }
+
+    </script>
 
 </body>
 

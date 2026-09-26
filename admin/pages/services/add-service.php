@@ -1,10 +1,13 @@
 <?php
 
 $pageTitle = "Add Service";
+$pageCss = "services.css";
+
 $assetPath = "../../../";
 $adminPath = "../../";
 
 require_once "../../../config/db.php";
+
 
 $serviceName = "";
 $categoryId = "";
@@ -15,132 +18,243 @@ $serviceStatus = "Active";
 
 $error = "";
 
-/* Get Categories */
 
-$categories = mysqli_query($conn, "SELECT * FROM categories WHERE category_status = 'Active'");
+/*
+    Load providers for AJAX
+*/
+
+if (isset($_GET["category_id"])) {
+
+    $categoryId = $_GET["category_id"];
 
 
-/* Get Providers */
+    $q = "select * from service_providers
+          where category_id = $categoryId
+          and account_status = 'Active'
+          order by full_name";
 
-$providers = [];
 
-if(isset($_GET['category_id']))
-{
-    $categoryId = $_GET['category_id'];
+    $res = mysqli_query($conn, $q);
 
-    $sql = "SELECT * FROM service_providers
-            WHERE category_id = $categoryId
-            AND account_status = 'Active'
-            ORDER BY full_name";
 
-    $result = mysqli_query($conn, $sql);
+    $providers = [];
 
-    while($row = mysqli_fetch_array($result))
-    {
-        $providers[] = $row;
+
+    while ($provider = mysqli_fetch_array($res)) {
+
+        $providers[] = $provider;
+
     }
 
+
     header("Content-Type: application/json");
+
     echo json_encode($providers);
+
     exit;
+
 }
+
+
+/* Get Categories */
+
+$categories = mysqli_query(
+    $conn,
+    "select * from categories
+     where category_status = 'Active'"
+);
 
 
 /* Add Service */
 
-if(isset($_POST['add']))
-{
-    $serviceName = $_POST['service_name'];
-    $categoryId = $_POST['category_id'];
-    $providerId = $_POST['provider_id'];
-    $description = $_POST['description'];
-    $price = $_POST['price'];
-    $serviceStatus = $_POST['service_status'];
+if (isset($_POST["add"])) {
 
-    if($serviceName == "")
-    {
+
+    $serviceName = $_POST["service_name"];
+
+    $categoryId = $_POST["category_id"];
+
+    $providerId = $_POST["provider_id"];
+
+    $description = $_POST["description"];
+
+    $price = $_POST["price"];
+
+    $serviceStatus = $_POST["service_status"];
+
+
+    if ($serviceName == "") {
+
         $error = "Service name is required.";
+
     }
-    elseif($categoryId == "")
-    {
+    elseif ($categoryId == "") {
+
         $error = "Please select a category.";
+
     }
-    elseif($providerId == "")
-    {
+    elseif ($providerId == "") {
+
         $error = "Please select a provider.";
+
     }
-    elseif($description == "")
-    {
+    elseif ($description == "") {
+
         $error = "Description is required.";
+
     }
-    elseif($price == "")
-    {
+    elseif ($price == "") {
+
         $error = "Price is required.";
+
     }
-    else
-    {
-        $imageName = "";
+    elseif (
+        $serviceStatus != "Active" &&
+        $serviceStatus != "Inactive"
+    ) {
 
-        if(isset($_FILES['service_image']) && $_FILES['service_image']['name'] != "")
-        {
-            $fileName = $_FILES['service_image']['name'];
-            $fileTmp = $_FILES['service_image']['tmp_name'];
+        $error = "Invalid service status.";
 
-            $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    }
 
-            if($extension != "jpg" &&
-               $extension != "jpeg" &&
-               $extension != "png" &&
-               $extension != "webp")
-            {
-                $error = "Only JPG, JPEG, PNG and WEBP images are allowed.";
+
+    /* Image */
+
+    $imageName = "";
+
+
+    if ($error == "") {
+
+
+        if (
+            isset($_FILES["service_image"]) &&
+            $_FILES["service_image"]["name"] != ""
+        ) {
+
+
+            $fileName = $_FILES["service_image"]["name"];
+
+            $fileTmp = $_FILES["service_image"]["tmp_name"];
+
+            $fileSize = $_FILES["service_image"]["size"];
+
+
+            if ($fileSize > 2 * 1024 * 1024) {
+
+                $error = "Service image must be smaller than 2 MB.";
+
             }
-            else
-            {
-                $imageName = "service_" . time() . "." . $extension;
+            else {
 
-                $uploadPath = "../../../assets/services/" . $imageName;
 
-                if(!move_uploaded_file($fileTmp, $uploadPath))
-                {
-                    $error = "Image upload failed.";
+                $extension = strtolower(
+                    pathinfo($fileName, PATHINFO_EXTENSION)
+                );
+
+
+                if (
+                    $extension != "jpg" &&
+                    $extension != "jpeg" &&
+                    $extension != "png" &&
+                    $extension != "webp"
+                ) {
+
+                    $error =
+                        "Only JPG, JPEG, PNG and WEBP images are allowed.";
+
                 }
+                else {
+
+
+                    $imageName =
+                        "service_" . time() . "." . $extension;
+
+
+                    $uploadPath =
+                        "../../../assets/services/" . $imageName;
+
+
+                    if (!move_uploaded_file(
+                        $fileTmp,
+                        $uploadPath
+                    )) {
+
+                        $error = "Image upload failed.";
+
+                    }
+
+                }
+
             }
+
         }
+
     }
 
 
-    /* Insert Service */
+    /* Insert */
 
-    if($error == "")
-    {
-        $sql = "INSERT INTO services
-                (category_id, provider_id, service_name, description, price, service_image, service_status)
-                VALUES
-                ('$categoryId', '$providerId', '$serviceName', '$description', '$price', '$imageName', '$serviceStatus')";
+    if ($error == "") {
 
-        $result = mysqli_query($conn, $sql);
 
-        if($result)
-        {
-            header("Location: services.php?success=service_added");
+        $q = "insert into services
+        (
+            category_id,
+            provider_id,
+            service_name,
+            description,
+            price,
+            service_image,
+            service_status
+        )
+        values
+        (
+            '$categoryId',
+            '$providerId',
+            '$serviceName',
+            '$description',
+            '$price',
+            '$imageName',
+            '$serviceStatus'
+        )";
+
+
+        $res = mysqli_query($conn, $q);
+
+
+        if ($res) {
+
+            header(
+                "Location: services.php?success=service_added"
+            );
+
             exit;
+
         }
-        else
-        {
+        else {
+
             $error = "Service could not be added.";
+
         }
+
     }
+
 }
 
+
 ob_start();
+
 ?>
 
-<div class="row mb-4">
 
-    <div class="col-md-8">
+<div class="admin-page-header">
 
-        <h3>Add Service</h3>
+
+    <div class="header-title">
+
+        <h3>
+            Add Service
+        </h3>
 
         <p class="text-muted">
             Add a new service to your HomeGenie service list.
@@ -148,95 +262,122 @@ ob_start();
 
     </div>
 
-    <div class="col-md-4 text-md-end">
 
-        <a href="services.php" class="btn btn-secondary">
-            &larr; Back to Services
+    <div class="header-actions">
+
+        <a
+            href="services.php"
+            class="service-btn service-btn-secondary"
+        >
+            ← Back to Services
         </a>
 
     </div>
 
+
 </div>
 
 
-<?php if($error != "") { ?>
+<?php if ($error != "") { ?>
 
-    <div class="alert alert-danger">
+    <div class="service-alert service-alert-danger">
+
         <?php echo $error; ?>
+
     </div>
 
 <?php } ?>
 
 
-<div class="card">
+<div class="service-form-card">
 
-    <div class="card-header bg-dark text-white">
-        <strong>Service Details</strong>
+
+    <div class="service-form-header">
+
+        <strong>
+            Service Details
+        </strong>
+
     </div>
 
-    <div class="card-body">
 
-        <form method="POST" enctype="multipart/form-data">
+    <div class="service-form-body">
 
 
-            <div class="mb-3">
+        <form
+            method="POST"
+            action="add-service.php"
+            enctype="multipart/form-data"
+        >
 
-                <label class="form-label">
+
+            <div class="service-form-group">
+
+                <label>
                     Service Name *
                 </label>
 
-                <input type="text"
-                       class="form-control"
-                       name="service_name"
-                       value="<?php echo $serviceName; ?>"
-                       required>
+                <input
+                    type="text"
+                    name="service_name"
+                    value="<?php echo $serviceName; ?>"
+                    required
+                >
 
             </div>
 
 
-            <div class="row">
+            <div class="service-form-row">
 
 
-                <div class="col-md-6 mb-3">
+                <div class="service-form-group">
 
-                    <label class="form-label">
+                    <label>
                         Category *
                     </label>
 
-                    <select class="form-select"
-                            name="category_id"
-                            id="category"
-                            required>
+                    <select
+                        name="category_id"
+                        id="category"
+                        required
+                    >
 
                         <option value="">
                             Select Category
                         </option>
 
-                        <?php while($category = mysqli_fetch_array($categories)) { ?>
 
-                            <option value="<?php echo $category['category_id']; ?>">
+                        <?php while ($category = mysqli_fetch_array($categories)) { ?>
 
-                                <?php echo $category['category_name']; ?>
+
+                            <option
+                                value="<?php echo $category["category_id"]; ?>"
+                            >
+
+                                <?php echo $category["category_name"]; ?>
 
                             </option>
 
+
                         <?php } ?>
+
 
                     </select>
 
                 </div>
 
 
-                <div class="col-md-6 mb-3">
+                <div class="service-form-group">
 
-                    <label class="form-label">
+                    <label>
                         Provider *
                     </label>
 
-                    <select class="form-select"
-                            name="provider_id"
-                            id="provider"
-                            required>
+                    <select
+                        name="provider_id"
+                        id="provider"
+                        required
+                    >
 
                         <option value="">
                             Select Category First
@@ -246,51 +387,55 @@ ob_start();
 
                 </div>
 
+
             </div>
 
 
-            <div class="mb-3">
+            <div class="service-form-group">
 
-                <label class="form-label">
+                <label>
                     Description *
                 </label>
 
-                <textarea class="form-control"
-                          name="description"
-                          rows="5"
-                          required><?php echo $description; ?></textarea>
+                <textarea
+                    name="description"
+                    rows="5"
+                    required
+                ><?php echo $description; ?></textarea>
 
             </div>
 
 
-            <div class="row">
+            <div class="service-form-row">
 
 
-                <div class="col-md-6 mb-3">
+                <div class="service-form-group">
 
-                    <label class="form-label">
+                    <label>
                         Hourly Price (₹) *
                     </label>
 
-                    <input type="number"
-                           class="form-control"
-                           name="price"
-                           value="<?php echo $price; ?>"
-                           min="0"
-                           step="0.01"
-                           required>
+                    <input
+                        type="number"
+                        name="price"
+                        value="<?php echo $price; ?>"
+                        min="0"
+                        step="0.01"
+                        required
+                    >
 
                 </div>
 
 
-                <div class="col-md-6 mb-3">
+                <div class="service-form-group">
 
-                    <label class="form-label">
+                    <label>
                         Status *
                     </label>
 
-                    <select class="form-select"
-                            name="service_status">
+                    <select
+                        name="service_status"
+                    >
 
                         <option value="Active">
                             Active
@@ -304,54 +449,57 @@ ob_start();
 
                 </div>
 
+
             </div>
 
 
-            <div class="mb-3">
+            <div class="service-form-group">
 
-                <label class="form-label">
+                <label>
                     Service Image
                 </label>
 
-                <input type="file"
-                       class="form-control"
-                       name="service_image"
-                       accept=".jpg,.jpeg,.png,.webp">
+                <input
+                    type="file"
+                    name="service_image"
+                    accept=".jpg,.jpeg,.png,.webp"
+                >
 
-                <div class="form-text">
-                    JPG, PNG or WEBP.
-                </div>
+                <small>
+                    JPG, PNG or WEBP. Maximum size: 2 MB.
+                </small>
 
             </div>
 
 
-            <hr>
+            <div class="service-form-actions">
 
 
-            <div class="d-flex justify-content-between">
-
-                <a href="services.php"
-                   class="btn btn-secondary">
-
+                <a
+                    href="services.php"
+                    class="service-btn service-btn-secondary"
+                >
                     Cancel
-
                 </a>
 
 
-                <button type="submit"
-                        name="add"
-                        class="btn btn-primary">
-
+                <button
+                    type="submit"
+                    name="add"
+                    class="service-btn service-btn-primary"
+                >
                     Add Service
-
                 </button>
+
 
             </div>
 
 
         </form>
 
+
     </div>
+
 
 </div>
 
@@ -360,17 +508,26 @@ ob_start();
 
 document.getElementById("category").addEventListener("change", function()
 {
+
     var categoryId = this.value;
 
     var provider = document.getElementById("provider");
 
-    provider.innerHTML = "<option value=''>Loading...</option>";
 
-    if(categoryId == "")
+    provider.innerHTML =
+        "<option value=''>Loading...</option>";
+
+
+    if (categoryId == "")
     {
-        provider.innerHTML = "<option value=''>Select Category First</option>";
+
+        provider.innerHTML =
+            "<option value=''>Select Category First</option>";
+
         return;
+
     }
+
 
     fetch("add-service.php?category_id=" + categoryId)
 
@@ -381,15 +538,23 @@ document.getElementById("category").addEventListener("change", function()
 
     .then(function(data)
     {
-        provider.innerHTML = "<option value=''>Select Provider</option>";
 
-        for(var i = 0; i < data.length; i++)
+        provider.innerHTML =
+            "<option value=''>Select Provider</option>";
+
+
+        for (var i = 0; i < data.length; i++)
         {
+
             provider.innerHTML +=
-                "<option value='" + data[i].provider_id + "'>" +
+                "<option value='" +
+                data[i].provider_id +
+                "'>" +
                 data[i].full_name +
                 "</option>";
+
         }
+
     });
 
 });

@@ -2,96 +2,141 @@
 
 require_once "../../../config/db.php";
 
-$id = $_GET['id'];
 
-if($id == "")
-{
+$id = $_GET["id"] ?? "";
+
+
+if ($id == "") {
+
     header("Location: categories.php");
+
     exit;
+
 }
 
 
 /* Check category */
 
-$sql = "SELECT * FROM categories WHERE category_id = $id";
-$result = mysqli_query($conn, $sql);
+$q = "select * from categories where category_id = $id";
 
-if(mysqli_num_rows($result) == 0)
-{
-    header("Location: categories.php");
+$res = mysqli_query($conn, $q);
+
+
+if (mysqli_num_rows($res) == 0) {
+
+    header("Location: categories.php?error=category_not_found");
+
     exit;
+
 }
 
-$category = mysqli_fetch_array($result);
+
+$category = mysqli_fetch_array($res);
 
 
-/* Get services of this category */
+/* Get services */
 
-$sql = "SELECT service_id FROM services WHERE category_id = $id";
-$services = mysqli_query($conn, $sql);
+$q = "select service_id from services where category_id = $id";
+
+$services = mysqli_query($conn, $q);
 
 
-/* Delete related bookings and reviews */
+/* Delete bookings and reviews */
 
-while($service = mysqli_fetch_array($services))
-{
-    $serviceId = $service['service_id'];
+while ($service = mysqli_fetch_array($services)) {
 
-    $sql = "SELECT booking_id FROM bookings WHERE service_id = $serviceId";
-    $bookings = mysqli_query($conn, $sql);
 
-    while($booking = mysqli_fetch_array($bookings))
-    {
-        $bookingId = $booking['booking_id'];
+    $serviceId = $service["service_id"];
 
-        mysqli_query($conn, "DELETE FROM reviews WHERE booking_id = $bookingId");
+
+    $q = "select booking_id from bookings where service_id = $serviceId";
+
+    $bookings = mysqli_query($conn, $q);
+
+
+    while ($booking = mysqli_fetch_array($bookings)) {
+
+        $bookingId = $booking["booking_id"];
+
+
+        $q = "delete from reviews where booking_id = $bookingId";
+
+        mysqli_query($conn, $q);
+
     }
 
-    mysqli_query($conn, "DELETE FROM bookings WHERE service_id = $serviceId");
+
+    $q = "delete from bookings where service_id = $serviceId";
+
+    mysqli_query($conn, $q);
+
 }
 
 
 /* Delete services */
 
-$sql = "DELETE FROM services WHERE category_id = $id";
-$result = mysqli_query($conn, $sql);
+$q = "delete from services where category_id = $id";
 
-if(!$result)
-{
+$res = mysqli_query($conn, $q);
+
+
+if (!$res) {
+
     echo "Services could not be deleted.";
+
     echo "<br>";
+
     echo mysqli_error($conn);
+
     exit;
+
 }
 
 
 /* Delete category */
 
-$sql = "DELETE FROM categories WHERE category_id = $id";
-$result = mysqli_query($conn, $sql);
+$q = "delete from categories where category_id = $id";
 
-if($result)
-{
+$res = mysqli_query($conn, $q);
+
+
+if ($res) {
+
+
     /* Delete category image */
 
-    if($category['category_image'] != "")
-    {
-        $image = "../../../assets/categories/" . $category['category_image'];
+    if ($category["category_image"] != "") {
 
-        if(file_exists($image))
-        {
+
+        $image =
+            "../../../assets/categories/" .
+            $category["category_image"];
+
+
+        if (file_exists($image)) {
+
             unlink($image);
+
         }
+
     }
 
-    header("Location: categories.php?success=category_deleted");
+
+    header(
+        "Location: categories.php?success=category_deleted"
+    );
+
     exit;
+
 }
-else
-{
+else {
+
     echo "Category could not be deleted.";
+
     echo "<br>";
+
     echo mysqli_error($conn);
+
 }
 
 ?>

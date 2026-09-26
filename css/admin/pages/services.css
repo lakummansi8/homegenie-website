@@ -1,7 +1,137 @@
+/* =========================================
+   SERVICES PAGE
+========================================= */
+
+.services-card {
+    margin-top: 24px;
+
+    background: #ffffff;
+
+    border: 1px solid #E5E7EB;
+
+    border-radius: 8px;
+}
+
+
+/* =========================================
+   CARD HEADER
+========================================= */
+
+.services-card-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 14px 16px;
+
+    background: #212529;
+
+    color: #ffffff;
+
+    border-radius: 8px 8px 0 0;
+}
+
+.services-card-header strong {
+    font-size: 14px;
+}
+
+
+/* =========================================
+   SERVICE COUNT
+========================================= */
+
+.service-count {
+    padding: 4px 9px;
+
+    background: #ffffff;
+
+    color: #212529;
+
+    border-radius: 5px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+
+/* =========================================
+   CARD BODY
+========================================= */
+
+.services-card-body {
+    padding: 0;
+}
+
+
+/* =========================================
+   TABLE
+========================================= */
+
+.service-table-responsive {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+.services-table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    margin: 0;
+}
+
+.services-table th {
+    padding: 12px 14px;
+
+    text-align: left;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    color: #212529;
+
+    background: #F8F9FA;
+
+    border-bottom: 1px solid #DEE2E6;
+}
+
+.services-table td {
+    padding: 12px 14px;
+
+    vertical-align: middle;
+
+    font-size: 13px;
+
+    color: #343A40;
+
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.services-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.services-table tbody tr:hover {
+    background: #FAFAFA;
+}
+
+
+/* =========================================
+   SERVICE NAME
+========================================= */
+
 .service-name {
     display: flex;
+
     align-items: center;
+
     gap: 10px;
+
     min-width: 190px;
 }
 
@@ -11,57 +141,515 @@
 
 .service-name-content strong {
     display: block;
+
     color: #111827;
+
     font-size: 14px;
+
     font-weight: 600;
+
     line-height: 1.4;
 }
 
 
-/* SERVICE IMAGE */
+/* =========================================
+   SERVICE IMAGE
+========================================= */
 
 .service-image {
-    width: 55px !important;
-    height: 45px !important;
-    min-width: 55px !important;
-    max-width: 55px !important;
-    min-height: 45px !important;
-    max-height: 45px !important;
+    width: 55px;
 
-    flex: 0 0 55px !important;
+    height: 45px;
 
-    display: block !important;
+    min-width: 55px;
 
-    object-fit: cover !important;
+    max-width: 55px;
 
-    border-radius: 5px !important;
+    min-height: 45px;
 
-    border: 1px solid #e5e7eb !important;
+    max-height: 45px;
 
-    background: #f3f4f6;
+    flex: 0 0 55px;
+
+    display: block;
+
+    object-fit: cover;
+
+    border-radius: 5px;
+
+    border: 1px solid #E5E7EB;
+
+    background: #F3F4F6;
 }
 
 
+/* =========================================
+   SERVICE IMAGE PLACEHOLDER
+========================================= */
+
 .service-image-placeholder {
-    width: 55px !important;
-    height: 45px !important;
-    min-width: 55px !important;
-    max-width: 55px !important;
+    width: 55px;
+
+    height: 45px;
+
+    min-width: 55px;
+
+    max-width: 55px;
+
+    flex: 0 0 55px;
 
     display: flex;
 
     align-items: center;
+
     justify-content: center;
 
-    flex: 0 0 55px;
-
-    color: #6b7280;
+    color: #6B7280;
 
     font-size: 13px;
 
-    background: #f3f4f6;
+    background: #F3F4F6;
 
-    border: 1px solid #e5e7eb;
+    border: 1px solid #E5E7EB;
 
     border-radius: 5px;
+}
+
+
+/* =========================================
+   CATEGORY
+========================================= */
+
+.service-category {
+    min-width: 120px;
+}
+
+
+/* =========================================
+   PROVIDER
+========================================= */
+
+.service-provider {
+    min-width: 150px;
+}
+
+
+/* =========================================
+   DESCRIPTION
+========================================= */
+
+.service-description {
+    max-width: 300px;
+
+    min-width: 200px;
+
+    line-height: 1.5;
+
+    color: #4B5563;
+}
+
+
+/* =========================================
+   PRICE
+========================================= */
+
+.service-price {
+    display: inline-block;
+
+    color: #111827;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+.service-price small {
+    font-size: 11px;
+
+    color: #6B7280;
+
+    font-weight: 400;
+}
+
+
+/* =========================================
+   STATUS
+========================================= */
+
+.service-status {
+    display: inline-block;
+
+    padding: 5px 9px;
+
+    border-radius: 5px;
+
+    font-size: 11px;
+
+    font-weight: 600;
+}
+
+.service-status.active {
+    color: #166534;
+
+    background: #DCFCE7;
+}
+
+.service-status.inactive {
+    color: #6B7280;
+
+    background: #F3F4F6;
+}
+
+
+/* =========================================
+   DATE
+========================================= */
+
+.service-date {
+    min-width: 100px;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================
+   ACTIONS
+========================================= */
+
+.service-actions {
+    display: flex;
+
+    gap: 5px;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+.service-btn {
+    display: inline-block;
+
+    padding: 8px 12px;
+
+    border-radius: 5px;
+
+    font-size: 13px;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    border: none;
+}
+
+.service-btn-primary {
+    color: #ffffff;
+
+    background: #0F766E;
+}
+
+.service-btn-primary:hover {
+    color: #ffffff;
+
+    background: #115E59;
+}
+
+.service-btn-secondary {
+    color: #212529;
+
+    background: #F8F9FA;
+
+    border: 1px solid #DEE2E6;
+}
+
+.service-btn-secondary:hover {
+    color: #212529;
+
+    background: #E9ECEF;
+}
+
+.service-btn-edit {
+    color: #0D6EFD;
+
+    background: #ffffff;
+
+    border: 1px solid #0D6EFD;
+}
+
+.service-btn-edit:hover {
+    color: #ffffff;
+
+    background: #0D6EFD;
+}
+
+.service-btn-delete {
+    color: #DC3545;
+
+    background: #ffffff;
+
+    border: 1px solid #DC3545;
+}
+
+.service-btn-delete:hover {
+    color: #ffffff;
+
+    background: #DC3545;
+}
+
+
+/* =========================================
+   ALERTS
+========================================= */
+
+.service-alert {
+    margin-top: 18px;
+
+    padding: 12px 15px;
+
+    border-radius: 6px;
+
+    font-size: 13px;
+}
+
+.service-alert-success {
+    color: #155724;
+
+    background: #D4EDDA;
+
+    border: 1px solid #C3E6CB;
+}
+
+.service-alert-danger {
+    color: #721C24;
+
+    background: #F8D7DA;
+
+    border: 1px solid #F5C6CB;
+}
+
+
+/* =========================================
+   NO SERVICES
+========================================= */
+
+.no-services {
+    padding: 30px 20px;
+}
+
+.no-services p {
+    margin: 0 0 15px;
+
+    font-size: 13px;
+
+    color: #6C757D;
+}
+
+
+/* =========================================
+   SERVICE FORM
+========================================= */
+
+.service-form-card {
+    margin-top: 24px;
+
+    background: #ffffff;
+
+    border: 1px solid #E5E7EB;
+
+    border-radius: 8px;
+}
+
+.service-form-header {
+    padding: 14px 16px;
+
+    background: #212529;
+
+    color: #ffffff;
+
+    border-radius: 8px 8px 0 0;
+}
+
+.service-form-header strong {
+    font-size: 14px;
+}
+
+.service-form-body {
+    padding: 22px;
+}
+
+
+/* =========================================
+   FORM GROUP
+========================================= */
+
+.service-form-group {
+    margin-bottom: 18px;
+
+    flex: 1;
+}
+
+.service-form-group label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    color: #212529;
+}
+
+.service-form-group input,
+.service-form-group select,
+.service-form-group textarea {
+    width: 100%;
+
+    padding: 9px 11px;
+
+    box-sizing: border-box;
+
+    font-size: 13px;
+
+    color: #212529;
+
+    background: #ffffff;
+
+    border: 1px solid #CED4DA;
+
+    border-radius: 5px;
+}
+
+.service-form-group input:focus,
+.service-form-group select:focus,
+.service-form-group textarea:focus {
+    outline: none;
+
+    border-color: #0F766E;
+}
+
+.service-form-group textarea {
+    resize: vertical;
+}
+
+.service-form-group small {
+    display: block;
+
+    margin-top: 6px;
+
+    font-size: 12px;
+
+    color: #6C757D;
+}
+
+
+/* =========================================
+   FORM ROW
+========================================= */
+
+.service-form-row {
+    display: flex;
+
+    gap: 20px;
+}
+
+
+/* =========================================
+   CURRENT SERVICE IMAGE
+========================================= */
+
+.current-service-image {
+    margin-top: 5px;
+}
+
+.current-service-image img {
+    width: 120px;
+
+    height: 90px;
+
+    object-fit: cover;
+
+    display: block;
+
+    border: 1px solid #DEE2E6;
+
+    border-radius: 6px;
+
+    background: #F8F9FA;
+}
+
+
+/* =========================================
+   FORM ACTIONS
+========================================= */
+
+.service-form-actions {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    padding-top: 5px;
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 768px) {
+
+    .services-card {
+        margin-top: 20px;
+    }
+
+    .services-table {
+        min-width: 1200px;
+    }
+
+    .service-form-body {
+        padding: 18px;
+    }
+
+    .service-form-row {
+        flex-direction: column;
+
+        gap: 0;
+    }
+
+}
+
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 500px) {
+
+    .services-card-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 8px;
+    }
+
+    .service-form-actions {
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+    .service-form-actions .service-btn {
+        text-align: center;
+    }
+
 }

@@ -3,53 +3,81 @@
 require_once "../../../config/db.php";
 
 
-$id = $_GET['id'];
+$id = $_GET["id"] ?? "";
 
-if($id == "")
-{
+
+if ($id == "") {
+
     header("Location: services.php?error=invalid_service");
+
     exit;
+
 }
 
 
+/* Check service */
+
 $q = "select * from services where service_id = $id";
-$res = mysqli_query($conn,$q);
+
+$res = mysqli_query($conn, $q);
 
 
-if(mysqli_num_rows($res) == 0)
-{
+if (mysqli_num_rows($res) == 0) {
+
     header("Location: services.php?error=service_not_found");
+
     exit;
+
 }
 
 
 $service = mysqli_fetch_array($res);
 
 
+/* Delete service */
+
 $q = "delete from services where service_id = $id";
-$res = mysqli_query($conn,$q);
+
+$res = mysqli_query($conn, $q);
 
 
-if($res)
-{
-    if($service['service_image'] != "")
-    {
-        $imagePath = "../../../assets/services/" . $service['service_image'];
+if ($res) {
 
-        if(file_exists($imagePath))
-        {
+
+    /* Delete service image */
+
+    if ($service["service_image"] != "") {
+
+
+        $imagePath =
+            "../../../assets/services/" .
+            $service["service_image"];
+
+
+        if (file_exists($imagePath)) {
+
             unlink($imagePath);
+
         }
+
     }
 
 
-    header("Location: services.php?success=service_deleted");
+    header(
+        "Location: services.php?success=service_deleted"
+    );
+
     exit;
+
 }
-else
-{
-    header("Location: services.php?error=service_delete_failed");
+else {
+
+    header(
+        "Location: services.php?error=service_delete_failed"
+    );
+
     exit;
+
 }
 
 ?>

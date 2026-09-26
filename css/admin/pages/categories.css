@@ -4,6 +4,9 @@
 
 .categories-card {
     margin-top: 24px;
+    background: #ffffff;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
 }
 
 
@@ -15,7 +18,14 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 14px;
+
+    padding: 14px 16px;
+
+    background: #212529;
+
+    color: #ffffff;
+
+    border-radius: 8px 8px 0 0;
 }
 
 .categories-card-header strong {
@@ -28,13 +38,26 @@
 ========================================= */
 
 .category-count {
-    display: inline-block;
     padding: 4px 9px;
+
     background: #ffffff;
+
     color: #212529;
+
     border-radius: 5px;
+
     font-size: 12px;
+
     font-weight: 600;
+}
+
+
+/* =========================================
+   CARD BODY
+========================================= */
+
+.categories-card-body {
+    padding: 0;
 }
 
 
@@ -42,14 +65,54 @@
    TABLE
 ========================================= */
 
-.categories-table {
+.category-table-responsive {
     width: 100%;
-    margin-bottom: 0;
+
+    overflow-x: auto;
 }
 
-.categories-table th,
+.categories-table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    margin: 0;
+}
+
+.categories-table th {
+    padding: 12px 14px;
+
+    text-align: left;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    color: #212529;
+
+    background: #F8F9FA;
+
+    border-bottom: 1px solid #DEE2E6;
+}
+
 .categories-table td {
+    padding: 12px 14px;
+
     vertical-align: middle;
+
+    font-size: 13px;
+
+    color: #343A40;
+
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.categories-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.categories-table tbody tr:hover {
+    background: #FAFAFA;
 }
 
 
@@ -59,37 +122,43 @@
 
 .category-info {
     display: flex;
+
     align-items: center;
+
     gap: 10px;
-
 }
 
-.category-info img
-{
-    width: 50px;
+.category-info strong {
+    font-size: 14px;
+
+    font-weight: 600;
+
+    color: #212529;
 }
 
-/* SMALL IMAGE */
+
+/* =========================================
+   CATEGORY IMAGE
+========================================= */
 
 .category-table-image {
-    width: 55px !important;
-    height: 45px !important;
-    min-width: 55px !important;
-    max-width: 55px !important;
-    min-height: 45px !important;
-    max-height: 45px !important;
+    width: 55px;
 
-    display: block !important;
+    height: 45px;
 
-    object-fit: cover !important;
+    min-width: 55px;
 
-    border-radius: 5px !important;
+    max-width: 55px;
 
-    border: 1px solid #dee2e6 !important;
+    object-fit: cover;
 
-    background: #f8f9fa;
+    display: block;
 
-    flex-shrink: 0;
+    border-radius: 5px;
+
+    border: 1px solid #DEE2E6;
+
+    background: #F8F9FA;
 }
 
 
@@ -98,28 +167,27 @@
 ========================================= */
 
 .category-image-empty {
-    display: flex !important;
+    width: 55px;
+
+    height: 45px;
+
+    min-width: 55px;
+
+    display: flex;
+
     align-items: center;
+
     justify-content: center;
 
-    color: #6c757d;
+    color: #6C757D;
+
+    background: #F8F9FA;
+
+    border: 1px solid #DEE2E6;
+
+    border-radius: 5px;
 
     font-size: 13px;
-}
-
-
-/* =========================================
-   CATEGORY NAME
-========================================= */
-
-.category-info strong {
-    display: block;
-
-    font-size: 14px;
-
-    font-weight: 600;
-
-    color: #212529;
 }
 
 
@@ -132,7 +200,7 @@
 
     font-size: 13px;
 
-    color: #343a40;
+    color: #343A40;
 }
 
 
@@ -140,35 +208,291 @@
    STATUS
 ========================================= */
 
-.categories-table .badge {
-    font-size: 11px;
+.category-status {
+    display: inline-block;
 
-    padding: 5px 8px;
+    padding: 5px 9px;
 
     border-radius: 5px;
+
+    font-size: 11px;
+
+    font-weight: 600;
+}
+
+.category-status.active {
+    color: #166534;
+
+    background: #DCFCE7;
+}
+
+.category-status.inactive {
+    color: #6B7280;
+
+    background: #F3F4F6;
 }
 
 
 /* =========================================
-   ACTION BUTTONS
+   BUTTONS
 ========================================= */
 
-.categories-table td:last-child {
-    white-space: nowrap;
+.category-btn {
+    display: inline-block;
+
+    padding: 8px 12px;
+
+    border-radius: 5px;
+
+    font-size: 13px;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    border: none;
 }
 
-.categories-table td:last-child .btn {
+.category-btn-primary {
+    color: #ffffff;
+
+    background: #0F766E;
+}
+
+.category-btn-primary:hover {
+    color: #ffffff;
+
+    background: #115E59;
+}
+
+.category-btn-secondary {
+    color: #212529;
+
+    background: #F8F9FA;
+
+    border: 1px solid #DEE2E6;
+}
+
+.category-btn-secondary:hover {
+    color: #212529;
+
+    background: #E9ECEF;
+}
+
+.category-btn-edit {
+    color: #0D6EFD;
+
+    background: #ffffff;
+
+    border: 1px solid #0D6EFD;
+
     margin-right: 3px;
 }
 
+.category-btn-edit:hover {
+    color: #ffffff;
+
+    background: #0D6EFD;
+}
+
+.category-btn-delete {
+    color: #DC3545;
+
+    background: #ffffff;
+
+    border: 1px solid #DC3545;
+}
+
+.category-btn-delete:hover {
+    color: #ffffff;
+
+    background: #DC3545;
+}
+
 
 /* =========================================
-   TABLE RESPONSIVE
+   ALERTS
 ========================================= */
 
-.categories-card .table-responsive {
+.category-alert {
+    margin-top: 18px;
+
+    padding: 12px 15px;
+
+    border-radius: 6px;
+
+    font-size: 13px;
+}
+
+.category-alert-success {
+    color: #155724;
+
+    background: #D4EDDA;
+
+    border: 1px solid #C3E6CB;
+}
+
+.category-alert-danger {
+    color: #721C24;
+
+    background: #F8D7DA;
+
+    border: 1px solid #F5C6CB;
+}
+
+
+/* =========================================
+   NO CATEGORIES
+========================================= */
+
+.no-categories {
+    padding: 30px 20px;
+}
+
+.no-categories p {
+    margin: 0 0 15px;
+
+    font-size: 13px;
+
+    color: #6C757D;
+}
+
+
+/* =========================================
+   FORM CARD
+========================================= */
+
+.category-form-card {
+    margin-top: 24px;
+
+    background: #ffffff;
+
+    border: 1px solid #E5E7EB;
+
+    border-radius: 8px;
+}
+
+.category-form-header {
+    padding: 14px 16px;
+
+    background: #212529;
+
+    color: #ffffff;
+
+    border-radius: 8px 8px 0 0;
+}
+
+.category-form-header strong {
+    font-size: 14px;
+}
+
+.category-form-body {
+    padding: 22px;
+}
+
+
+/* =========================================
+   FORM
+========================================= */
+
+.category-form-group {
+    margin-bottom: 18px;
+}
+
+.category-form-group label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    color: #212529;
+}
+
+.category-form-group input[type="text"],
+.category-form-group input[type="file"],
+.category-form-group textarea,
+.category-form-group select {
     width: 100%;
-    overflow-x: auto;
+
+    padding: 9px 11px;
+
+    font-size: 13px;
+
+    color: #212529;
+
+    background: #ffffff;
+
+    border: 1px solid #CED4DA;
+
+    border-radius: 5px;
+
+    box-sizing: border-box;
+}
+
+.category-form-group input[type="text"]:focus,
+.category-form-group input[type="file"]:focus,
+.category-form-group textarea:focus,
+.category-form-group select:focus {
+    outline: none;
+
+    border-color: #0F766E;
+}
+
+.category-form-group textarea {
+    resize: vertical;
+}
+
+.category-form-group small {
+    display: block;
+
+    margin-top: 6px;
+
+    font-size: 12px;
+
+    color: #6C757D;
+}
+
+
+/* =========================================
+   CURRENT IMAGE
+========================================= */
+
+.current-category-image {
+    margin-top: 5px;
+}
+
+.current-category-image img {
+    width: 120px;
+
+    height: 90px;
+
+    object-fit: cover;
+
+    display: block;
+
+    border: 1px solid #DEE2E6;
+
+    border-radius: 6px;
+
+    background: #F8F9FA;
+}
+
+
+/* =========================================
+   FORM ACTIONS
+========================================= */
+
+.category-form-actions {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding-top: 5px;
 }
 
 
@@ -186,13 +510,43 @@
         min-width: 850px;
     }
 
-    .category-table-image {
-        width: 50px !important;
-        height: 40px !important;
-        min-width: 50px !important;
-        max-width: 50px !important;
-        min-height: 40px !important;
-        max-height: 40px !important;    
+    .category-form-body {
+        padding: 18px;
+    }
+
+    .category-form-actions {
+        flex-wrap: wrap;
+    }
+
+}
+
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 500px) {
+
+    .categories-card-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 8px;
+    }
+
+    .category-info {
+        gap: 7px;
+    }
+
+    .category-form-actions {
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+    .category-form-actions .category-btn {
+        text-align: center;
     }
 
 }

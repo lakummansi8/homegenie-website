@@ -9,20 +9,11 @@ $adminPath = "../../";
 require_once "../../../config/db.php";
 
 
-$q = "
-    SELECT
-        service_providers.*,
-        categories.category_name
-    FROM service_providers
-    LEFT JOIN categories
-        ON service_providers.category_id = categories.category_id
-    ORDER BY service_providers.provider_id DESC
-";
-
+$q = "select * from service_providers order by provider_id desc";
 $res = mysqli_query($conn, $q);
 
 if (!$res) {
-    die("Provider query failed: " . mysqli_error($conn));
+    die("Provider query failed.");
 }
 
 ob_start();
@@ -34,11 +25,13 @@ ob_start();
     <div class="providers-header">
 
         <div>
+
             <h1>Service Providers</h1>
 
             <p>
                 Manage the service providers available on HomeGenie.
             </p>
+
         </div>
 
         <a
@@ -60,11 +53,9 @@ ob_start();
             if ($_GET["success"] == "provider_added") {
                 echo "Provider added successfully.";
             }
-
             elseif ($_GET["success"] == "provider_updated") {
                 echo "Provider updated successfully.";
             }
-
             elseif ($_GET["success"] == "provider_deleted") {
                 echo "Provider deleted successfully.";
             }
@@ -85,15 +76,15 @@ ob_start();
             if ($_GET["error"] == "invalid_provider") {
                 echo "Invalid service provider.";
             }
-
             elseif ($_GET["error"] == "provider_not_found") {
                 echo "Service provider not found.";
             }
-
             elseif ($_GET["error"] == "provider_delete_failed") {
                 echo "Unable to delete service provider.";
             }
-
+            elseif ($_GET["error"] == "provider_has_services") {
+                echo "This provider cannot be deleted because services are assigned to this provider.";
+            }
             else {
                 echo "Something went wrong.";
             }
@@ -110,11 +101,13 @@ ob_start();
         <div class="providers-card-header">
 
             <div>
+
                 <h2>All Service Providers</h2>
 
                 <p>
                     View and manage all registered service providers.
                 </p>
+
             </div>
 
             <span class="provider-count">
@@ -149,7 +142,6 @@ ob_start();
 
         <?php else: ?>
 
-
             <div class="providers-table-container">
 
                 <table class="providers-table">
@@ -159,23 +151,14 @@ ob_start();
                         <tr>
 
                             <th>Sr.</th>
-
                             <th>Provider</th>
-
                             <th>Contact</th>
-
                             <th>Category</th>
-
                             <th>Experience</th>
-
                             <th>Location</th>
-
                             <th>Availability</th>
-
                             <th>Status</th>
-
                             <th>Created</th>
-
                             <th>Actions</th>
 
                         </tr>
@@ -189,7 +172,19 @@ ob_start();
 
                         $srno = 1;
 
-                        while ($provider = mysqli_fetch_assoc($res)):
+                        while ($provider = mysqli_fetch_array($res)):
+
+                            /*
+                             * Get category name separately.
+                             */
+
+                            $categoryId = $provider["category_id"];
+
+                            $q2 = "select * from categories where category_id = $categoryId";
+
+                            $categoryResult = mysqli_query($conn, $q2);
+
+                            $category = mysqli_fetch_array($categoryResult);
 
                         ?>
 
@@ -221,6 +216,7 @@ ob_start();
                                             <div class="provider-image placeholder">
 
                                                 <?php
+
                                                 echo strtoupper(
                                                     substr(
                                                         $provider["full_name"],
@@ -228,6 +224,7 @@ ob_start();
                                                         1
                                                     )
                                                 );
+
                                                 ?>
 
                                             </div>
@@ -238,19 +235,32 @@ ob_start();
                                         <div>
 
                                             <strong>
+
                                                 <?php
+
                                                 echo htmlspecialchars(
                                                     $provider["full_name"]
                                                 );
+
                                                 ?>
+
                                             </strong>
 
                                             <span>
+
                                                 <?php
-                                                echo !empty($provider["gender"])
-                                                    ? htmlspecialchars($provider["gender"])
-                                                    : "Provider";
+
+                                                if ($provider["gender"] != "") {
+                                                    echo htmlspecialchars(
+                                                        $provider["gender"]
+                                                    );
+                                                }
+                                                else {
+                                                    echo "Provider";
+                                                }
+
                                                 ?>
+
                                             </span>
 
                                         </div>
@@ -287,14 +297,18 @@ ob_start();
 
                                 <td>
 
-                                    <?php if (!empty($provider["category_name"])): ?>
+                                    <?php if (!empty($category["category_name"])): ?>
 
                                         <span class="category-badge">
+
                                             <?php
+
                                             echo htmlspecialchars(
-                                                $provider["category_name"]
+                                                $category["category_name"]
                                             );
+
                                             ?>
+
                                         </span>
 
                                     <?php else: ?>
@@ -310,15 +324,20 @@ ob_start();
 
                                 <td>
 
-                                    <?php if ($provider["experience"] !== ""): ?>
+                                    <?php if ($provider["experience"] != ""): ?>
 
                                         <span class="experience-text">
+
                                             <?php
+
                                             echo htmlspecialchars(
                                                 $provider["experience"]
                                             );
+
                                             ?>
+
                                             years
+
                                         </span>
 
                                     <?php else: ?>
@@ -337,19 +356,27 @@ ob_start();
                                     <div class="location-info">
 
                                         <strong>
+
                                             <?php
+
                                             echo htmlspecialchars(
                                                 $provider["area"]
                                             );
+
                                             ?>
+
                                         </strong>
 
                                         <span>
+
                                             <?php
+
                                             echo htmlspecialchars(
                                                 $provider["city"]
                                             );
+
                                             ?>
+
                                         </span>
 
                                     </div>
@@ -412,12 +439,14 @@ ob_start();
                                     <span class="created-date">
 
                                         <?php
+
                                         echo date(
                                             "d M Y",
                                             strtotime(
                                                 $provider["created_at"]
                                             )
                                         );
+
                                         ?>
 
                                     </span>

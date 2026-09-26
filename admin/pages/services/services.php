@@ -1,395 +1,484 @@
-<?php 
-$pageTitle = "Services";  
-$assetPath = "../../../";  
-$adminPath = "../../";  
+<?php
 
-require_once "../../../config/db.php";  
-  
-$q = "select * from services";  
-$res = mysqli_query($conn,$q);  
+$pageTitle = "Services";
+$pageCss = "services.css";
+
+$assetPath = "../../../";
+$adminPath = "../../";
+
+require_once "../../../config/db.php";
+
+
+$q = "select * from services";
+
+$res = mysqli_query($conn, $q);
 
 $totalServices = mysqli_num_rows($res);
-  
-ob_start();  
-?>  
-  
-<div class="admin-page-header">  
 
-    <div class="header-title">  
-        <h3>Services</h3>  
+
+ob_start();
+
+?>
+
+
+<div class="admin-page-header">
+
+    <div class="header-title">
+
+        <h3>
+            Services
+        </h3>
+
         <p class="text-muted">
             Manage the services available on HomeGenie.
-        </p>  
-    </div>  
+        </p>
 
-    <div class="header-actions">  
-        <a href="add-service.php" class="btn btn-primary">
+    </div>
+
+
+    <div class="header-actions">
+
+        <a
+            href="add-service.php"
+            class="service-btn service-btn-primary"
+        >
             + Add Service
-        </a>  
-    </div>  
+        </a>
 
-</div>  
-  
-<?php if (isset($_GET["success"])): ?>  
+    </div>
 
-    <div class="alert alert-success">  
+</div>
 
-        <?php   
-            if ($_GET["success"] === "service_added")
-            {
-                echo "Service added successfully.";
-            }
-            elseif ($_GET["success"] === "service_updated")
-            {
-                echo "Service updated successfully.";
-            }
-            elseif ($_GET["success"] === "service_deleted")
-            {
-                echo "Service deleted successfully.";
-            }
-        ?>  
 
-    </div>  
+<?php if (isset($_GET["success"])) { ?>
 
-<?php endif; ?>  
-  
-<?php if (isset($_GET["error"])): ?>  
-
-    <div class="alert alert-danger">  
+    <div class="service-alert service-alert-success">
 
         <?php
 
-            if ($_GET["error"] === "invalid_service")
-            {
-                echo "Invalid service.";
-            }
-            elseif ($_GET["error"] === "service_not_found")
-            {
-                echo "Service not found.";
-            }
-            else
-            {
-                echo "Something went wrong.";
-            }
+        if ($_GET["success"] == "service_added") {
 
-        ?>  
+            echo "Service added successfully.";
 
-    </div>  
+        }
+        elseif ($_GET["success"] == "service_updated") {
 
-<?php endif; ?>  
-  
-<div class="card services-card">  
+            echo "Service updated successfully.";
 
-    <div class="card-header bg-dark text-white services-card-header">  
+        }
+        elseif ($_GET["success"] == "service_deleted") {
 
-        <strong>All Services</strong>
+            echo "Service deleted successfully.";
+
+        }
+
+        ?>
+
+    </div>
+
+<?php } ?>
+
+
+<?php if (isset($_GET["error"])) { ?>
+
+    <div class="service-alert service-alert-danger">
+
+        <?php
+
+        if ($_GET["error"] == "invalid_service") {
+
+            echo "Invalid service.";
+
+        }
+        elseif ($_GET["error"] == "service_not_found") {
+
+            echo "Service not found.";
+
+        }
+        else {
+
+            echo "Something went wrong.";
+
+        }
+
+        ?>
+
+    </div>
+
+<?php } ?>
+
+
+<div class="services-card">
+
+
+    <div class="services-card-header">
+
+        <strong>
+            All Services
+        </strong>
 
         <span class="service-count">
-            <?php print $totalServices; ?> Services
+
+            <?php echo $totalServices; ?>
+
+            Services
+
         </span>
 
-    </div>  
+    </div>
 
 
-    <div class="card-body">  
-
-        <?php if ($totalServices == 0): ?>  
-
-            <p class="text-muted">
-                No services found. Create your first service to get started.
-            </p>  
-
-            <a href="add-service.php" class="btn btn-primary">
-                + Add Service
-            </a>  
-
-        <?php else: ?>  
-
-            <div class="table-responsive">  
-
-                <table class="table table-bordered table-striped services-table">  
-
-                    <thead class="table-light">  
-
-                        <tr>  
-
-                            <th>Sr. No.</th>  
-                            <th>Service</th>  
-                            <th>Category</th>  
-                            <th>Provider</th>  
-                            <th>Description</th>  
-                            <th>Price / Hour</th>  
-                            <th>Status</th>  
-                            <th>Created</th>  
-                            <th>Actions</th>  
-
-                        </tr>  
-
-                    </thead>  
+    <div class="services-card-body">
 
 
-                    <tbody>  
-
-                        <?php 
-                        $srno = 1;
-                        ?>
-
-                        <?php while($service = mysqli_fetch_array($res)) { ?>  
-
-                            <?php 
-
-                            $categoryId = $service['category_id']; 
-
-                            $q1 = "select * from categories where category_id = $categoryId"; 
-                            $res1 = mysqli_query($conn,$q1); 
-                            $category = mysqli_fetch_array($res1); 
+        <?php if ($totalServices == 0) { ?>
 
 
-                            $providerId = $service['provider_id']; 
+            <div class="no-services">
 
-                            $q2 = "select * from service_providers where provider_id = $providerId"; 
-                            $res2 = mysqli_query($conn,$q2); 
-                            $provider = mysqli_fetch_array($res2); 
+                <p>
+                    No services found. Create your first service to get started.
+                </p>
 
-                            ?> 
+                <a
+                    href="add-service.php"
+                    class="service-btn service-btn-primary"
+                >
+                    + Add Service
+                </a>
 
-
-                            <tr>  
-
-
-                                <!-- SERIAL NUMBER -->
-
-                                <td class="service-id">
-
-                                    <?php print $srno; ?>
-
-                                </td>
+            </div>
 
 
-                                <!-- SERVICE -->
-
-                                <td>
-
-                                    <div class="service-name">
-
-                                        <?php if ($service['service_image'] != "") { ?>
-
-                                            <img
-                                                src="../../../assets/services/<?php print $service['service_image']; ?>"
-                                                alt="<?php print $service['service_name']; ?>"
-                                                style="
-                                                    width: 55px !important;
-                                                    height: 45px !important;
-                                                    min-width: 55px !important;
-                                                    max-width: 55px !important;
-                                                    min-height: 45px !important;
-                                                    max-height: 45px !important;
-                                                    object-fit: cover !important;
-                                                    display: block !important;
-                                                    flex: 0 0 55px !important;
-                                                    border-radius: 5px !important;
-                                                    border: 1px solid #e5e7eb !important;
-                                                    background: #f3f4f6 !important;
-                                                "
-                                            >
-
-                                        <?php } else { ?>
-
-                                            <div
-                                                style="
-                                                    width: 55px;
-                                                    height: 45px;
-                                                    min-width: 55px;
-                                                    max-width: 55px;
-                                                    display: flex;
-                                                    align-items: center;
-                                                    justify-content: center;
-                                                    flex: 0 0 55px;
-                                                    border: 1px solid #e5e7eb;
-                                                    border-radius: 5px;
-                                                    color: #6b7280;
-                                                    background: #f3f4f6;
-                                                    font-size: 13px;
-                                                "
-                                            >
-                                                -
-                                            </div>
-
-                                        <?php } ?>
+        <?php } else { ?>
 
 
-                                        <div class="service-name-content">
+            <div class="service-table-responsive">
 
-                                            <strong>
-                                                <?php print $service['service_name']; ?>
-                                            </strong>
 
+                <table class="services-table">
+
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Sr. No.
+                            </th>
+
+                            <th>
+                                Service
+                            </th>
+
+                            <th>
+                                Category
+                            </th>
+
+                            <th>
+                                Provider
+                            </th>
+
+                            <th>
+                                Description
+                            </th>
+
+                            <th>
+                                Price / Hour
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Created
+                            </th>
+
+                            <th>
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+
+                    <?php
+
+                    $srno = 1;
+
+                    while ($service = mysqli_fetch_array($res)) {
+
+
+                        $categoryId = $service["category_id"];
+
+                        $q1 = "select * from categories
+                               where category_id = $categoryId";
+
+                        $res1 = mysqli_query($conn, $q1);
+
+                        $category = mysqli_fetch_array($res1);
+
+
+                        $providerId = $service["provider_id"];
+
+                        $q2 = "select * from service_providers
+                               where provider_id = $providerId";
+
+                        $res2 = mysqli_query($conn, $q2);
+
+                        $provider = mysqli_fetch_array($res2);
+
+                    ?>
+
+
+                        <tr>
+
+
+                            <!-- SERIAL NUMBER -->
+
+                            <td>
+
+                                <?php echo $srno; ?>
+
+                            </td>
+
+
+                            <!-- SERVICE -->
+
+                            <td>
+
+                                <div class="service-name">
+
+
+                                    <?php if ($service["service_image"] != "") { ?>
+
+
+                                        <img
+                                            src="../../../assets/services/<?php echo $service["service_image"]; ?>"
+                                            alt="<?php echo $service["service_name"]; ?>"
+                                            class="service-image"
+                                        >
+
+
+                                    <?php } else { ?>
+
+
+                                        <div class="service-image-placeholder">
+                                            -
                                         </div>
 
+
+                                    <?php } ?>
+
+
+                                    <div class="service-name-content">
+
+                                        <strong>
+                                            <?php echo $service["service_name"]; ?>
+                                        </strong>
+
                                     </div>
 
-                                </td>
+
+                                </div>
+
+                            </td>
 
 
-                                <!-- CATEGORY -->
+                            <!-- CATEGORY -->
 
-                                <td class="service-category"> 
+                            <td class="service-category">
 
-                                    <?php 
+                                <?php
 
-                                    if($category) 
-                                    { 
-                                        print $category['category_name']; 
-                                    } 
-                                    else 
-                                    { 
-                                        print "No category"; 
-                                    } 
+                                if ($category) {
 
-                                    ?> 
+                                    echo $category["category_name"];
 
-                                </td>
+                                }
+                                else {
 
+                                    echo "No category";
 
-                                <!-- PROVIDER -->
+                                }
 
-                                <td class="service-provider"> 
+                                ?>
 
-                                    <?php 
-
-                                    if($provider) 
-                                    { 
-                                        print $provider['full_name']; 
-                                    } 
-                                    else 
-                                    { 
-                                        print "No provider"; 
-                                    } 
-
-                                    ?> 
-
-                                </td>
+                            </td>
 
 
-                                <!-- DESCRIPTION -->
+                            <!-- PROVIDER -->
 
-                                <td class="service-description"> 
+                            <td class="service-provider">
 
-                                    <?php 
+                                <?php
 
-                                    if($service['description'] != "") 
-                                    { 
-                                        print $service['description']; 
-                                    } 
-                                    else 
-                                    { 
-                                        print "No description"; 
-                                    } 
+                                if ($provider) {
 
-                                    ?> 
+                                    echo $provider["full_name"];
 
-                                </td>
+                                }
+                                else {
+
+                                    echo "No provider";
+
+                                }
+
+                                ?>
+
+                            </td>
 
 
-                                <!-- PRICE -->
+                            <!-- DESCRIPTION -->
 
-                                <td>
+                            <td class="service-description">
 
-                                    <span class="service-price">
+                                <?php
 
-                                        ₹<?php print number_format($service['price'],2); ?>
+                                if ($service["description"] != "") {
 
-                                        <small>
-                                            / hour
-                                        </small>
+                                    echo $service["description"];
 
+                                }
+                                else {
+
+                                    echo "No description";
+
+                                }
+
+                                ?>
+
+                            </td>
+
+
+                            <!-- PRICE -->
+
+                            <td>
+
+                                <span class="service-price">
+
+                                    ₹<?php echo number_format($service["price"], 2); ?>
+
+                                    <small>
+                                        / hour
+                                    </small>
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- STATUS -->
+
+                            <td>
+
+
+                                <?php if ($service["service_status"] == "Active") { ?>
+
+
+                                    <span class="service-status active">
+                                        Active
                                     </span>
 
-                                </td>
+
+                                <?php } else { ?>
 
 
-                                <!-- STATUS -->
-
-                                <td>  
-
-                                    <?php if($service['service_status'] == "Active") { ?>  
-
-                                        <span class="badge bg-success">
-                                            Active
-                                        </span>  
-
-                                    <?php } else { ?>  
-
-                                        <span class="badge bg-secondary">
-                                            Inactive
-                                        </span>  
-
-                                    <?php } ?>  
-
-                                </td>
+                                    <span class="service-status inactive">
+                                        Inactive
+                                    </span>
 
 
-                                <!-- CREATED -->
-
-                                <td class="service-date">
-
-                                    <?php 
-                                        print date(
-                                            "d M Y",
-                                            strtotime($service['created_at'])
-                                        ); 
-                                    ?>
-
-                                </td>
+                                <?php } ?>
 
 
-                                <!-- ACTIONS -->
-
-                                <td>
-
-                                    <div class="service-actions">
-
-                                        <a
-                                            href="edit-service.php?id=<?php print $service['service_id']; ?>"
-                                            class="btn btn-sm btn-outline-primary"
-                                        >
-                                            Edit
-                                        </a>  
-
-                                        <a
-                                            href="delete-service.php?id=<?php print $service['service_id']; ?>"
-                                            class="btn btn-sm btn-outline-danger"
-                                            onclick="return confirm('Are you sure?');"
-                                        >
-                                            Delete
-                                        </a>
-
-                                    </div>
-
-                                </td>  
+                            </td>
 
 
-                            </tr>
+                            <!-- CREATED -->
+
+                            <td class="service-date">
+
+                                <?php
+
+                                echo date(
+                                    "d M Y",
+                                    strtotime($service["created_at"])
+                                );
+
+                                ?>
+
+                            </td>
 
 
-                            <?php $srno++; ?>
+                            <!-- ACTIONS -->
+
+                            <td>
+
+                                <div class="service-actions">
 
 
-                        <?php } ?>  
+                                    <a
+                                        href="edit-service.php?id=<?php echo $service["service_id"]; ?>"
+                                        class="service-btn service-btn-edit"
+                                    >
+                                        Edit
+                                    </a>
 
-                    </tbody>  
 
-                </table>  
+                                    <a
+                                        href="delete-service.php?id=<?php echo $service["service_id"]; ?>"
+                                        class="service-btn service-btn-delete"
+                                        onclick="return confirm('Are you sure you want to delete this service?');"
+                                    >
+                                        Delete
+                                    </a>
 
-            </div>  
 
-        <?php endif; ?>  
+                                </div>
 
-    </div>  
+                            </td>
 
-</div>  
-  
-<?php  
-$pageContent = ob_get_clean();  
-require_once "../../layout/admin-layout.php";  
+
+                        </tr>
+
+
+                    <?php
+
+                        $srno++;
+
+                    }
+
+                    ?>
+
+
+                    </tbody>
+
+
+                </table>
+
+
+            </div>
+
+
+        <?php } ?>
+
+
+    </div>
+
+
+</div>
+
+
+<?php
+
+$pageContent = ob_get_clean();
+
+require_once "../../layout/admin-layout.php";
+
 ?>

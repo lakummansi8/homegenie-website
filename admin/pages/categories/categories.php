@@ -1,280 +1,371 @@
-<?php 
-$pageTitle = "Categories"; 
-$assetPath = "../../../"; 
-$adminPath = "../../"; 
- 
-require_once "../../../config/db.php"; 
- 
-$q = "select * from categories"; 
-$res = mysqli_query($conn,$q); 
+<?php
+
+$pageTitle = "Categories";
+$pageCss = "categories.css";
+
+$assetPath = "../../../";
+$adminPath = "../../";
+
+require_once "../../../config/db.php";
+
+
+$q = "select * from categories";
+
+$res = mysqli_query($conn, $q);
 
 $totalCategories = mysqli_num_rows($res);
 
-ob_start(); 
-?> 
- 
-<div class="admin-page-header">  
 
-    <div class="header-title">  
-        <h3>Categories</h3>  
+ob_start();
+
+?>
+
+
+<div class="admin-page-header">
+
+    <div class="header-title">
+
+        <h3>
+            Categories
+        </h3>
+
         <p class="text-muted">
             Manage the service categories available on HomeGenie.
-        </p>  
-    </div>  
+        </p>
 
-    <div class="header-actions">  
-        <a href="add-category.php" class="btn btn-primary">
+    </div>
+
+
+    <div class="header-actions">
+
+        <a
+            href="add-category.php"
+            class="category-btn category-btn-primary"
+        >
             + Add Category
-        </a>  
-    </div>  
+        </a>
 
-</div>  
+    </div>
 
-
-<?php if (isset($_GET["success"])): ?>  
-
-    <div class="alert alert-success">  
-
-        <?php   
-            if ($_GET["success"] === "category_added")
-            {
-                echo "Category added successfully.";
-            }
-            elseif ($_GET["success"] === "category_updated")
-            {
-                echo "Category updated successfully.";
-            }
-            elseif ($_GET["success"] === "category_deleted")
-            {
-                echo "Category deleted successfully.";
-            }
-        ?>  
-
-    </div>  
-
-<?php endif; ?>  
+</div>
 
 
-<?php if (isset($_GET["error"])): ?>  
+<?php if (isset($_GET["success"])) { ?>
 
-    <div class="alert alert-danger">  
+    <div class="category-alert category-alert-success">
 
         <?php
-            if ($_GET["error"] === "invalid_category")
-            {
-                echo "Invalid category.";
-            }
-            elseif ($_GET["error"] === "category_not_found")
-            {
-                echo "Category not found.";
-            }
-            else
-            {
-                echo "Something went wrong.";
-            }
-        ?>  
 
-    </div>  
+        if ($_GET["success"] == "category_added") {
 
-<?php endif; ?>  
+            echo "Category added successfully.";
+
+        }
+        elseif ($_GET["success"] == "category_updated") {
+
+            echo "Category updated successfully.";
+
+        }
+        elseif ($_GET["success"] == "category_deleted") {
+
+            echo "Category deleted successfully.";
+
+        }
+
+        ?>
+
+    </div>
+
+<?php } ?>
 
 
-<div class="card categories-card">  
+<?php if (isset($_GET["error"])) { ?>
 
-    <div class="card-header bg-dark text-white categories-card-header">  
+    <div class="category-alert category-alert-danger">
 
-        <strong>All Categories</strong>
+        <?php
+
+        if ($_GET["error"] == "invalid_category") {
+
+            echo "Invalid category.";
+
+        }
+        elseif ($_GET["error"] == "category_not_found") {
+
+            echo "Category not found.";
+
+        }
+        else {
+
+            echo "Something went wrong.";
+
+        }
+
+        ?>
+
+    </div>
+
+<?php } ?>
+
+
+<div class="categories-card">
+
+
+    <div class="categories-card-header">
+
+        <strong>
+            All Categories
+        </strong>
 
         <span class="category-count">
-            <?php print $totalCategories; ?> Categories
+
+            <?php echo $totalCategories; ?>
+
+            Categories
+
         </span>
 
-    </div>  
+    </div>
 
 
-    <div class="card-body">  
-
-        <?php if ($totalCategories == 0): ?>  
-
-            <p class="text-muted">
-                No categories found. Create your first category to get started.
-            </p>  
-
-            <a href="add-category.php" class="btn btn-primary">
-                + Add Category
-            </a>  
-
-        <?php else: ?>  
-
-            <div class="table-responsive">  
-
-                <table class="table table-bordered table-striped categories-table">  
-
-                    <thead class="table-light">  
-
-                        <tr>  
-                            <th>ID</th>  
-                            <th>Category</th>  
-                            <th>Description</th>  
-                            <th>Status</th>  
-                            <th>Created</th>  
-                            <th>Actions</th>  
-                        </tr>  
-
-                    </thead>  
+    <div class="categories-card-body">
 
 
-                    <tbody>  
-
-                    <?php $srno = 1;?>
-                    
-                        <?php while($category = mysqli_fetch_array($res)) { ?>  
-
-                            <tr>  
-
-                                <td><?php print $srno; ?></td>
+        <?php if ($totalCategories == 0) { ?>
 
 
-                                <td>
+            <div class="no-categories">
 
-                                    <div class="category-info">
+                <p>
+                    No categories found. Create your first category to get started.
+                </p>
 
-                                        <?php if ($category["category_image"] != "") { ?>
+                <a
+                    href="add-category.php"
+                    class="category-btn category-btn-primary"
+                >
+                    + Add Category
+                </a>
 
-                                            <img
-                                                src="../../../assets/categories/<?php print $category["category_image"]; ?>"
-                                                alt="<?php print $category["category_name"]; ?>"
-                                                style="
-                                                    width: 55px !important;
-                                                    height: 45px !important;
-                                                    min-width: 55px !important;
-                                                    max-width: 55px !important;
-                                                    min-height: 45px !important;
-                                                    max-height: 45px !important;
-                                                    object-fit: cover !important;
-                                                    display: block !important;
-                                                    border-radius: 5px !important;
-                                                    border: 1px solid #dee2e6 !important;
-                                                "
-                                            >
-
-                                        <?php } else { ?>
-
-                                            <div
-                                                style="
-                                                    width: 55px;
-                                                    height: 45px;
-                                                    min-width: 55px;
-                                                    max-width: 55px;
-                                                    display: flex;
-                                                    align-items: center;
-                                                    justify-content: center;
-                                                    border: 1px solid #dee2e6;
-                                                    border-radius: 5px;
-                                                    color: #6c757d;
-                                                    background: #f8f9fa;
-                                                "
-                                            >
-                                                -
-                                            </div>
-
-                                        <?php } ?>
+            </div>
 
 
-                                        <strong>
-                                            <?php print $category["category_name"]; ?>
-                                        </strong>
-
-                                    </div>
-
-                                </td>  
+        <?php } else { ?>
 
 
-                                <td>
-
-                                    <?php
-
-                                        if ($category["description"] != "")
-                                        {
-                                            print $category["description"];
-                                        }
-                                        else
-                                        {
-                                            print "-";
-                                        }
-
-                                    ?>
-
-                                </td>  
+            <div class="category-table-responsive">
 
 
-                                <td>
+                <table class="categories-table">
 
-                                    <?php if ($category["category_status"] == "Active") { ?>
 
-                                        <span class="badge bg-success">
-                                            Active
-                                        </span>
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                ID
+                            </th>
+
+                            <th>
+                                Category
+                            </th>
+
+                            <th>
+                                Description
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Created
+                            </th>
+
+                            <th>
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+
+                    <?php
+
+                    $srno = 1;
+
+                    while ($category = mysqli_fetch_array($res)) {
+
+                    ?>
+
+
+                        <tr>
+
+
+                            <td>
+
+                                <?php echo $srno; ?>
+
+                            </td>
+
+
+                            <td>
+
+                                <div class="category-info">
+
+
+                                    <?php if ($category["category_image"] != "") { ?>
+
+
+                                        <img
+                                            src="../../../assets/categories/<?php echo $category["category_image"]; ?>"
+                                            alt="<?php echo $category["category_name"]; ?>"
+                                            class="category-table-image"
+                                        >
+
 
                                     <?php } else { ?>
 
-                                        <span class="badge bg-secondary">
-                                            Inactive
-                                        </span>
+
+                                        <div class="category-image-empty">
+                                            -
+                                        </div>
+
 
                                     <?php } ?>
 
-                                </td>  
+
+                                    <strong>
+
+                                        <?php echo $category["category_name"]; ?>
+
+                                    </strong>
 
 
-                                <td>
+                                </div>
 
-                                    <?php 
-                                        print date(
-                                            "d M Y",
-                                            strtotime($category["created_at"])
-                                        ); 
-                                    ?>
-
-                                </td>  
+                            </td>
 
 
-                                <td>
+                            <td>
 
-                                    <a
-                                        href="edit-category.php?id=<?php print $category["category_id"]; ?>"
-                                        class="btn btn-sm btn-outline-primary"
-                                    >
-                                        Edit
-                                    </a>
+                                <?php
 
-                                    <a
-                                        href="delete-category.php?id=<?php print $category["category_id"]; ?>"
-                                        class="btn btn-sm btn-outline-danger"
-                                        onclick="return confirm('Are you sure?');"
-                                    >
-                                        Delete
-                                    </a>
+                                if ($category["description"] != "") {
 
-                                </td>  
+                                    echo $category["description"];
 
-                            </tr>  
+                                }
+                                else {
 
-                        <?php } ?>  
+                                    echo "-";
 
-                    </tbody>  
+                                }
 
-                </table>  
+                                ?>
 
-            </div>  
+                            </td>
 
-        <?php endif; ?>  
 
-    </div>  
+                            <td>
 
-</div>  
-  
-<?php  
-$pageContent = ob_get_clean();  
-require_once "../../layout/admin-layout.php";  
+
+                                <?php if ($category["category_status"] == "Active") { ?>
+
+
+                                    <span class="category-status active">
+                                        Active
+                                    </span>
+
+
+                                <?php } else { ?>
+
+
+                                    <span class="category-status inactive">
+                                        Inactive
+                                    </span>
+
+
+                                <?php } ?>
+
+
+                            </td>
+
+
+                            <td>
+
+                                <?php
+
+                                echo date(
+                                    "d M Y",
+                                    strtotime($category["created_at"])
+                                );
+
+                                ?>
+
+                            </td>
+
+
+                            <td>
+
+                                <a
+                                    href="edit-category.php?id=<?php echo $category["category_id"]; ?>"
+                                    class="category-btn category-btn-edit"
+                                >
+                                    Edit
+                                </a>
+
+
+                                <a
+                                    href="delete-category.php?id=<?php echo $category["category_id"]; ?>"
+                                    class="category-btn category-btn-delete"
+                                    onclick="return confirm('Are you sure you want to delete this category?');"
+                                >
+                                    Delete
+                                </a>
+
+                            </td>
+
+
+                        </tr>
+
+
+                    <?php
+
+                        $srno++;
+
+                    }
+
+                    ?>
+
+
+                    </tbody>
+
+
+                </table>
+
+
+            </div>
+
+
+        <?php } ?>
+
+
+    </div>
+
+
+</div>
+
+
+<?php
+
+$pageContent = ob_get_clean();
+
+require_once "../../layout/admin-layout.php";
+
 ?>

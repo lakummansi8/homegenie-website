@@ -1,28 +1,42 @@
 <?php
+
 $pageTitle = "Edit Service Provider";
+$pageCss = "service-providers.css";
+
 $assetPath = "../../../";
 $adminPath = "../../";
 
 require_once "../../../config/db.php";
 
+
 $providerId = $_GET["id"];
 
-if($providerId == "")
+
+if ($providerId == "")
 {
     header("Location: service-providers.php?error=invalid_provider");
     exit;
 }
 
-$q = "select * from service_providers where provider_id = $providerId";
-$res = mysqli_query($conn,$q);
 
-if(mysqli_num_rows($res) == 0)
+/* Get Provider */
+
+$q = "select * from service_providers where provider_id = $providerId";
+
+$res = mysqli_query($conn, $q);
+
+
+if (mysqli_num_rows($res) == 0)
 {
     header("Location: service-providers.php?error=provider_not_found");
     exit;
 }
 
+
 $provider = mysqli_fetch_array($res);
+
+
+/* Existing Values */
 
 $fullName = $provider["full_name"];
 $email = $provider["email"];
@@ -39,18 +53,24 @@ $currentProfileImage = $provider["profile_image"];
 
 $errors = array();
 
+
+/* Get Categories */
+
 $q = "select * from categories where category_status = 'Active'";
-$categoryResult = mysqli_query($conn,$q);
+
+$categoryResult = mysqli_query($conn, $q);
 
 $categories = array();
 
-while($category = mysqli_fetch_array($categoryResult))
+while ($category = mysqli_fetch_array($categoryResult))
 {
     $categories[] = $category;
 }
 
 
-if($_SERVER["REQUEST_METHOD"] == "POST")
+/* Form Submitted */
+
+if ($_SERVER["REQUEST_METHOD"] == "POST")
 {
     $fullName = $_POST["full_name"];
     $email = $_POST["email"];
@@ -65,60 +85,77 @@ if($_SERVER["REQUEST_METHOD"] == "POST")
     $accountStatus = $_POST["account_status"];
     $categoryId = $_POST["category_id"];
 
-    if($fullName == "")
+
+    if ($fullName == "")
     {
         $errors[] = "Full name is required.";
     }
-    elseif($email == "")
+    elseif ($email == "")
     {
         $errors[] = "Email is required.";
     }
-    elseif($phone == "")
+    elseif ($phone == "")
     {
         $errors[] = "Phone number is required.";
     }
-    elseif($categoryId == "")
+    elseif ($categoryId == "")
     {
         $errors[] = "Please select a category.";
     }
-    elseif($availability != "Available" && $availability != "Busy" && $availability != "Offline")
+    elseif (
+        $availability != "Available" &&
+        $availability != "Busy" &&
+        $availability != "Offline"
+    )
     {
         $errors[] = "Invalid availability selected.";
     }
-    elseif($accountStatus != "Pending" && $accountStatus != "Active" && $accountStatus != "Blocked")
+    elseif (
+        $accountStatus != "Pending" &&
+        $accountStatus != "Active" &&
+        $accountStatus != "Blocked"
+    )
     {
         $errors[] = "Invalid account status selected.";
     }
 
-    if($password != "" && strlen($password) < 6)
+
+    if ($password != "" && strlen($password) < 6)
     {
         $errors[] = "New password must be at least 6 characters.";
     }
 
-    if($experience != "" && !is_numeric($experience))
+
+    if ($experience != "" && !is_numeric($experience))
     {
         $errors[] = "Experience must be a valid number.";
     }
 
 
-    if(count($errors) == 0)
+    /* Check Email */
+
+    if (count($errors) == 0)
     {
         $q = "select * from service_providers
               where email = '$email'
               and provider_id != $providerId";
 
-        $emailResult = mysqli_query($conn,$q);
+        $emailResult = mysqli_query($conn, $q);
 
-        if(mysqli_num_rows($emailResult) > 0)
+
+        if (mysqli_num_rows($emailResult) > 0)
         {
             $errors[] = "Another service provider already uses this email.";
         }
     }
 
 
+    /* Profile Image */
+
     $newProfileImage = $currentProfileImage;
 
-    if($_FILES["profile_image"]["name"] != "")
+
+    if ($_FILES["profile_image"]["name"] != "")
     {
         $imageName = $_FILES["profile_image"]["name"];
 
@@ -131,16 +168,23 @@ if($_SERVER["REQUEST_METHOD"] == "POST")
     }
 
 
-    if(count($errors) == 0)
+    /* Update Provider */
+
+    if (count($errors) == 0)
     {
-        if($password != "")
+
+        if ($password != "")
         {
-            $password = password_hash($password,PASSWORD_DEFAULT);
+            $password = password_hash(
+                $password,
+                PASSWORD_DEFAULT
+            );
         }
         else
         {
             $password = $provider["password"];
         }
+
 
         $q = "update service_providers set
               full_name='$fullName',
@@ -158,175 +202,474 @@ if($_SERVER["REQUEST_METHOD"] == "POST")
               category_id='$categoryId'
               where provider_id=$providerId";
 
-        $res = mysqli_query($conn,$q);
 
-        if($res)
+        $res = mysqli_query($conn, $q);
+
+
+        if ($res)
         {
-            if(
+
+            if (
                 $currentProfileImage != "" &&
                 $newProfileImage != $currentProfileImage
             )
             {
-                $oldImage = "../../../assets/providers/" . $currentProfileImage;
+                $oldImage =
+                    "../../../assets/providers/" .
+                    $currentProfileImage;
 
-                if(file_exists($oldImage))
+
+                if (file_exists($oldImage))
                 {
                     unlink($oldImage);
                 }
             }
 
-            header("Location: service-providers.php?success=provider_updated");
+
+            header(
+                "Location: service-providers.php?success=provider_updated"
+            );
+
             exit;
+
         }
         else
         {
             $errors[] = "Unable to update service provider.";
         }
+
     }
+
 }
 
 
 ob_start();
+
 ?>
 
-<div class="row mb-4">
-    <div class="col-md-8">
-        <h3>Edit Service Provider</h3>
-        <p class="text-muted">Update the service provider's account and professional details.</p>
+<div class="provider-form-page">
+
+    <div class="provider-form-header">
+
+        <div>
+
+            <h1>Edit Service Provider</h1>
+
+            <p>
+                Update the service provider's account and professional details.
+            </p>
+
+        </div>
+
+
+        <a
+            href="service-providers.php"
+            class="provider-secondary-btn"
+        >
+            &larr; Back to Providers
+        </a>
+
     </div>
-    <div class="col-md-4 text-md-end">
-        <a href="service-providers.php" class="btn btn-secondary">&larr; Back to Providers</a>
-    </div>
-</div>
 
-<?php if (!empty($errors)): ?>
-    <div class="alert alert-danger">
-        <strong>Please fix the following errors:</strong>
-        <ul class="mb-0">
-            <?php foreach ($errors as $error): ?>
-                <li><?= htmlspecialchars($error) ?></li>
-            <?php endforeach; ?>
-        </ul>
-    </div>
-<?php endif; ?>
 
-<div class="card">
-    <div class="card-header bg-dark text-white">
-        <strong>Provider Details</strong>
-    </div>
-    <div class="card-body">
-        <form method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="provider_id" value="<?= (int)$providerId ?>">
+    <?php if (!empty($errors)): ?>
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Full Name *</label>
-                    <input type="text" class="form-control" name="full_name" value="<?= htmlspecialchars($fullName) ?>" required>
+        <div class="provider-form-error">
+
+            <strong>Please fix the following errors:</strong>
+
+            <ul>
+
+                <?php foreach ($errors as $error): ?>
+
+                    <li>
+                        <?php echo htmlspecialchars($error); ?>
+                    </li>
+
+                <?php endforeach; ?>
+
+            </ul>
+
+        </div>
+
+    <?php endif; ?>
+
+
+    <div class="provider-form-card">
+
+        <div class="provider-form-card-header">
+            <strong>Provider Details</strong>
+        </div>
+
+
+        <div class="provider-form-card-body">
+
+            <form
+                method="POST"
+                enctype="multipart/form-data"
+            >
+
+
+                <div class="provider-form-row">
+
+
+                    <div class="provider-form-group">
+
+                        <label>Full Name *</label>
+
+                        <input
+                            type="text"
+                            name="full_name"
+                            value="<?php echo htmlspecialchars($fullName); ?>"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="provider-form-group">
+
+                        <label>Email *</label>
+
+                        <input
+                            type="email"
+                            name="email"
+                            value="<?php echo htmlspecialchars($email); ?>"
+                            required
+                        >
+
+                    </div>
+
+
                 </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Email *</label>
-                    <input type="email" class="form-control" name="email" value="<?= htmlspecialchars($email) ?>" required>
-                </div>
-            </div>
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Phone Number *</label>
-                    <input type="text" class="form-control" name="phone" value="<?= htmlspecialchars($phone) ?>" maxlength="15" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">New Password</label>
-                    <input type="password" class="form-control" name="password">
-                    <div class="form-text">Leave blank to keep the current password.</div>
-                </div>
-            </div>
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Category *</label>
-                    <select class="form-select" name="category_id" required>
-                        <option value="">Select Category</option>
-                        <?php foreach ($categories as $category): ?>
-                            <option value="<?= (int)$category["category_id"] ?>" <?= (int)$categoryId === (int)$category["category_id"] ? "selected" : "" ?>>
-                                <?= htmlspecialchars($category["category_name"]) ?>
+                <div class="provider-form-row">
+
+
+                    <div class="provider-form-group">
+
+                        <label>Phone Number *</label>
+
+                        <input
+                            type="text"
+                            name="phone"
+                            value="<?php echo htmlspecialchars($phone); ?>"
+                            maxlength="15"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="provider-form-group">
+
+                        <label>New Password</label>
+
+                        <input
+                            type="password"
+                            name="password"
+                        >
+
+                        <small>
+                            Leave blank to keep the current password.
+                        </small>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="provider-form-row">
+
+
+                    <div class="provider-form-group">
+
+                        <label>Category *</label>
+
+                        <select
+                            name="category_id"
+                            required
+                        >
+
+                            <option value="">
+                                Select Category
                             </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Experience (Years)</label>
-                    <input type="number" class="form-control" name="experience" value="<?= htmlspecialchars($experience) ?>" min="0">
-                </div>
-            </div>
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Gender</label>
-                    <select class="form-select" name="gender">
-                        <option value="">Select Gender</option>
-                        <option value="Male" <?= $gender === "Male" ? "selected" : "" ?>>Male</option>
-                        <option value="Female" <?= $gender === "Female" ? "selected" : "" ?>>Female</option>
-                        <option value="Other" <?= $gender === "Other" ? "selected" : "" ?>>Other</option>
-                    </select>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Availability</label>
-                    <select class="form-select" name="availability">
-                        <option value="Available" <?= $availability === "Available" ? "selected" : "" ?>>Available</option>
-                        <option value="Busy" <?= $availability === "Busy" ? "selected" : "" ?>>Busy</option>
-                        <option value="Offline" <?= $availability === "Offline" ? "selected" : "" ?>>Offline</option>
-                    </select>
-                </div>
-            </div>
 
-            <div class="mb-3">
-                <label class="form-label">Address</label>
-                <textarea class="form-control" name="address" rows="3"><?= htmlspecialchars($address) ?></textarea>
-            </div>
+                            <?php foreach ($categories as $category): ?>
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Area</label>
-                    <input type="text" class="form-control" name="area" value="<?= htmlspecialchars($area) ?>">
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">City</label>
-                    <input type="text" class="form-control" name="city" value="<?= htmlspecialchars($city) ?>">
-                </div>
-            </div>
+                                <option
+                                    value="<?php echo $category["category_id"]; ?>"
+                                    <?php
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Account Status</label>
-                    <select class="form-select" name="account_status">
-                        <option value="Pending" <?= $accountStatus === "Pending" ? "selected" : "" ?>>Pending</option>
-                        <option value="Active" <?= $accountStatus === "Active" ? "selected" : "" ?>>Active</option>
-                        <option value="Blocked" <?= $accountStatus === "Blocked" ? "selected" : "" ?>>Blocked</option>
-                    </select>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Profile Image</label>
-                    <input type="file" class="form-control" name="profile_image" accept=".jpg,.jpeg,.png,.webp">
-                    <div class="form-text">Leave blank to keep existing image. Max 5 MB.</div>
-                    
-                    <?php if (!empty($currentProfileImage)): ?>
-                        <div class="mt-2">
-                            <img src="../../../assets/providers/<?= htmlspecialchars($currentProfileImage) ?>" alt="Profile" class="img-thumbnail" style="max-height: 100px;">
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </div>
+                                    if (
+                                        $categoryId ==
+                                        $category["category_id"]
+                                    ) {
+                                        echo "selected";
+                                    }
 
-            <hr>
-            <div class="d-flex justify-content-between">
-                <a href="service-providers.php" class="btn btn-secondary">Cancel</a>
-                <button type="submit" class="btn btn-primary">Update Service Provider</button>
-            </div>
-        </form>
+                                    ?>
+                                >
+
+                                    <?php
+
+                                    echo htmlspecialchars(
+                                        $category["category_name"]
+                                    );
+
+                                    ?>
+
+                                </option>
+
+                            <?php endforeach; ?>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="provider-form-group">
+
+                        <label>Experience (Years)</label>
+
+                        <input
+                            type="number"
+                            name="experience"
+                            value="<?php echo htmlspecialchars($experience); ?>"
+                            min="0"
+                        >
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="provider-form-row">
+
+
+                    <div class="provider-form-group">
+
+                        <label>Gender</label>
+
+                        <select name="gender">
+
+                            <option value="">
+                                Select Gender
+                            </option>
+
+                            <option
+                                value="Male"
+                                <?php if ($gender == "Male") echo "selected"; ?>
+                            >
+                                Male
+                            </option>
+
+                            <option
+                                value="Female"
+                                <?php if ($gender == "Female") echo "selected"; ?>
+                            >
+                                Female
+                            </option>
+
+                            <option
+                                value="Other"
+                                <?php if ($gender == "Other") echo "selected"; ?>
+                            >
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="provider-form-group">
+
+                        <label>Availability</label>
+
+                        <select name="availability">
+
+                            <option
+                                value="Available"
+                                <?php if ($availability == "Available") echo "selected"; ?>
+                            >
+                                Available
+                            </option>
+
+                            <option
+                                value="Busy"
+                                <?php if ($availability == "Busy") echo "selected"; ?>
+                            >
+                                Busy
+                            </option>
+
+                            <option
+                                value="Offline"
+                                <?php if ($availability == "Offline") echo "selected"; ?>
+                            >
+                                Offline
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="provider-form-group full-width">
+
+                    <label>Address</label>
+
+                    <textarea
+                        name="address"
+                        rows="3"
+                    ><?php echo htmlspecialchars($address); ?></textarea>
+
+                </div>
+
+
+                <div class="provider-form-row">
+
+
+                    <div class="provider-form-group">
+
+                        <label>Area</label>
+
+                        <input
+                            type="text"
+                            name="area"
+                            value="<?php echo htmlspecialchars($area); ?>"
+                        >
+
+                    </div>
+
+
+                    <div class="provider-form-group">
+
+                        <label>City</label>
+
+                        <input
+                            type="text"
+                            name="city"
+                            value="<?php echo htmlspecialchars($city); ?>"
+                        >
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="provider-form-row">
+
+
+                    <div class="provider-form-group">
+
+                        <label>Account Status</label>
+
+                        <select name="account_status">
+
+                            <option
+                                value="Pending"
+                                <?php if ($accountStatus == "Pending") echo "selected"; ?>
+                            >
+                                Pending
+                            </option>
+
+                            <option
+                                value="Active"
+                                <?php if ($accountStatus == "Active") echo "selected"; ?>
+                            >
+                                Active
+                            </option>
+
+                            <option
+                                value="Blocked"
+                                <?php if ($accountStatus == "Blocked") echo "selected"; ?>
+                            >
+                                Blocked
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="provider-form-group">
+
+                        <label>Profile Image</label>
+
+                        <input
+                            type="file"
+                            name="profile_image"
+                            accept=".jpg,.jpeg,.png,.webp"
+                        >
+
+                        <small>
+                            Leave blank to keep existing image. Max 5 MB.
+                        </small>
+
+
+                        <?php if (!empty($currentProfileImage)): ?>
+
+                            <div class="current-provider-image">
+
+                                <img
+                                    src="../../../assets/providers/<?php echo htmlspecialchars($currentProfileImage); ?>"
+                                    alt="Profile"
+                                >
+
+                            </div>
+
+                        <?php endif; ?>
+
+                    </div>
+
+
+                </div>
+
+
+                <hr>
+
+
+                <div class="provider-form-actions">
+
+                    <a
+                        href="service-providers.php"
+                        class="provider-secondary-btn"
+                    >
+                        Cancel
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="provider-primary-btn"
+                    >
+                        Update Service Provider
+                    </button>
+
+                </div>
+
+
+            </form>
+
+        </div>
+
     </div>
+
 </div>
+
 
 <?php
+
 $pageContent = ob_get_clean();
+
 require_once "../../layout/admin-layout.php";
+
 ?>
