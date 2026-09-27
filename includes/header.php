@@ -129,7 +129,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     </button>
                 </a>
 
-                <a href="/homegenie-website/customer/register.php">
+                <a href="/homegenie-website/register.php">
                     <button type="button">
                         Register
                     </button>

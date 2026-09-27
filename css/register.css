@@ -1,190 +1,186 @@
-/* ===========================
-   Reset
-=========================== */
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+* {
+    box-sizing: border-box;
 }
 
-/* ===========================
-   Body
-=========================== */
-
-body{
-
-    font-family:Arial, sans-serif;
-
-    background-color:#f4f6f9;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    min-height:100vh;
-
-    padding:20px;
+html,
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
 }
 
-/* ===========================
-   Main Container
-=========================== */
-
-.container{
-
-    width:500px;
-
-    background:white;
-
-    padding:30px;
-
-    border-radius:12px;
-
-    box-shadow:0 0 15px rgba(0,0,0,0.2);
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #F5F7F8;
+    color: #212529;
 }
 
-/* ===========================
-   Heading
-=========================== */
-
-.heading{
-
-    text-align:center;
-
-    margin-bottom:30px;
+.customer-register-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
 }
 
-.heading h1{
-
-    color:#1e40af;
-
-    margin-bottom:10px;
+.customer-register-card {
+    width: 100%;
+    max-width: 720px;
+    padding: 32px;
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-.heading p{
-
-    color:gray;
+.customer-register-back {
+    display: inline-block;
+    margin-bottom: 25px;
+    color: #0F766E;
+    font-size: 13px;
+    text-decoration: none;
 }
 
-/* ===========================
-   Form
-=========================== */
-
-.form{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:20px;
+.customer-register-back:hover {
+    color: #115E59;
 }
 
-/* ===========================
-   Input Box
-=========================== */
-
-.inputBox{
-
-    display:flex;
-
-    flex-direction:column;
+.customer-register-heading {
+    margin-bottom: 25px;
 }
 
-/* ===========================
-   Label
-=========================== */
-
-.inputBox label{
-
-    margin-bottom:8px;
-
-    font-weight:bold;
+.customer-register-heading h1 {
+    margin: 0 0 6px;
+    font-size: 27px;
+    font-weight: 600;
+    color: #0F766E;
 }
 
-/* ===========================
-   Inputs
-=========================== */
-
-.inputBox input{
-
-    padding:12px;
-
-    font-size:16px;
-
-    border:1px solid #ccc;
-
-    border-radius:8px;
+.customer-register-heading p {
+    margin: 0;
+    font-size: 14px;
+    color: #6C757D;
 }
 
-/* ===========================
-   Textarea
-=========================== */
-
-.inputBox textarea{
-
-    padding:12px;
-
-    font-size:16px;
-
-    height:100px;
-
-    border:1px solid #ccc;
-
-    border-radius:8px;
-
-    resize:none;
+.customer-register-row {
+    display: flex;
+    gap: 18px;
 }
 
-/* ===========================
-   Focus
-=========================== */
-
-.inputBox input:focus,
-.inputBox textarea:focus{
-
-    outline:none;
-
-    border:1px solid #2563eb;
+.customer-register-field {
+    width: 100%;
+    margin-bottom: 18px;
 }
 
-/* ===========================
-   Button
-=========================== */
-
-button{
-
-    padding:14px;
-
-    background:#2563eb;
-
-    color:white;
-
-    font-size:18px;
-
-    border:none;
-
-    border-radius:8px;
-
-    cursor:pointer;
+.customer-register-field label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #212529;
 }
 
-/* Hover */
-
-button:hover{
-
-    background:#1d4ed8;
+.customer-register-field input,
+.customer-register-field textarea {
+    width: 100%;
+    padding: 10px 12px;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    color: #212529;
+    background: #FFFFFF;
+    border: 1px solid #CED4DA;
+    border-radius: 5px;
 }
 
-/* ===========================
-   Responsive
-=========================== */
+.customer-register-field input:focus,
+.customer-register-field textarea:focus {
+    outline: none;
+    border-color: #0F766E;
+}
 
-@media (max-width:600px){
+.customer-register-field input::placeholder,
+.customer-register-field textarea::placeholder {
+    color: #9CA3AF;
+}
 
-    .container{
+.customer-register-field textarea {
+    min-height: 100px;
+    resize: vertical;
+}
 
-        width:100%;
+.customer-register-button {
+    width: 100%;
+    padding: 11px 15px;
+    margin-top: 3px;
+    background: #0F766E;
+    border: 1px solid #0F766E;
+    border-radius: 5px;
+    color: #FFFFFF;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.customer-register-button:hover {
+    background: #115E59;
+    border-color: #115E59;
+}
+
+.customer-register-login {
+    margin-top: 22px;
+    text-align: center;
+    font-size: 13px;
+    color: #6C757D;
+}
+
+.customer-register-login a {
+    color: #0F766E;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.customer-register-login a:hover {
+    color: #115E59;
+}
+
+@media (max-width: 650px) {
+
+    .customer-register-page {
+        padding: 25px 15px;
+    }
+
+    .customer-register-card {
+        padding: 25px 20px;
+    }
+
+    .customer-register-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .customer-register-heading h1 {
+        font-size: 24px;
+    }
+
+}
+
+@media (max-width: 400px) {
+
+    .customer-register-page {
+        padding: 20px 10px;
+    }
+
+    .customer-register-card {
+        padding: 22px 16px;
+    }
+
+    .customer-register-heading h1 {
+        font-size: 22px;
+    }
+
+    .customer-register-heading p {
+        font-size: 13px;
     }
 
 }

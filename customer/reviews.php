@@ -1,64 +1,54 @@
-```php
 <?php
 
 session_start();
 
-if (!isset($_SESSION["user_id"])) {
+if (!isset($_SESSION["user_id"]))
+{
     header("Location: ../auth/login.php");
     exit;
 }
 
 require_once "../config/db.php";
 
+
 $userId = $_SESSION["user_id"];
 
 
 /* Submit Review */
 
-if (isset($_POST["submit_review"])) {
+if (isset($_POST["submit_review"]))
+{
+    $bookingId = $_POST["booking_id"];
+    $providerId = $_POST["provider_id"];
+    $rating = $_POST["rating"];
+    $comment = $_POST["review_comment"];
 
-    $bookingId = (int)($_POST["booking_id"] ?? 0);
-    $providerId = (int)($_POST["provider_id"] ?? 0);
-    $rating = (int)($_POST["rating"] ?? 0);
-    $comment = trim($_POST["review_comment"] ?? "");
 
+    /* Check Empty Fields */
 
     if (
-        $bookingId <= 0 ||
-        $providerId <= 0 ||
-        $rating < 1 ||
-        $rating > 5 ||
-        $comment === ""
-    ) {
-
+        $bookingId == "" ||
+        $providerId == "" ||
+        $rating == "" ||
+        $comment == ""
+    )
+    {
         header("Location: reviews.php?error=invalid");
         exit;
     }
 
 
-    /* Check whether this booking already has a review */
+    /* Check Existing Review */
 
-    $checkStmt = $conn->prepare(
-        "SELECT review_id
-         FROM reviews
-         WHERE booking_id = ?
-         AND user_id = ?
-         LIMIT 1"
-    );
+    $q = "select * from reviews
+          where booking_id = $bookingId
+          and user_id = $userId";
 
-    $checkStmt->bind_param(
-        "ii",
-        $bookingId,
-        $userId
-    );
-
-    $checkStmt->execute();
-
-    $checkResult = $checkStmt->get_result();
+    $checkResult = mysqli_query($conn, $q);
 
 
-    if ($checkResult->num_rows > 0) {
-
+    if (mysqli_num_rows($checkResult) > 0)
+    {
         header("Location: reviews.php?error=already_reviewed");
         exit;
     }
@@ -66,85 +56,56 @@ if (isset($_POST["submit_review"])) {
 
     /* Save Review */
 
-    $stmt = $conn->prepare(
-        "INSERT INTO reviews
-        (
-            booking_id,
-            user_id,
-            provider_id,
-            rating,
-            review_comment
-        )
-        VALUES (?, ?, ?, ?, ?)"
-    );
+    $q2 = "insert into reviews
+           (
+               booking_id,
+               user_id,
+               provider_id,
+               rating,
+               review_comment
+           )
+           values
+           (
+               $bookingId,
+               $userId,
+               $providerId,
+               $rating,
+               '$comment'
+           )";
+
+    $result = mysqli_query($conn, $q2);
 
 
-    $stmt->bind_param(
-        "iiiis",
-        $bookingId,
-        $userId,
-        $providerId,
-        $rating,
-        $comment
-    );
-
-
-    if ($stmt->execute()) {
-
+    if ($result)
+    {
         header("Location: reviews.php?success=1");
         exit;
-
-    } else {
-
+    }
+    else
+    {
         header("Location: reviews.php?error=failed");
         exit;
     }
 }
 
 
-/* Get Completed Bookings That Have Not Been Reviewed */
+/* Get Completed Bookings */
 
-$stmt = $conn->prepare(
-    "SELECT
-        b.booking_id,
-        b.provider_id,
-        s.service_name,
-        sp.full_name
-     FROM bookings b
+$q = "select * from bookings
+      where user_id = $userId
+      and booking_status = 'Completed'
+      order by booking_id desc";
 
-     LEFT JOIN services s
-        ON b.service_id = s.service_id
-
-     LEFT JOIN service_providers sp
-        ON b.provider_id = sp.provider_id
-
-     LEFT JOIN reviews r
-        ON b.booking_id = r.booking_id
-
-     WHERE b.user_id = ?
-     AND b.booking_status = 'Completed'
-     AND r.review_id IS NULL
-
-     ORDER BY b.booking_id DESC"
-);
-
-
-$stmt->bind_param(
-    "i",
-    $userId
-);
-
-$stmt->execute();
-
-$result = $stmt->get_result();
+$result = mysqli_query($conn, $q);
 
 
 $pageTitle = "Reviews";
+$pageCss = "reviews.css";
 
-require_once "layout/customer-layout.php";
+
+ob_start();
 
 ?>
-
 
 <div class="reviews-page">
 
@@ -162,75 +123,121 @@ require_once "layout/customer-layout.php";
     </div>
 
 
-    <?php if (isset($_GET["success"])) { ?>
+    <?php
+
+    if (isset($_GET["success"]))
+    {
+    ?>
 
         <div class="success-message">
-
             Your review has been submitted successfully.
-
         </div>
 
-    <?php } ?>
+    <?php
+    }
 
 
-    <?php if (isset($_GET["error"])) { ?>
+    if (isset($_GET["error"]))
+    {
+    ?>
 
-        <div class="success-message">
+        <div class="error-message">
 
             <?php
 
-            if ($_GET["error"] === "already_reviewed") {
-
+            if ($_GET["error"] == "already_reviewed")
+            {
                 echo "You have already reviewed this booking.";
-
             }
-
-            elseif ($_GET["error"] === "invalid") {
-
+            elseif ($_GET["error"] == "invalid")
+            {
                 echo "Please provide a valid rating and review.";
-
             }
-
-            else {
-
+            else
+            {
                 echo "Unable to submit your review.";
-
             }
 
             ?>
 
         </div>
 
-    <?php } ?>
+    <?php
+    }
 
 
-    <?php if ($result->num_rows > 0) { ?>
+    if (mysqli_num_rows($result) > 0)
+    {
 
+        $hasReviewPending = false;
+
+    ?>
 
         <div class="review-list">
 
+            <?php
 
-            <?php while ($booking = $result->fetch_assoc()) { ?>
+            while ($booking = mysqli_fetch_array($result))
+            {
 
+                $bookingId = $booking["booking_id"];
+                $providerId = $booking["provider_id"];
+                $serviceId = $booking["service_id"];
+
+
+                /* Check Whether Booking Already Has Review */
+
+                $q2 = "select * from reviews
+                       where booking_id = $bookingId
+                       and user_id = $userId";
+
+                $reviewResult = mysqli_query($conn, $q2);
+
+
+                if (mysqli_num_rows($reviewResult) > 0)
+                {
+                    continue;
+                }
+
+
+                $hasReviewPending = true;
+
+
+                /* Get Service */
+
+                $q3 = "select * from services
+                       where service_id = $serviceId";
+
+                $serviceResult = mysqli_query($conn, $q3);
+
+                $service = mysqli_fetch_array($serviceResult);
+
+
+                /* Get Provider */
+
+                $q4 = "select * from service_providers
+                       where provider_id = $providerId";
+
+                $providerResult = mysqli_query($conn, $q4);
+
+                $provider = mysqli_fetch_array($providerResult);
+
+            ?>
 
                 <div class="review-card">
 
 
                     <div class="review-card-header">
 
-
                         <div>
 
                             <h2>
-
                                 <?php
                                 echo htmlspecialchars(
-                                    $booking["service_name"]
+                                    $service["service_name"]
                                 );
                                 ?>
-
                             </h2>
-
 
                             <p>
 
@@ -238,7 +245,7 @@ require_once "layout/customer-layout.php";
 
                                 <?php
                                 echo htmlspecialchars(
-                                    $booking["full_name"]
+                                    $provider["full_name"]
                                 );
                                 ?>
 
@@ -251,7 +258,6 @@ require_once "layout/customer-layout.php";
                             Completed
                         </span>
 
-
                     </div>
 
 
@@ -261,28 +267,22 @@ require_once "layout/customer-layout.php";
                         <input
                             type="hidden"
                             name="booking_id"
-                            value="<?php
-                            echo $booking["booking_id"];
-                            ?>"
+                            value="<?php echo $bookingId; ?>"
                         >
 
 
                         <input
                             type="hidden"
                             name="provider_id"
-                            value="<?php
-                            echo $booking["provider_id"];
-                            ?>"
+                            value="<?php echo $providerId; ?>"
                         >
 
 
                         <div class="review-field">
 
-
                             <label>
                                 Rating
                             </label>
-
 
                             <select
                                 name="rating"
@@ -315,24 +315,20 @@ require_once "layout/customer-layout.php";
 
                             </select>
 
-
                         </div>
 
 
                         <div class="review-field">
 
-
                             <label>
                                 Write a Review
                             </label>
-
 
                             <textarea
                                 name="review_comment"
                                 placeholder="Tell us about your experience..."
                                 required
                             ></textarea>
-
 
                         </div>
 
@@ -351,39 +347,72 @@ require_once "layout/customer-layout.php";
 
                 </div>
 
+            <?php
+            }
 
-            <?php } ?>
-
+            ?>
 
         </div>
 
 
-    <?php } else { ?>
+        <?php
 
+        if (!$hasReviewPending)
+        {
+        ?>
+
+            <div class="review-empty">
+
+                <h2>
+                    No Reviews Pending
+                </h2>
+
+                <p>
+                    You have no completed bookings waiting for a review.
+                </p>
+
+                <a href="my-bookings.php">
+                    View My Bookings
+                </a>
+
+            </div>
+
+        <?php
+        }
+
+    }
+    else
+    {
+    ?>
 
         <div class="review-empty">
-
 
             <h2>
                 No Reviews Pending
             </h2>
 
-
             <p>
                 You have no completed bookings waiting for a review.
             </p>
-
 
             <a href="my-bookings.php">
                 View My Bookings
             </a>
 
-
         </div>
 
+    <?php
+    }
 
-    <?php } ?>
-
+    ?>
 
 </div>
-```
+
+
+<?php
+
+$pageContent = ob_get_clean();
+
+require_once "layout/customer-layout.php";
+
+?>

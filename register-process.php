@@ -1,6 +1,6 @@
 <?php
 
-require_once "../config/db.php";
+require_once "config/db.php";
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     header("Location: register.php");
@@ -55,7 +55,7 @@ $stmt->bind_param(
 );
 
 if ($stmt->execute()) {
-    header("Location: login.php?registered=success");
+    header("Location: auth/login.php?registered=success");
     exit;
 }
 

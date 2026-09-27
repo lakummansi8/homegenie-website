@@ -1,0 +1,298 @@
+/* =========================================
+   PROVIDER DETAILS
+========================================= */
+
+.provider-details-page {
+    width: 100%;
+}
+
+
+/* =========================================
+   DETAILS CARD
+========================================= */
+
+.provider-details-card {
+    width: 100%;
+
+    background: #FFFFFF;
+
+    border: 1px solid #E5E7EB;
+
+    border-radius: 8px;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.provider-details-header {
+    padding: 20px;
+
+    border-bottom: 1px solid #E5E7EB;
+}
+
+
+.provider-details-header h1 {
+    margin: 0 0 6px;
+
+    font-size: 22px;
+
+    font-weight: 600;
+
+    color: #212529;
+}
+
+
+.provider-details-header p {
+    margin: 0;
+
+    font-size: 13px;
+
+    color: #6C757D;
+}
+
+
+/* =========================================
+   BODY
+========================================= */
+
+.provider-details-body {
+    padding: 22px;
+}
+
+
+/* =========================================
+   PROVIDER MAIN
+========================================= */
+
+.provider-main {
+    margin-bottom: 25px;
+
+    padding-bottom: 20px;
+
+    border-bottom: 1px solid #E5E7EB;
+}
+
+
+.provider-main h2 {
+    margin: 0 0 5px;
+
+    font-size: 20px;
+
+    font-weight: 600;
+
+    color: #0F766E;
+}
+
+
+.provider-main p {
+    margin: 0;
+
+    font-size: 12px;
+
+    color: #6C757D;
+}
+
+
+/* =========================================
+   DETAILS SECTION
+========================================= */
+
+.details-section {
+    margin-bottom: 25px;
+}
+
+
+.details-section h3 {
+    margin: 0 0 15px;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    color: #212529;
+}
+
+
+/* =========================================
+   DETAILS GRID
+========================================= */
+
+.details-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 0;
+
+    border: 1px solid #E5E7EB;
+
+    border-radius: 6px;
+}
+
+
+.details-item {
+    min-width: 0;
+
+    padding: 14px;
+
+    border-right: 1px solid #E5E7EB;
+
+    border-bottom: 1px solid #E5E7EB;
+}
+
+
+.details-item:nth-child(2n) {
+    border-right: none;
+}
+
+
+.details-item:nth-last-child(-n + 2) {
+    border-bottom: none;
+}
+
+
+.details-item span {
+    display: block;
+
+    margin-bottom: 6px;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    color: #6C757D;
+
+    text-transform: uppercase;
+}
+
+
+.details-item strong {
+    display: block;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+
+    font-weight: 500;
+
+    color: #212529;
+
+    word-break: break-word;
+}
+
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+.provider-details-buttons {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding-top: 5px;
+}
+
+
+.book-service-button,
+.back-button {
+    display: inline-block;
+
+    padding: 9px 14px;
+
+    border-radius: 5px;
+
+    font-size: 13px;
+
+    text-decoration: none;
+}
+
+
+.book-service-button {
+    color: #FFFFFF;
+
+    background: #0F766E;
+
+    border: 1px solid #0F766E;
+}
+
+
+.book-service-button:hover {
+    background: #115E59;
+
+    border-color: #115E59;
+}
+
+
+.back-button {
+    color: #212529;
+
+    background: #FFFFFF;
+
+    border: 1px solid #CED4DA;
+}
+
+
+.back-button:hover {
+    background: #F8F9FA;
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 650px) {
+
+    .provider-details-header {
+        padding: 17px;
+    }
+
+
+    .provider-details-header h1 {
+        font-size: 19px;
+    }
+
+
+    .provider-details-body {
+        padding: 17px;
+    }
+
+
+    .details-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .details-item {
+        border-right: none;
+    }
+
+
+    .details-item:nth-last-child(-n + 2) {
+        border-bottom: 1px solid #E5E7EB;
+    }
+
+
+    .details-item:last-child {
+        border-bottom: none;
+    }
+
+
+    .provider-details-buttons {
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+
+    .book-service-button,
+    .back-button {
+        text-align: center;
+    }
+
+}

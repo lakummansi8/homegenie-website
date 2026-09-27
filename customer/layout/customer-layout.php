@@ -8,6 +8,8 @@ if (!isset($_SESSION["user_id"]))
 
 $pageTitle = $pageTitle ?? "Customer Dashboard";
 
+$currentPage = basename($_SERVER["PHP_SELF"]);
+
 ?>
 
 <!DOCTYPE html>
@@ -51,6 +53,7 @@ $pageTitle = $pageTitle ?? "Customer Dashboard";
 
     <aside class="sidebar">
 
+
         <div class="sidebar-brand">
 
             <h1>
@@ -66,28 +69,51 @@ $pageTitle = $pageTitle ?? "Customer Dashboard";
 
         <nav class="sidebar-nav">
 
-            <a href="/homegenie-website/customer/dashboard.php">
+
+            <a
+                href="/homegenie-website/customer/dashboard.php"
+                class="<?php if ($currentPage == "dashboard.php") echo "active"; ?>"
+            >
                 Dashboard
             </a>
 
-            <a href="/homegenie-website/customer/services.php">
+
+            <a
+                href="/homegenie-website/customer/services.php"
+                class="<?php if ($currentPage == "services.php") echo "active"; ?>"
+            >
                 Services
             </a>
 
-            <a href="/homegenie-website/customer/my-bookings.php">
+
+            <a
+                href="/homegenie-website/customer/my-bookings.php"
+                class="<?php if ($currentPage == "my-bookings.php") echo "active"; ?>"
+            >
                 My Bookings
             </a>
 
-            <a href="/homegenie-website/customer/profile.php">
+
+            <a
+                href="/homegenie-website/customer/profile.php"
+                class="<?php if ($currentPage == "profile.php") echo "active"; ?>"
+            >
                 My Profile
             </a>
 
-            <a href="/homegenie-website/customer/reviews.php">
+
+            <a
+                href="/homegenie-website/customer/reviews.php"
+                class="<?php if ($currentPage == "reviews.php") echo "active"; ?>"
+            >
                 Reviews
             </a>
 
+
         </nav>
 
+
+        <!-- Sidebar Bottom -->
 
         <div class="sidebar-bottom">
 
@@ -100,6 +126,7 @@ $pageTitle = $pageTitle ?? "Customer Dashboard";
 
         </div>
 
+
     </aside>
 
 
@@ -111,6 +138,7 @@ $pageTitle = $pageTitle ?? "Customer Dashboard";
         <!-- Top Header -->
 
         <header class="top-header">
+
 
             <div class="header-title">
 
@@ -137,6 +165,7 @@ $pageTitle = $pageTitle ?? "Customer Dashboard";
 
             </div>
 
+
         </header>
 
 
@@ -157,6 +186,7 @@ $pageTitle = $pageTitle ?? "Customer Dashboard";
 
 
     </main>
+
 
 </div>
 

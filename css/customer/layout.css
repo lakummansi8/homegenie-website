@@ -95,6 +95,20 @@ body {
 }
 
 
+/* Active Navigation */
+
+.sidebar-nav a.active {
+    background: #FFFFFF;
+    color: #0F766E;
+    font-weight: 600;
+}
+
+.sidebar-nav a.active:hover {
+    background: #FFFFFF;
+    color: #0F766E;
+}
+
+
 /* Sidebar Bottom */
 
 .sidebar-bottom {

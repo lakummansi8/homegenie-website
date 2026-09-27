@@ -111,8 +111,12 @@ header{
     z-index: 1000;
 }
 
-
+.container
+{
+    width: 100%;
+}
 .navContainer{
+    width: 100%;
     display: flex;
     justify-content: space-between;
     padding: 4px 10px;

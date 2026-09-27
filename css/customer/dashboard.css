@@ -1,9 +1,15 @@
+/* =========================================
+   CUSTOMER DASHBOARD
+========================================= */
+
 .customer-dashboard {
     width: 100%;
 }
 
 
-/* Dashboard Heading */
+/* =========================================
+   WELCOME SECTION
+========================================= */
 
 .dashboard-heading {
     margin-bottom: 24px;
@@ -27,61 +33,68 @@
 }
 
 
-/* Dashboard Card */
+/* =========================================
+   DASHBOARD CARD
+========================================= */
 
 .dashboard-card {
-    margin-top: 24px;
+    width: 100%;
+
+    margin-bottom: 24px;
 
     background: #FFFFFF;
 
     border: 1px solid #E5E7EB;
 
     border-radius: 8px;
-
-    overflow: hidden;
 }
 
 
-/* Card Header */
+/* =========================================
+   CARD TOP SECTION
+========================================= */
 
 .dashboard-card-header {
     display: flex;
 
     align-items: center;
-
     justify-content: space-between;
 
-    padding: 14px 16px;
+    padding: 16px 18px;
 
-    background: #212529;
+    background: #FFFFFF;
 
-    color: #FFFFFF;
+    border-bottom: 1px solid #E5E7EB;
+
+    border-radius: 8px 8px 0 0;
 }
 
 .dashboard-card-header h2 {
     margin: 0;
 
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
 
-    color: #FFFFFF;
+    color: #212529;
 }
 
 
-/* Edit Button */
+/* =========================================
+   EDIT PROFILE BUTTON
+========================================= */
 
 .edit-button {
     display: inline-block;
 
-    padding: 8px 12px;
+    padding: 7px 12px;
+
+    background: #0F766E;
+
+    border: 1px solid #0F766E;
 
     border-radius: 5px;
 
-    background: #FFFFFF;
-
-    border: 1px solid #DEE2E6;
-
-    color: #212529;
+    color: #FFFFFF;
 
     font-size: 13px;
 
@@ -89,11 +102,15 @@
 }
 
 .edit-button:hover {
-    background: #F8F9FA;
+    background: #115E59;
+
+    border-color: #115E59;
 }
 
 
-/* Booking Summary */
+/* =========================================
+   BOOKING SUMMARY
+========================================= */
 
 .booking-summary {
     display: grid;
@@ -104,8 +121,16 @@
 }
 
 
+/* =========================================
+   BOOKING SUMMARY BOX
+========================================= */
+
 .summary-box {
+    min-height: 120px;
+
     padding: 20px;
+
+    background: #FFFFFF;
 
     border-right: 1px solid #E5E7EB;
 }
@@ -113,6 +138,7 @@
 .summary-box:last-child {
     border-right: none;
 }
+
 
 .summary-box p {
     margin: 0 0 10px;
@@ -122,18 +148,20 @@
     color: #6C757D;
 }
 
+
 .summary-box h3 {
     margin: 0;
 
     font-size: 28px;
-
     font-weight: 600;
 
     color: #0F766E;
 }
 
 
-/* Information */
+/* =========================================
+   MY INFORMATION
+========================================= */
 
 .information {
     width: 100%;
@@ -142,7 +170,9 @@
 }
 
 
-/* Information Row */
+/* =========================================
+   INFORMATION ROW
+========================================= */
 
 .information-row {
     display: grid;
@@ -159,13 +189,16 @@
 }
 
 
-/* Information Item */
+/* =========================================
+   INFORMATION ITEM
+========================================= */
 
 .information-item {
-    padding: 16px 14px;
-
     min-width: 0;
+
+    padding: 17px 14px;
 }
+
 
 .information-item label {
     display: block;
@@ -178,6 +211,7 @@
 
     color: #6C757D;
 }
+
 
 .information-item p {
     margin: 0;
@@ -192,18 +226,20 @@
 }
 
 
-/* Status */
+/* =========================================
+   ACCOUNT STATUS
+========================================= */
 
 .information-item p.status {
     display: inline-block;
 
-    padding: 5px 9px;
-
-    border-radius: 5px;
+    padding: 5px 10px;
 
     background: #D4EDDA;
 
     border: 1px solid #C3E6CB;
+
+    border-radius: 5px;
 
     color: #155724;
 
@@ -211,13 +247,16 @@
 }
 
 
-/* Tablet */
+/* =========================================
+   TABLET
+========================================= */
 
-@media (max-width: 900px) {
+@media (max-width: 1000px) {
 
     .booking-summary {
         grid-template-columns: repeat(2, 1fr);
     }
+
 
     .summary-box {
         border-right: none;
@@ -225,9 +264,11 @@
         border-bottom: 1px solid #E5E7EB;
     }
 
+
     .summary-box:nth-child(odd) {
         border-right: 1px solid #E5E7EB;
     }
+
 
     .summary-box:nth-child(3),
     .summary-box:nth-child(4) {
@@ -242,25 +283,46 @@
 }
 
 
-/* Mobile */
+/* =========================================
+   MOBILE
+========================================= */
 
-@media (max-width: 600px) {
+@media (max-width: 650px) {
+
+    .dashboard-heading {
+        margin-bottom: 18px;
+    }
+
 
     .dashboard-heading h1 {
         font-size: 22px;
     }
+
 
     .dashboard-heading p {
         font-size: 13px;
     }
 
 
-    .dashboard-card-header {
-        padding: 13px 14px;
+    .dashboard-card {
+        margin-bottom: 18px;
     }
+
+
+    .dashboard-card-header {
+        padding: 14px;
+    }
+
 
     .dashboard-card-header h2 {
         font-size: 14px;
+    }
+
+
+    .edit-button {
+        padding: 6px 9px;
+
+        font-size: 12px;
     }
 
 
@@ -268,14 +330,25 @@
         grid-template-columns: 1fr;
     }
 
+
     .summary-box {
+        min-height: auto;
+
+        padding: 17px;
+
         border-right: none !important;
 
         border-bottom: 1px solid #E5E7EB;
     }
 
+
     .summary-box:last-child {
         border-bottom: none;
+    }
+
+
+    .summary-box h3 {
+        font-size: 26px;
     }
 
 
@@ -283,11 +356,13 @@
         padding: 0 12px;
     }
 
+
     .information-row {
         grid-template-columns: 1fr;
 
         border-bottom: none;
     }
+
 
     .information-item {
         padding: 14px 8px;
@@ -295,8 +370,42 @@
         border-bottom: 1px solid #E5E7EB;
     }
 
+
     .information-row:last-child .information-item:last-child {
         border-bottom: none;
+    }
+
+}
+
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 400px) {
+
+    .dashboard-heading h1 {
+        font-size: 20px;
+    }
+
+
+    .dashboard-heading p {
+        font-size: 12px;
+    }
+
+
+    .dashboard-card-header {
+        padding: 13px;
+    }
+
+
+    .summary-box {
+        padding: 15px;
+    }
+
+
+    .information {
+        padding: 0 10px;
     }
 
 }

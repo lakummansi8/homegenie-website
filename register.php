@@ -1,7 +1,5 @@
 <?php
 
-session_start();
-
 ?>
 
 <!DOCTYPE html>
@@ -10,11 +8,18 @@ session_start();
 <head>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Customer Registration - HomeGenie</title>
 
-    <link rel="stylesheet" href="customer.css?v=10">
+    <link
+        rel="stylesheet"
+        href="css/register.css"
+    >
 
 </head>
 
@@ -22,26 +27,43 @@ session_start();
 
 <div class="customer-register-page">
 
+
     <div class="customer-register-card">
 
-        <a href="../index.php" class="customer-register-back">
+
+        <a
+            href="index.php"
+            class="customer-register-back"
+        >
             ← Back to Home
         </a>
 
+
         <div class="customer-register-heading">
 
-            <h1>HomeGenie</h1>
-            <p>Create your customer account</p>
+            <h1>
+                HomeGenie
+            </h1>
+
+            <p>
+                Create your customer account
+            </p>
 
         </div>
 
-        <form action="register-process.php" method="POST">
+
+        <form
+            action="./register-process.php"
+            method="POST"
+        >
 
             <div class="customer-register-row">
 
                 <div class="customer-register-field">
 
-                    <label>Full Name</label>
+                    <label>
+                        Full Name
+                    </label>
 
                     <input
                         type="text"
@@ -52,9 +74,12 @@ session_start();
 
                 </div>
 
+
                 <div class="customer-register-field">
 
-                    <label>Email</label>
+                    <label>
+                        Email
+                    </label>
 
                     <input
                         type="email"
@@ -68,11 +93,14 @@ session_start();
 
             </div>
 
+
             <div class="customer-register-row">
 
                 <div class="customer-register-field">
 
-                    <label>Phone</label>
+                    <label>
+                        Phone
+                    </label>
 
                     <input
                         type="text"
@@ -83,9 +111,12 @@ session_start();
 
                 </div>
 
+
                 <div class="customer-register-field">
 
-                    <label>City</label>
+                    <label>
+                        City
+                    </label>
 
                     <input
                         type="text"
@@ -98,9 +129,12 @@ session_start();
 
             </div>
 
+
             <div class="customer-register-field">
 
-                <label>Password</label>
+                <label>
+                    Password
+                </label>
 
                 <input
                     type="password"
@@ -112,9 +146,12 @@ session_start();
 
             </div>
 
+
             <div class="customer-register-field">
 
-                <label>Address</label>
+                <label>
+                    Address
+                </label>
 
                 <textarea
                     name="address"
@@ -124,6 +161,7 @@ session_start();
 
             </div>
 
+
             <button
                 type="submit"
                 name="register"
@@ -132,19 +170,23 @@ session_start();
                 Create Account
             </button>
 
+
         </form>
+
 
         <div class="customer-register-login">
 
             Already have an account?
 
-            <a href="../auth/login.php">
+            <a href="auth/login.php">
                 Sign In
             </a>
 
         </div>
 
+
     </div>
+
 
 </div>
 
