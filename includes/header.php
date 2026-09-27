@@ -3,6 +3,8 @@
 $pageTitle = $pageTitle ?? "HomeGenie";
 $pageCss = $pageCss ?? "";
 
+$currentPage = basename($_SERVER['PHP_SELF']);
+
 ?>
 
 <!DOCTYPE html>
@@ -34,6 +36,25 @@ $pageCss = $pageCss ?? "";
         >
 
     <?php endif; ?>
+
+    <style>
+
+        .links a.active{
+            color: #0F766E !important;
+            font-weight: 700 !important;
+            background-color: #F0FDFA !important;
+            border-radius: 6px !important;
+        }
+
+        .links a.active::after{
+            display: none !important;
+        }
+
+        .links a.active:hover{
+            color: #115E59 !important;
+        }
+
+    </style>
 
 </head>
 
@@ -67,23 +88,38 @@ $pageCss = $pageCss ?? "";
 
             <div class="links">
 
-                <a href="/homegenie-website/index.php">
+                <a
+                    href="/homegenie-website/index.php"
+                    class="<?php echo $currentPage === 'index.php' ? 'active' : ''; ?>"
+                >
                     Home
                 </a>
 
-                <a href="/homegenie-website/about.php">
+                <a
+                    href="/homegenie-website/about.php"
+                    class="<?php echo $currentPage === 'about.php' ? 'active' : ''; ?>"
+                >
                     About
                 </a>
 
-                <a href="/homegenie-website/services.php">
+                <a
+                    href="/homegenie-website/services.php"
+                    class="<?php echo $currentPage === 'services.php' ? 'active' : ''; ?>"
+                >
                     Services
                 </a>
 
-                <a href="/homegenie-website/provider-register.php">
+                <a
+                    href="/homegenie-website/provider-register.php"
+                    class="<?php echo $currentPage === 'provider-register.php' ? 'active' : ''; ?>"
+                >
                     Become a Provider
                 </a>
 
-                <a href="/homegenie-website/contact.php">
+                <a
+                    href="/homegenie-website/contact.php"
+                    class="<?php echo $currentPage === 'contact.php' ? 'active' : ''; ?>"
+                >
                     Contact Us
                 </a>
 
@@ -104,3 +140,4 @@ $pageCss = $pageCss ?? "";
         </div>
 
     </header>
+
