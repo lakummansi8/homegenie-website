@@ -67,6 +67,17 @@ body {
     color: #ffffff;
 }
 
+.provider-nav-link.active {
+    background: #ffffff;
+    color: #0f766e;
+    font-weight: 600;
+}
+
+.provider-nav-link.active:hover {
+    background: #ffffff;
+    color: #0f766e;
+}
+
 .provider-sidebar-bottom {
     margin-top: auto;
     padding: 18px 14px;
@@ -152,4 +163,11 @@ body {
     .provider-content {
         padding: 20px;
     }
+}
+
+body {
+    cursor: default;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
 }

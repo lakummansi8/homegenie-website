@@ -360,7 +360,7 @@ font-weight: 700;
 
 letter-spacing: 0.8px;
 
-color: #9ca3af;
+color: #040404;
 
 margin-bottom: 12px;
 
@@ -581,6 +581,15 @@ body {
 
 .mobile-menu-button {
     display: block;
+    color: wheat;
+    width: 200px;
+}
+.mobile-menu-title {
+
+
+color: #fff9f9;
+
+
 }
 
 .sidebar {
@@ -628,4 +637,11 @@ SMALL MOBILE
 }
 
 
+}
+
+body {
+    cursor: default;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
 }
