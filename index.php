@@ -1,77 +1,39 @@
 <?php
 
 require_once "config/db.php";
-/*hello*/
+
 $pageTitle = "HomeGenie";
 $pageCss = "home.css";
 
 
-$servicesQuery = "
-    SELECT
-        s.service_id,
-        s.service_name,
-        s.description,
-        s.price,
-        s.service_image,
-        c.category_name,
-        sp.full_name AS provider_name
-    FROM services s
-    LEFT JOIN categories c
-        ON s.category_id = c.category_id
-    LEFT JOIN service_providers sp
-        ON s.provider_id = sp.provider_id
-    WHERE s.service_status = 'Active'
-    ORDER BY s.service_id DESC
-    LIMIT 6
-";
-
-$servicesResult = $conn->query($servicesQuery);
+// Get active services
+$servicesResult = $conn->query(
+    "SELECT * FROM services
+     WHERE service_status = 'Active'
+     ORDER BY service_id DESC
+     LIMIT 6"
+);
 
 
-$providersQuery = "
-    SELECT
-        sp.provider_id,
-        sp.full_name,
-        sp.experience,
-        sp.area,
-        sp.city,
-        sp.profile_image,
-        c.category_name
-    FROM service_providers sp
-    LEFT JOIN categories c
-        ON sp.category_id = c.category_id
-    WHERE sp.account_status = 'Active'
-    ORDER BY sp.provider_id DESC
-    LIMIT 3
-";
-
-$providersResult = $conn->query($providersQuery);
+// Get active service providers
+$providersResult = $conn->query(
+    "SELECT * FROM service_providers
+     WHERE account_status = 'Active'
+     ORDER BY provider_id DESC
+     LIMIT 3"
+);
 
 
-$reviewsQuery = "
-    SELECT
-        r.review_id,
-        r.rating,
-        r.review_comment,
-        r.created_at,
-        u.full_name AS customer_name,
-        s.service_name
-    FROM reviews r
-    LEFT JOIN users u
-        ON r.user_id = u.user_id
-    LEFT JOIN bookings b
-        ON r.booking_id = b.booking_id
-    LEFT JOIN services s
-        ON b.service_id = s.service_id
-    ORDER BY r.created_at DESC
-    LIMIT 3
-";
-
-$reviewsResult = $conn->query($reviewsQuery);
+// Get latest reviews
+$reviewsResult = $conn->query(
+    "SELECT * FROM reviews
+     ORDER BY created_at DESC
+     LIMIT 3"
+);
 
 ?>
 
-<?php include "includes/header.php" ; ?>
+<?php include "includes/header.php"; ?>
 
 
 <main class="home-page">
@@ -242,6 +204,15 @@ $reviewsResult = $conn->query($reviewsQuery);
 
                     <?php while ($service = $servicesResult->fetch_assoc()): ?>
 
+                        <?php
+                        $categoryResult = $conn->query(
+                            "SELECT category_name FROM categories
+                             WHERE category_id = " . $service["category_id"]
+                        );
+
+                        $category = $categoryResult->fetch_assoc();
+                        ?>
+
                         <div class="service-card">
 
                             <div class="service-image">
@@ -266,38 +237,21 @@ $reviewsResult = $conn->query($reviewsQuery);
                             <div class="service-card-content">
 
                                 <span class="service-category">
-                                    <?php
-                                    echo htmlspecialchars(
-                                        $service["category_name"] ?? "Home Service"
-                                    );
-                                    ?>
+                                    <?php echo htmlspecialchars($category["category_name"] ?? "Home Service"); ?>
                                 </span>
 
                                 <h3>
-                                    <?php
-                                    echo htmlspecialchars(
-                                        $service["service_name"]
-                                    );
-                                    ?>
+                                    <?php echo htmlspecialchars($service["service_name"]); ?>
                                 </h3>
 
                                 <p>
-                                    <?php
-                                    echo htmlspecialchars(
-                                        $service["description"]
-                                    );
-                                    ?>
+                                    <?php echo htmlspecialchars($service["description"]); ?>
                                 </p>
 
                                 <div class="service-bottom">
 
                                     <strong>
-                                        ₹<?php
-                                        echo number_format(
-                                            (float)$service["price"],
-                                            2
-                                        );
-                                        ?>
+                                        ₹<?php echo number_format($service["price"], 2); ?>
                                     </strong>
 
                                     <a href="services.php">
@@ -363,6 +317,15 @@ $reviewsResult = $conn->query($reviewsQuery);
 
                     <?php while ($provider = $providersResult->fetch_assoc()): ?>
 
+                        <?php
+                        $categoryResult = $conn->query(
+                            "SELECT category_name FROM categories
+                             WHERE category_id = " . $provider["category_id"]
+                        );
+
+                        $category = $categoryResult->fetch_assoc();
+                        ?>
+
                         <div class="provider-card">
 
                             <div class="provider-image">
@@ -377,15 +340,7 @@ $reviewsResult = $conn->query($reviewsQuery);
                                 <?php else: ?>
 
                                     <div class="provider-placeholder">
-                                        <?php
-                                        echo strtoupper(
-                                            substr(
-                                                $provider["full_name"],
-                                                0,
-                                                1
-                                            )
-                                        );
-                                        ?>
+                                        <?php echo strtoupper(substr($provider["full_name"], 0, 1)); ?>
                                     </div>
 
                                 <?php endif; ?>
@@ -395,44 +350,23 @@ $reviewsResult = $conn->query($reviewsQuery);
                             <div class="provider-card-content">
 
                                 <h3>
-                                    <?php
-                                    echo htmlspecialchars(
-                                        $provider["full_name"]
-                                    );
-                                    ?>
+                                    <?php echo htmlspecialchars($provider["full_name"]); ?>
                                 </h3>
 
                                 <span class="provider-category">
-                                    <?php
-                                    echo htmlspecialchars(
-                                        $provider["category_name"] ??
-                                        "Service Provider"
-                                    );
-                                    ?>
+                                    <?php echo htmlspecialchars($category["category_name"] ?? "Service Provider"); ?>
                                 </span>
 
                                 <p>
-                                    <?php
-                                    echo htmlspecialchars(
-                                        $provider["experience"]
-                                    );
-                                    ?>
+                                    <?php echo htmlspecialchars($provider["experience"]); ?>
                                     years experience
                                 </p>
 
                                 <p class="provider-location">
 
-                                    <?php
-                                    echo htmlspecialchars(
-                                        $provider["area"]
-                                    );
-                                    ?>,
+                                    <?php echo htmlspecialchars($provider["area"]); ?>,
                                     
-                                    <?php
-                                    echo htmlspecialchars(
-                                        $provider["city"]
-                                    );
-                                    ?>
+                                    <?php echo htmlspecialchars($provider["city"]); ?>
 
                                 </p>
 
@@ -585,13 +519,47 @@ $reviewsResult = $conn->query($reviewsQuery);
 
                     <?php while ($review = $reviewsResult->fetch_assoc()): ?>
 
+                        <?php
+                        $userResult = $conn->query(
+                            "SELECT full_name FROM users
+                             WHERE user_id = " . $review["user_id"]
+                        );
+
+                        $user = $userResult->fetch_assoc();
+
+
+                        $bookingResult = $conn->query(
+                            "SELECT service_id FROM bookings
+                             WHERE booking_id = " . $review["booking_id"]
+                        );
+
+                        $booking = $bookingResult->fetch_assoc();
+
+
+                        $serviceName = "Home Service";
+
+                        if ($booking) {
+
+                            $serviceResult = $conn->query(
+                                "SELECT service_name FROM services
+                                 WHERE service_id = " . $booking["service_id"]
+                            );
+
+                            $service = $serviceResult->fetch_assoc();
+
+                            if ($service) {
+                                $serviceName = $service["service_name"];
+                            }
+                        }
+                        ?>
+
                         <div class="testimonial-card">
 
                             <div class="rating">
 
                                 <?php
 
-                                $rating = (int)$review["rating"];
+                                $rating = $review["rating"];
 
                                 for ($i = 1; $i <= 5; $i++) {
 
@@ -609,32 +577,18 @@ $reviewsResult = $conn->query($reviewsQuery);
 
                             <p class="review-text">
 
-                                "<?php
-                                echo htmlspecialchars(
-                                    $review["review_comment"]
-                                );
-                                ?>"
+                                "<?php echo htmlspecialchars($review["review_comment"]); ?>"
 
                             </p>
 
                             <div class="review-user">
 
                                 <strong>
-                                    <?php
-                                    echo htmlspecialchars(
-                                        $review["customer_name"] ??
-                                        "Customer"
-                                    );
-                                    ?>
+                                    <?php echo htmlspecialchars($user["full_name"] ?? "Customer"); ?>
                                 </strong>
 
                                 <span>
-                                    <?php
-                                    echo htmlspecialchars(
-                                        $review["service_name"] ??
-                                        "Home Service"
-                                    );
-                                    ?>
+                                    <?php echo htmlspecialchars($serviceName); ?>
                                 </span>
 
                             </div>
