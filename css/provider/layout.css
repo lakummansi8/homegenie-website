@@ -87,6 +87,7 @@ body {
     display: block;
     text-decoration: none;
     color: #ffffff;
+    background: #115E59;
     padding: 12px 14px;
     border-radius: 8px;
     font-size: 15px;
@@ -94,7 +95,7 @@ body {
 }
 
 .provider-logout:hover {
-    background: rgba(255, 255, 255, 0.12);
+    background: #0B4F4A;
 }
 
 .provider-main {

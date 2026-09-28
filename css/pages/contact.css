@@ -1,5 +1,6 @@
 .contact-page {
     width: 100%;
+    background: #D8EEE8;
 }
 
 
@@ -12,7 +13,7 @@
     justify-content: center;
     text-align: center;
     padding: 70px 30px;
-    background: #f0fdfa;
+    background: #D8EEE8;
 }
 
 .contact-hero-content {
@@ -21,7 +22,7 @@
 
 .section-label {
     display: block;
-    color: #0f766e;
+    color: #0F766E;
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 1.5px;
@@ -37,11 +38,11 @@
 
 .contact-hero h1 span {
     display: block;
-    color: #0f766e;
+    color: #0F766E;
 }
 
 .contact-hero p {
-    color: #6b7280;
+    color: #6B7280;
     font-size: 17px;
     line-height: 1.7;
     max-width: 650px;
@@ -52,7 +53,7 @@
 /* Contact Section */
 
 .contact-section {
-    background: #ffffff;
+    background: #D8EEE8;
 }
 
 .contact-container {
@@ -78,7 +79,7 @@
 }
 
 .contact-info > p {
-    color: #6b7280;
+    color: #6B7280;
     font-size: 15px;
     line-height: 1.7;
     margin-bottom: 35px;
@@ -100,8 +101,8 @@
     width: 45px;
     height: 45px;
     border-radius: 8px;
-    background: #f0fdfa;
-    color: #0f766e;
+    background: #CDE8E0;
+    color: #0F766E;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -116,7 +117,7 @@
 }
 
 .contact-detail span {
-    color: #9ca3af;
+    color: #9CA3AF;
     font-size: 12px;
 }
 
@@ -129,8 +130,8 @@
 /* Form */
 
 .contact-form-box {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
+    background: #FFFFFF;
+    border: 1px solid #D5E8E3;
     border-radius: 10px;
     padding: 35px;
 }
@@ -142,7 +143,7 @@
 }
 
 .contact-form-box > p {
-    color: #6b7280;
+    color: #6B7280;
     font-size: 14px;
     margin-bottom: 25px;
 }
@@ -171,9 +172,9 @@
 .form-group textarea {
     width: 100%;
     padding: 11px 13px;
-    border: 1px solid #d1d5db;
+    border: 1px solid #D1D5DB;
     border-radius: 6px;
-    background: #ffffff;
+    background: #FFFFFF;
     color: #111827;
     font-family: "Outfit", sans-serif;
     font-size: 14px;
@@ -182,7 +183,7 @@
 
 .form-group input:focus,
 .form-group textarea:focus {
-    border-color: #0f766e;
+    border-color: #0F766E;
 }
 
 .form-group textarea {
@@ -191,8 +192,8 @@
 
 .contact-submit {
     border: none;
-    background: #0f766e;
-    color: #ffffff;
+    background: #0F766E;
+    color: #FFFFFF;
     padding: 12px 22px;
     border-radius: 6px;
     font-family: "Outfit", sans-serif;
@@ -202,7 +203,7 @@
 }
 
 .contact-submit:hover {
-    background: #115e59;
+    background: #115E59;
 }
 
 
@@ -216,22 +217,22 @@
 }
 
 .form-message.success {
-    background: #ecfdf5;
-    border: 1px solid #a7f3d0;
+    background: #ECFDF5;
+    border: 1px solid #A7F3D0;
     color: #047857;
 }
 
 .form-message.error {
-    background: #fef2f2;
-    border: 1px solid #fecaca;
-    color: #b91c1c;
+    background: #FEF2F2;
+    border: 1px solid #FECACA;
+    color: #B91C1C;
 }
 
 
 /* CTA */
 
 .contact-cta {
-    background: #f0fdfa;
+    background: #D8EEE8;
 }
 
 .contact-cta-content {
@@ -248,15 +249,15 @@
 }
 
 .contact-cta p {
-    color: #6b7280;
+    color: #6B7280;
     font-size: 15px;
     margin-bottom: 25px;
 }
 
 .cta-button {
     display: inline-block;
-    background: #0f766e;
-    color: #ffffff;
+    background: #0F766E;
+    color: #FFFFFF;
     text-decoration: none;
     padding: 12px 22px;
     border-radius: 6px;
@@ -265,7 +266,7 @@
 }
 
 .cta-button:hover {
-    background: #115e59;
+    background: #115E59;
 }
 
 

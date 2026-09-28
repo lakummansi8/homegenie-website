@@ -1,5 +1,6 @@
 .about-page {
     width: 100%;
+    background: #D8EEE8;
 }
 
 
@@ -12,7 +13,7 @@
     justify-content: center;
     text-align: center;
     padding: 70px 30px;
-    background: #f0fdfa;
+    background: #D8EEE8;
 }
 
 .about-hero-content {
@@ -21,7 +22,7 @@
 
 .section-label {
     display: block;
-    color: #0f766e;
+    color: #0F766E;
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 1.5px;
@@ -37,13 +38,13 @@
 
 .about-hero h1 span {
     display: block;
-    color: #0f766e;
+    color: #0F766E;
 }
 
 .about-hero p {
     max-width: 650px;
     margin: 0 auto;
-    color: #6b7280;
+    color: #6B7280;
     font-size: 17px;
     line-height: 1.7;
 }
@@ -61,7 +62,7 @@
 /* Introduction */
 
 .about-introduction {
-    background: #ffffff;
+    background: #D8EEE8;
 }
 
 .about-intro-content {
@@ -75,7 +76,7 @@
 }
 
 .about-intro-content p {
-    color: #6b7280;
+    color: #6B7280;
     line-height: 1.7;
     margin-bottom: 15px;
 }
@@ -84,15 +85,15 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     margin-top: 45px;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #D5E8E3;
     border-radius: 10px;
     overflow: hidden;
 }
 
 .intro-box-item {
     padding: 28px;
-    background: #fafafa;
-    border-right: 1px solid #e5e7eb;
+    background: #FFFFFF;
+    border-right: 1px solid #D5E8E3;
 }
 
 .intro-box-item:last-child {
@@ -101,13 +102,13 @@
 
 .intro-box-item strong {
     display: block;
-    color: #0f766e;
+    color: #0F766E;
     font-size: 21px;
     margin-bottom: 7px;
 }
 
 .intro-box-item span {
-    color: #6b7280;
+    color: #6B7280;
     font-size: 14px;
     line-height: 1.5;
 }
@@ -126,7 +127,7 @@
 }
 
 .section-heading p {
-    color: #6b7280;
+    color: #6B7280;
     line-height: 1.6;
 }
 
@@ -134,7 +135,7 @@
 /* How It Works */
 
 .how-section {
-    background: #f8fafc;
+    background: #D8EEE8;
 }
 
 .steps-grid {
@@ -144,14 +145,14 @@
 }
 
 .step-card {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
+    background: #FFFFFF;
+    border: 1px solid #D5E8E3;
     border-radius: 10px;
     padding: 28px;
 }
 
 .step-number {
-    color: #f59e0b;
+    color: #F59E0B;
     font-size: 14px;
     font-weight: 600;
     margin-bottom: 25px;
@@ -164,7 +165,7 @@
 }
 
 .step-card p {
-    color: #6b7280;
+    color: #6B7280;
     font-size: 14px;
     line-height: 1.7;
 }
@@ -173,7 +174,7 @@
 /* Services */
 
 .offer-section {
-    background: #ffffff;
+    background: #D8EEE8;
 }
 
 .offer-grid {
@@ -184,19 +185,19 @@
 
 .offer-card {
     padding: 28px;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #D5E8E3;
     border-radius: 10px;
-    background: #ffffff;
+    background: #FFFFFF;
 }
 
 .offer-card h3 {
-    color: #0f766e;
+    color: #0F766E;
     font-size: 19px;
     margin-bottom: 10px;
 }
 
 .offer-card p {
-    color: #6b7280;
+    color: #6B7280;
     font-size: 14px;
     line-height: 1.7;
 }
@@ -205,7 +206,7 @@
 /* Connection */
 
 .connection-section {
-    background: #f0fdfa;
+    background: #D8EEE8;
 }
 
 .connection-content {
@@ -220,7 +221,7 @@
 }
 
 .connection-content p {
-    color: #6b7280;
+    color: #6B7280;
     line-height: 1.7;
     margin-bottom: 12px;
 }
@@ -242,23 +243,23 @@
 }
 
 .primary-button {
-    background: #0f766e;
-    color: #ffffff;
+    background: #0F766E;
+    color: #FFFFFF;
 }
 
 .primary-button:hover {
-    background: #115e59;
+    background: #115E59;
 }
 
 .secondary-button {
-    background: #ffffff;
-    color: #0f766e;
-    border: 1px solid #0f766e;
+    background: #FFFFFF;
+    color: #0F766E;
+    border: 1px solid #0F766E;
 }
 
 .secondary-button:hover {
-    background: #0f766e;
-    color: #ffffff;
+    background: #0F766E;
+    color: #FFFFFF;
 }
 
 
@@ -314,7 +315,7 @@
 
     .intro-box-item {
         border-right: none;
-        border-bottom: 1px solid #e5e7eb;
+        border-bottom: 1px solid #E5E7EB;
     }
 
     .intro-box-item:last-child {

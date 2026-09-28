@@ -1,5 +1,6 @@
 .services-page {
     width: 100%;
+    background: #D8EEE8;
 }
 
 
@@ -12,7 +13,7 @@
     justify-content: center;
     text-align: center;
     padding: 70px 30px;
-    background: #f0fdfa;
+    background: #D8EEE8;
 }
 
 .services-hero-content {
@@ -21,7 +22,7 @@
 
 .section-label {
     display: block;
-    color: #0f766e;
+    color: #0F766E;
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 1.5px;
@@ -37,13 +38,13 @@
 
 .services-hero h1 span {
     display: block;
-    color: #0f766e;
+    color: #0F766E;
 }
 
 .services-hero p {
     max-width: 650px;
     margin: 0 auto;
-    color: #6b7280;
+    color: #6B7280;
     font-size: 17px;
     line-height: 1.7;
 }
@@ -52,7 +53,7 @@
 /* Services List */
 
 .services-list-section {
-    background: #ffffff;
+    background: #D8EEE8;
 }
 
 .services-container {
@@ -83,24 +84,24 @@
 .category-button {
     display: inline-block;
     padding: 9px 16px;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #D5E8E3;
     border-radius: 6px;
-    background: #ffffff;
-    color: #4b5563;
+    background: #FFFFFF;
+    color: #4B5563;
     text-decoration: none;
     font-size: 14px;
     transition: 0.3s;
 }
 
 .category-button:hover {
-    border-color: #0f766e;
-    color: #0f766e;
+    border-color: #0F766E;
+    color: #0F766E;
 }
 
 .category-button.active {
-    background: #0f766e;
-    border-color: #0f766e;
-    color: #ffffff;
+    background: #0F766E;
+    border-color: #0F766E;
+    color: #FFFFFF;
 }
 
 
@@ -116,8 +117,8 @@
 /* Service Card */
 
 .service-card {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
+    background: #FFFFFF;
+    border: 1px solid #D5E8E3;
     border-radius: 10px;
     overflow: hidden;
     transition: 0.3s;
@@ -132,7 +133,7 @@
 
 .service-image {
     height: 210px;
-    background: #f0fdfa;
+    background: #D5ECE6;
     overflow: hidden;
 }
 
@@ -147,7 +148,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #0f766e;
+    color: #0F766E;
     font-size: 14px;
 }
 
@@ -160,7 +161,7 @@
 
 .service-category {
     display: inline-block;
-    color: #0f766e;
+    color: #0F766E;
     font-size: 12px;
     font-weight: 500;
     margin-bottom: 8px;
@@ -173,7 +174,7 @@
 }
 
 .service-description {
-    color: #6b7280;
+    color: #6B7280;
     font-size: 14px;
     line-height: 1.6;
     min-height: 45px;
@@ -188,11 +189,11 @@
     gap: 3px;
     margin-top: 20px;
     padding-top: 15px;
-    border-top: 1px solid #e5e7eb;
+    border-top: 1px solid #E5E7EB;
 }
 
 .provider-info span {
-    color: #9ca3af;
+    color: #9CA3AF;
     font-size: 12px;
 }
 
@@ -218,7 +219,7 @@
 }
 
 .service-price small {
-    color: #9ca3af;
+    color: #9CA3AF;
     font-size: 11px;
 }
 
@@ -230,8 +231,8 @@
 
 .book-button {
     display: inline-block;
-    background: #0f766e;
-    color: #ffffff;
+    background: #0F766E;
+    color: #FFFFFF;
     text-decoration: none;
     padding: 10px 15px;
     border-radius: 6px;
@@ -240,7 +241,7 @@
 }
 
 .book-button:hover {
-    background: #115e59;
+    background: #115E59;
 }
 
 
@@ -259,14 +260,14 @@
 }
 
 .no-services p {
-    color: #6b7280;
+    color: #6B7280;
 }
 
 
 /* CTA */
 
 .services-cta {
-    background: #f0fdfa;
+    background: #D8EEE8;
 }
 
 .services-cta-content {
@@ -283,15 +284,15 @@
 }
 
 .services-cta p {
-    color: #6b7280;
+    color: #6B7280;
     line-height: 1.7;
     margin-bottom: 28px;
 }
 
 .cta-button {
     display: inline-block;
-    background: #0f766e;
-    color: #ffffff;
+    background: #0F766E;
+    color: #FFFFFF;
     text-decoration: none;
     padding: 12px 24px;
     border-radius: 6px;
@@ -300,7 +301,7 @@
 }
 
 .cta-button:hover {
-    background: #115e59;
+    background: #115E59;
 }
 
 

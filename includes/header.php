@@ -42,12 +42,12 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         .links a.active{
             color: #0F766E !important;
             font-weight: 700 !important;
-            background-color: #F0FDFA !important;
-            border-radius: 6px !important;
+            background-color: transparent !important;
+            border-radius: 0 !important;
         }
 
         .links a.active::after{
-            display: none !important;
+            display: block !important;
         }
 
         .links a.active:hover{
@@ -140,4 +140,3 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         </div>
 
     </header>
-
