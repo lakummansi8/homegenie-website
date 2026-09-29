@@ -234,7 +234,7 @@ $pageCss = $pageCss ?? "";
 
                        <i class="fa-solid fa-star"></i>
 
-                        <span>reviews</span>
+                        <span>Reviews</span>
 
                     </a>
 
@@ -323,6 +323,16 @@ $pageCss = $pageCss ?? "";
                 >
                     Bookings
                 </a>
+                <a
+                        href="<?php echo $adminPath; ?>pages/reviews/reviews.php"
+                        class="sidebar-link <?php echo ($currentPage == "reviews.php") ? "active" : ""; ?>"
+                    >
+
+                       <i class="fa-solid fa-star"></i>
+
+                        <span>Reviews</span>
+
+                    </a>
 
             </div>
 

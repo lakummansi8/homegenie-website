@@ -302,7 +302,7 @@ $reviewsResult = $conn->query(
                 </div>
 
                 <a
-                    href="providers.php"
+                    href="provider-view.php"
                     class="view-more"
                 >
                     View All Providers →
