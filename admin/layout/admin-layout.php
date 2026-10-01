@@ -237,6 +237,16 @@ $pageCss = $pageCss ?? "";
                         <span>Reviews</span>
 
                     </a>
+                     <a
+                        href="<?php echo $adminPath; ?>pages/contacts/contacts.php"
+                        class="sidebar-link <?php echo ($currentPage == "contacts.php") ? "active" : ""; ?>"
+                    >
+
+                       <i class="fa-solid fa-envelope"></i>
+
+                        <span>Contacts</span>
+
+                    </a>
 
                 </li>
 

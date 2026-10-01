@@ -98,7 +98,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 ?>
 
-
 <?php include "includes/header.php"; ?>
 
 
@@ -142,18 +141,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <div class="contact-info">
 
-                <span class="section-label">
-                    CONTACT US
-                </span>
+                <div class="section-heading">
 
-                <h2>
-                    Let's Talk
-                </h2>
+                    <span class="section-label">
+                        CONTACT US
+                    </span>
 
-                <p>
-                    Whether you need help with a service or have a
-                    question about HomeGenie, feel free to contact us.
-                </p>
+                    <h2>
+                        Let's Talk
+                    </h2>
+
+                    <p>
+                        Whether you need help with a service or have a
+                        question about HomeGenie, feel free to contact us.
+                    </p>
+
+                </div>
 
 
                 <div class="contact-details">
@@ -165,7 +168,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             @
                         </div>
 
-                        <div>
+                        <div class="contact-detail-content">
 
                             <span>
                                 Email
@@ -186,7 +189,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             #
                         </div>
 
-                        <div>
+                        <div class="contact-detail-content">
 
                             <span>
                                 Phone
@@ -207,7 +210,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             A
                         </div>
 
-                        <div>
+                        <div class="contact-detail-content">
 
                             <span>
                                 Location
@@ -231,17 +234,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <div class="contact-form-box">
 
+                <div class="form-heading">
 
-                <h2>
-                    Send Us a Message
-                </h2>
+                    <span class="section-label">
+                        SEND A MESSAGE
+                    </span>
 
-                <p>
-                    Fill out the form below and we will contact you.
-                </p>
+                    <h2>
+                        Contact Our Team
+                    </h2>
+
+                    <p>
+                        Fill out the form below and we will get back to you.
+                    </p>
+
+                </div>
 
 
-                <?php if ($message !== ""): ?>
+                <?php if ($message !== "") { ?>
 
                     <div class="form-message <?php echo $messageType; ?>">
 
@@ -249,7 +259,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     </div>
 
-                <?php endif; ?>
+                <?php } ?>
 
 
                 <form
@@ -273,7 +283,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 id="full_name"
                                 name="full_name"
                                 placeholder="Enter your name"
-                                autocomplete="off"
                                 required
                             >
 
@@ -291,7 +300,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 id="email"
                                 name="email"
                                 placeholder="Enter your email"
-                                autocomplete="off"
                                 required
                             >
 
@@ -315,7 +323,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 id="phone"
                                 name="phone"
                                 placeholder="Enter your phone number"
-                                autocomplete="off"
                                 required
                             >
 
@@ -333,7 +340,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 id="subject"
                                 name="subject"
                                 placeholder="Enter subject"
-                                autocomplete="off"
                                 required
                             >
 
@@ -354,7 +360,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             name="message"
                             rows="6"
                             placeholder="Write your message here..."
-                            autocomplete="off"
                             required
                         ></textarea>
 
@@ -385,6 +390,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <section class="contact-cta">
 
         <div class="contact-cta-content">
+
+            <span class="section-label">
+                HOME SERVICES
+            </span>
 
             <h2>
                 Need a Home Service?

@@ -6,82 +6,39 @@ $pageTitle = "Services";
 $pageCss = "services.css";
 
 
-$categoryId = isset($_GET["category_id"])
-    ? (int)$_GET["category_id"]
-    : 0;
+/* Get selected category */
+
+$categoryId = 0;
+
+if (isset($_GET["category_id"])) {
+    $categoryId = (int)$_GET["category_id"];
+}
 
 
 /* Get Categories */
 
-$categoriesQuery = "
-    SELECT
-        category_id,
-        category_name
-    FROM categories
-    WHERE category_status = 'Active'
-    ORDER BY category_name ASC
-";
+$categoriesQuery = "SELECT * FROM categories WHERE category_status = 'Active' ORDER BY category_name ASC";
 
-$categoriesResult = $conn->query($categoriesQuery);
+$categoriesResult = mysqli_query($conn, $categoriesQuery);
 
 
 /* Get Services */
 
 if ($categoryId > 0) {
 
-    $servicesQuery = "
-        SELECT
-            s.service_id,
-            s.category_id,
-            s.provider_id,
-            s.service_name,
-            s.description,
-            s.price,
-            s.service_image,
-            c.category_name,
-            sp.full_name AS provider_name
-        FROM services s
-        LEFT JOIN categories c
-            ON s.category_id = c.category_id
-        LEFT JOIN service_providers sp
-            ON s.provider_id = sp.provider_id
-        WHERE s.service_status = 'Active'
-        AND s.category_id = ?
-        ORDER BY s.service_id DESC
-    ";
-
-    $stmt = $conn->prepare($servicesQuery);
-
-    $stmt->bind_param("i", $categoryId);
-
-    $stmt->execute();
-
-    $servicesResult = $stmt->get_result();
+    $servicesQuery = "SELECT * FROM services 
+                      WHERE service_status = 'Active'
+                      AND category_id = $categoryId
+                      ORDER BY service_id DESC";
 
 } else {
 
-    $servicesQuery = "
-        SELECT
-            s.service_id,
-            s.category_id,
-            s.provider_id,
-            s.service_name,
-            s.description,
-            s.price,
-            s.service_image,
-            c.category_name,
-            sp.full_name AS provider_name
-        FROM services s
-        LEFT JOIN categories c
-            ON s.category_id = c.category_id
-        LEFT JOIN service_providers sp
-            ON s.provider_id = sp.provider_id
-        WHERE s.service_status = 'Active'
-        ORDER BY s.service_id DESC
-    ";
-
-    $servicesResult = $conn->query($servicesQuery);
+    $servicesQuery = "SELECT * FROM services 
+                      WHERE service_status = 'Active'
+                      ORDER BY service_id DESC";
 }
+
+$servicesResult = mysqli_query($conn, $servicesQuery);
 
 ?>
 
@@ -119,10 +76,12 @@ if ($categoryId > 0) {
 
     <!-- Services -->
 
-    <section class="services-list-section">
+    <section class="services-list-section" id="services">
 
         <div class="services-container">
 
+
+            <!-- Heading -->
 
             <div class="services-heading">
 
@@ -145,34 +104,28 @@ if ($categoryId > 0) {
 
             <div class="category-filter">
 
-
                 <a
-                    href="services.php"
-                    class="category-button <?php echo $categoryId === 0 ? 'active' : ''; ?>"
+                    href="services.php#services"
+                    class="category-button <?php echo $categoryId == 0 ? 'active' : ''; ?>"
                 >
                     All Services
                 </a>
 
 
-                <?php if ($categoriesResult && $categoriesResult->num_rows > 0): ?>
+                <?php if (mysqli_num_rows($categoriesResult) > 0) { ?>
 
-                    <?php while ($category = $categoriesResult->fetch_assoc()): ?>
+                    <?php while ($category = mysqli_fetch_assoc($categoriesResult)) { ?>
 
                         <a
-                            href="services.php?category_id=<?php echo (int)$category["category_id"]; ?>"
-                            class="category-button <?php echo $categoryId === (int)$category["category_id"] ? 'active' : ''; ?>"
+                            href="services.php?category_id=<?php echo $category["category_id"]; ?>#services"
+                            class="category-button <?php echo $categoryId == $category["category_id"] ? 'active' : ''; ?>"
                         >
-                            <?php
-                            echo htmlspecialchars(
-                                $category["category_name"]
-                            );
-                            ?>
+                            <?php echo htmlspecialchars($category["category_name"]); ?>
                         </a>
 
-                    <?php endwhile; ?>
+                    <?php } ?>
 
-                <?php endif; ?>
-
+                <?php } ?>
 
             </div>
 
@@ -182,10 +135,36 @@ if ($categoryId > 0) {
             <div class="services-grid">
 
 
-                <?php if ($servicesResult && $servicesResult->num_rows > 0): ?>
+                <?php if (mysqli_num_rows($servicesResult) > 0) { ?>
 
 
-                    <?php while ($service = $servicesResult->fetch_assoc()): ?>
+                    <?php while ($service = mysqli_fetch_assoc($servicesResult)) { ?>
+
+
+                        <?php
+
+                        /* Get Category Name */
+
+                        $categoryQuery = "SELECT category_name 
+                                          FROM categories 
+                                          WHERE category_id = " . $service["category_id"];
+
+                        $categoryResult = mysqli_query($conn, $categoryQuery);
+
+                        $category = mysqli_fetch_assoc($categoryResult);
+
+
+                        /* Get Provider Name */
+
+                        $providerQuery = "SELECT full_name 
+                                          FROM service_providers 
+                                          WHERE provider_id = " . $service["provider_id"];
+
+                        $providerResult = mysqli_query($conn, $providerQuery);
+
+                        $provider = mysqli_fetch_assoc($providerResult);
+
+                        ?>
 
 
                         <div class="service-card">
@@ -195,20 +174,20 @@ if ($categoryId > 0) {
 
                             <div class="service-image">
 
-                                <?php if (!empty($service["service_image"])): ?>
+                                <?php if (!empty($service["service_image"])) { ?>
 
                                     <img
                                         src="/homegenie-website/assets/services/<?php echo htmlspecialchars($service["service_image"]); ?>"
                                         alt="<?php echo htmlspecialchars($service["service_name"]); ?>"
                                     >
 
-                                <?php else: ?>
+                                <?php } else { ?>
 
                                     <div class="image-placeholder">
                                         No Image Available
                                     </div>
 
-                                <?php endif; ?>
+                                <?php } ?>
 
                             </div>
 
@@ -221,34 +200,25 @@ if ($categoryId > 0) {
                                 <span class="service-category">
 
                                     <?php
-                                    echo htmlspecialchars(
-                                        $service["category_name"] ??
-                                        "Home Service"
-                                    );
+
+                                    if ($category) {
+                                        echo htmlspecialchars($category["category_name"]);
+                                    } else {
+                                        echo "Home Service";
+                                    }
+
                                     ?>
 
                                 </span>
 
 
                                 <h3>
-
-                                    <?php
-                                    echo htmlspecialchars(
-                                        $service["service_name"]
-                                    );
-                                    ?>
-
+                                    <?php echo htmlspecialchars($service["service_name"]); ?>
                                 </h3>
 
 
                                 <p class="service-description">
-
-                                    <?php
-                                    echo htmlspecialchars(
-                                        $service["description"]
-                                    );
-                                    ?>
-
+                                    <?php echo htmlspecialchars($service["description"]); ?>
                                 </p>
 
 
@@ -263,10 +233,13 @@ if ($categoryId > 0) {
                                     <strong>
 
                                         <?php
-                                        echo htmlspecialchars(
-                                            $service["provider_name"] ??
-                                            "Service Provider"
-                                        );
+
+                                        if ($provider) {
+                                            echo htmlspecialchars($provider["full_name"]);
+                                        } else {
+                                            echo "Service Provider";
+                                        }
+
                                         ?>
 
                                     </strong>
@@ -286,19 +259,14 @@ if ($categoryId > 0) {
                                         </small>
 
                                         <strong>
-                                            ₹<?php
-                                            echo number_format(
-                                                (float)$service["price"],
-                                                2
-                                            );
-                                            ?>
+                                            ₹<?php echo number_format($service["price"], 2); ?>
                                         </strong>
 
                                     </div>
 
 
                                     <a
-                                        href="customer/book-service.php?service_id=<?php echo (int)$service["service_id"]; ?>&provider_id=<?php echo (int)$service["provider_id"]; ?>"
+                                        href="customer/book-service.php?service_id=<?php echo $service["service_id"]; ?>&provider_id=<?php echo $service["provider_id"]; ?>"
                                         class="book-button"
                                     >
                                         Book Service
@@ -314,10 +282,10 @@ if ($categoryId > 0) {
                         </div>
 
 
-                    <?php endwhile; ?>
+                    <?php } ?>
 
 
-                <?php else: ?>
+                <?php } else { ?>
 
 
                     <div class="no-services">
@@ -332,7 +300,7 @@ if ($categoryId > 0) {
                         </p>
 
                         <a
-                            href="services.php"
+                            href="services.php#services"
                             class="view-all-button"
                         >
                             View All Services
@@ -341,7 +309,7 @@ if ($categoryId > 0) {
                     </div>
 
 
-                <?php endif; ?>
+                <?php } ?>
 
 
             </div>
@@ -372,7 +340,7 @@ if ($categoryId > 0) {
             </p>
 
             <a
-                href="customer/register.php"
+                href="register.php"
                 class="cta-button"
             >
                 Get Started

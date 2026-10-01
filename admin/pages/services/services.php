@@ -56,20 +56,17 @@ ob_start();
 
         <?php
 
-        if ($_GET["success"] == "service_added") {
-
+        if ($_GET["success"] == "service_added")
+        {
             echo "Service added successfully.";
-
         }
-        elseif ($_GET["success"] == "service_updated") {
-
+        elseif ($_GET["success"] == "service_updated")
+        {
             echo "Service updated successfully.";
-
         }
-        elseif ($_GET["success"] == "service_deleted") {
-
+        elseif ($_GET["success"] == "service_deleted")
+        {
             echo "Service deleted successfully.";
-
         }
 
         ?>
@@ -85,20 +82,17 @@ ob_start();
 
         <?php
 
-        if ($_GET["error"] == "invalid_service") {
-
+        if ($_GET["error"] == "invalid_service")
+        {
             echo "Invalid service.";
-
         }
-        elseif ($_GET["error"] == "service_not_found") {
-
+        elseif ($_GET["error"] == "service_not_found")
+        {
             echo "Service not found.";
-
         }
-        else {
-
+        else
+        {
             echo "Something went wrong.";
-
         }
 
         ?>
@@ -124,6 +118,19 @@ ob_start();
             Services
 
         </span>
+
+    </div>
+
+
+    <!-- Search -->
+
+    <div class="admin-search">
+
+        <input
+            type="text"
+            id="serviceSearch"
+            placeholder="Search services..."
+        >
 
     </div>
 
@@ -211,7 +218,8 @@ ob_start();
 
                     $srno = 1;
 
-                    while ($service = mysqli_fetch_array($res)) {
+                    while ($service = mysqli_fetch_array($res))
+                    {
 
 
                         $categoryId = $service["category_id"];
@@ -236,7 +244,7 @@ ob_start();
                     ?>
 
 
-                        <tr>
+                        <tr class="service-search-row">
 
 
                             <!-- SERIAL NUMBER -->
@@ -260,7 +268,7 @@ ob_start();
 
                                         <img
                                             src="../../../assets/services/<?php echo $service["service_image"]; ?>"
-                                            alt="<?php echo $service["service_name"]; ?>"
+                                            alt="<?php echo htmlspecialchars($service["service_name"]); ?>"
                                             class="service-image"
                                         >
 
@@ -279,7 +287,11 @@ ob_start();
                                     <div class="service-name-content">
 
                                         <strong>
-                                            <?php echo $service["service_name"]; ?>
+                                            <?php
+                                            echo htmlspecialchars(
+                                                $service["service_name"]
+                                            );
+                                            ?>
                                         </strong>
 
                                     </div>
@@ -296,15 +308,15 @@ ob_start();
 
                                 <?php
 
-                                if ($category) {
-
-                                    echo $category["category_name"];
-
+                                if ($category)
+                                {
+                                    echo htmlspecialchars(
+                                        $category["category_name"]
+                                    );
                                 }
-                                else {
-
+                                else
+                                {
                                     echo "No category";
-
                                 }
 
                                 ?>
@@ -318,15 +330,15 @@ ob_start();
 
                                 <?php
 
-                                if ($provider) {
-
-                                    echo $provider["full_name"];
-
+                                if ($provider)
+                                {
+                                    echo htmlspecialchars(
+                                        $provider["full_name"]
+                                    );
                                 }
-                                else {
-
+                                else
+                                {
                                     echo "No provider";
-
                                 }
 
                                 ?>
@@ -340,15 +352,15 @@ ob_start();
 
                                 <?php
 
-                                if ($service["description"] != "") {
-
-                                    echo $service["description"];
-
+                                if ($service["description"] != "")
+                                {
+                                    echo htmlspecialchars(
+                                        $service["description"]
+                                    );
                                 }
-                                else {
-
+                                else
+                                {
                                     echo "No description";
-
                                 }
 
                                 ?>
@@ -463,6 +475,16 @@ ob_start();
                 </table>
 
 
+                <!-- No Search Result -->
+
+                <div
+                    id="serviceNoResult"
+                    class="admin-no-result"
+                >
+                    No services found.
+                </div>
+
+
             </div>
 
 
@@ -473,6 +495,78 @@ ob_start();
 
 
 </div>
+
+
+<!-- Service Search -->
+
+<script>
+
+var searchInput =
+    document.getElementById("serviceSearch");
+
+var rows =
+    document.querySelectorAll(".service-search-row");
+
+var noResult =
+    document.getElementById("serviceNoResult");
+
+
+if (searchInput)
+{
+
+    searchInput.addEventListener("keyup", function()
+    {
+
+        var searchText =
+            searchInput.value.toLowerCase();
+
+        var found = false;
+
+
+        rows.forEach(function(row)
+        {
+
+            var rowText =
+                row.innerText.toLowerCase();
+
+
+            if (rowText.includes(searchText))
+            {
+
+                row.style.display = "";
+
+                found = true;
+
+            }
+            else
+            {
+
+                row.style.display = "none";
+
+            }
+
+        });
+
+
+        if (noResult)
+        {
+
+            if (found)
+            {
+                noResult.style.display = "none";
+            }
+            else
+            {
+                noResult.style.display = "block";
+            }
+
+        }
+
+    });
+
+}
+
+</script>
 
 
 <?php

@@ -645,3 +645,42 @@ body {
     -webkit-user-select: none;
     -moz-user-select: none;
 }
+/* Common Admin Search */
+
+.admin-search {
+    width: 100%;
+    padding: 14px 16px;
+    background: #FFFFFF;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.admin-search input {
+    width: 100%;
+    max-width: 350px;
+    height: 38px;
+    padding: 0 12px;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    color: #212529;
+    background: #FFFFFF;
+    border: 1px solid #CED4DA;
+    border-radius: 5px;
+}
+
+.admin-search input:focus {
+    outline: none;
+    border-color: #0F766E;
+}
+
+.admin-search input::placeholder {
+    color: #9CA3AF;
+}
+
+.admin-no-result {
+    display: none;
+    padding: 30px 20px;
+    text-align: center;
+    font-size: 13px;
+    color: #6C757D;
+}

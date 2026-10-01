@@ -57,6 +57,7 @@ ob_start();
 
         </div>
 
+
     </div>
 
 
@@ -132,6 +133,19 @@ ob_start();
                 Bookings
 
             </span>
+
+        </div>
+
+
+        <!-- Search -->
+
+        <div class="admin-search">
+
+            <input
+                type="text"
+                id="bookingSearch"
+                placeholder="Search bookings..."
+            >
 
         </div>
 
@@ -249,7 +263,7 @@ ob_start();
                         ?>
 
 
-                            <tr>
+                            <tr class="booking-search-row">
 
 
                                 <td>
@@ -427,6 +441,17 @@ ob_start();
 
                 </table>
 
+
+                <!-- No Search Result -->
+
+                <div
+                    id="bookingNoResult"
+                    class="admin-no-result"
+                >
+                    No bookings found.
+                </div>
+
+
             </div>
 
 
@@ -437,6 +462,78 @@ ob_start();
 
 
 </div>
+
+
+<!-- Booking Search -->
+
+<script>
+
+var searchInput =
+    document.getElementById("bookingSearch");
+
+var rows =
+    document.querySelectorAll(".booking-search-row");
+
+var noResult =
+    document.getElementById("bookingNoResult");
+
+
+if (searchInput)
+{
+
+    searchInput.addEventListener("keyup", function()
+    {
+
+        var searchText =
+            searchInput.value.toLowerCase();
+
+        var found = false;
+
+
+        rows.forEach(function(row)
+        {
+
+            var rowText =
+                row.innerText.toLowerCase();
+
+
+            if (rowText.includes(searchText))
+            {
+
+                row.style.display = "";
+
+                found = true;
+
+            }
+            else
+            {
+
+                row.style.display = "none";
+
+            }
+
+        });
+
+
+        if (noResult)
+        {
+
+            if (found)
+            {
+                noResult.style.display = "none";
+            }
+            else
+            {
+                noResult.style.display = "block";
+            }
+
+        }
+
+    });
+
+}
+
+</script>
 
 
 <?php

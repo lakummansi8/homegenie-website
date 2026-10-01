@@ -1,196 +1,229 @@
-/* Provider Registration Page */
+/* =================================
+   PROVIDER REGISTER PAGE
+   ================================= */
 
 .provider-register-page {
     width: 100%;
-    min-height: 100vh;
-    background: #D8EEE8;
+    background: #FFFFFF;
 }
 
 
-/* Hero */
+/* =================================
+   HERO SECTION
+   ================================= */
 
 .provider-hero {
-    width: 100%;
-    min-height: 420px;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 70px 30px;
+    padding: 80px 30px;
     background: #D8EEE8;
+    box-sizing: border-box;
 }
 
 .provider-hero-content {
-    width: 100%;
-    max-width: 800px;
+    max-width: 850px;
+    margin: 0 auto;
 }
 
-.section-label {
+.provider-hero .section-label {
     display: block;
-    color: #0F766E;
-    font-size: 12px;
+    margin-bottom: 18px;
+    color: var(--primary);
+    font-size: 13px;
     font-weight: 600;
-    letter-spacing: 1.5px;
-    margin-bottom: 12px;
+    letter-spacing: 2px;
+    text-align: center;
 }
 
 .provider-hero h1 {
-    margin: 0 0 20px;
-    color: #111827;
-    font-size: 48px;
-    line-height: 1.2;
+    margin-bottom: 22px;
+    color: var(--text-primary);
+    font-size: 52px;
+    line-height: 1.15;
+    text-align: center;
 }
 
 .provider-hero h1 span {
     display: block;
-    color: #0F766E;
+    color: var(--primary);
 }
 
 .provider-hero p {
     max-width: 650px;
     margin: 0 auto;
-    color: #6B7280;
-    font-size: 17px;
+    color: var(--text-secondary);
+    font-size: 18px;
     line-height: 1.7;
+    text-align: center;
 }
 
 
-/* Common Container */
+/* =================================
+   COMMON CONTAINER
+   ================================= */
 
 .provider-container {
-    width: 100%;
-    max-width: 1100px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 80px 30px;
     box-sizing: border-box;
 }
 
+
+/* =================================
+   SECTION HEADING
+   ================================= */
+
 .section-heading {
+    display: block;
     margin-bottom: 40px;
+    text-align: center;
+}
+
+.section-heading .section-label,
+.form-heading .section-label {
+    display: block;
+    margin-bottom: 12px;
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-align: center;
 }
 
 .section-heading h2,
 .form-heading h2 {
-    margin: 0 0 10px;
-    color: #111827;
+    margin: 0 0 12px;
+    color: var(--text-primary);
     font-size: 34px;
-    line-height: 1.3;
+    line-height: 1.25;
+    text-align: center;
 }
 
 .section-heading p,
 .form-heading p {
-    margin: 0;
-    color: #6B7280;
+    max-width: 650px;
+    margin: 0 auto;
+    color: var(--text-secondary);
     font-size: 15px;
     line-height: 1.6;
+    text-align: center;
 }
 
 
-/* Benefits */
+/* =================================
+   BENEFITS SECTION
+   ================================= */
 
 .provider-benefits {
-    width: 100%;
-    background: #D8EEE8;
+    background: #FFFFFF;
 }
 
 .benefits-grid {
-    width: 100%;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    gap: 25px;
 }
 
 .benefit-card {
-    min-height: 150px;
     padding: 28px;
     background: #FFFFFF;
-    border: 1px solid #D5E8E3;
-    border-radius: 10px;
-    box-sizing: border-box;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    text-align: center;
+    transition: var(--transition-normal);
+}
+
+.benefit-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-sm);
 }
 
 .benefit-card h3 {
-    margin: 0 0 10px;
-    color: #0F766E;
+    margin-bottom: 12px;
+    color: var(--primary);
     font-size: 19px;
 }
 
 .benefit-card p {
-    margin: 0;
-    color: #6B7280;
+    color: var(--text-secondary);
     font-size: 14px;
-    line-height: 1.7;
+    line-height: 1.6;
 }
 
 
-/* Registration Form Section */
+/* =================================
+   REGISTRATION SECTION
+   ================================= */
 
 .provider-form-section {
-    width: 100%;
-    display: block;
-    background: #D8EEE8;
+    background: #F8FAFA;
 }
 
 .form-heading {
-    margin-bottom: 35px;
+    margin-bottom: 40px;
+    text-align: center;
 }
+
+
+/* =================================
+   FORM
+   ================================= */
 
 .provider-form {
     width: 100%;
-    display: block;
-    background: #FFFFFF;
-    border: 1px solid #D5E8E3;
-    border-radius: 10px;
     padding: 35px;
+    background: #FFFFFF;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
     box-sizing: border-box;
 }
 
 .form-row {
-    width: 100%;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 20px;
     margin-bottom: 20px;
 }
 
 .form-group {
-    width: 100%;
     display: flex;
     flex-direction: column;
-    box-sizing: border-box;
 }
 
 .form-group.full-width {
-    width: 100%;
     margin-bottom: 20px;
 }
 
 .form-group label {
-    color: #374151;
+    margin-bottom: 7px;
+    color: var(--text-primary);
     font-size: 14px;
     font-weight: 500;
-    margin-bottom: 7px;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
     width: 100%;
-    box-sizing: border-box;
     padding: 11px 13px;
-    border: 1px solid #D1D5DB;
-    border-radius: 6px;
+    box-sizing: border-box;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    outline: none;
+    background: #FFFFFF;
+    color: var(--text-primary);
     font-family: "Outfit", sans-serif;
     font-size: 14px;
-    color: #111827;
-    background: #FFFFFF;
-    outline: none;
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-    border-color: #0F766E;
+    border-color: var(--primary);
 }
 
 .form-group textarea {
@@ -199,34 +232,38 @@
 }
 
 
-/* Submit Button */
+/* =================================
+   SUBMIT BUTTON
+   ================================= */
 
 .submit-button {
     display: inline-block;
+    padding: 13px 25px;
     border: none;
-    background: #0F766E;
+    border-radius: var(--radius-sm);
+    background: var(--primary);
     color: #FFFFFF;
-    padding: 12px 24px;
-    border-radius: 6px;
     font-family: "Outfit", sans-serif;
-    font-size: 14px;
+    font-size: 15px;
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: var(--transition-normal);
 }
 
 .submit-button:hover {
-    background: #115E59;
+    background: var(--primary-hover);
 }
 
 
-/* Messages */
+/* =================================
+   FORM MESSAGE
+   ================================= */
 
 .form-message {
     width: 100%;
-    box-sizing: border-box;
-    padding: 13px 16px;
-    border-radius: 6px;
     margin-bottom: 25px;
+    padding: 13px 16px;
+    box-sizing: border-box;
+    border-radius: var(--radius-sm);
     font-size: 14px;
 }
 
@@ -243,21 +280,26 @@
 }
 
 
-/* Tablet */
+/* =================================
+   TABLET
+   ================================= */
 
 @media (max-width: 900px) {
 
     .benefits-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .provider-hero h1 {
         font-size: 42px;
     }
+
 }
 
 
-/* Mobile */
+/* =================================
+   MOBILE
+   ================================= */
 
 @media (max-width: 768px) {
 
@@ -266,12 +308,12 @@
     }
 
     .provider-hero {
-        min-height: 380px;
+        min-height: 100vh;
         padding: 60px 20px;
     }
 
     .provider-hero h1 {
-        font-size: 34px;
+        font-size: 36px;
     }
 
     .provider-hero p {
@@ -283,6 +325,15 @@
         font-size: 29px;
     }
 
+    .section-heading p,
+    .form-heading p {
+        font-size: 14px;
+    }
+
+    .benefits-grid {
+        grid-template-columns: 1fr;
+    }
+
     .form-row {
         grid-template-columns: 1fr;
     }
@@ -290,4 +341,31 @@
     .provider-form {
         padding: 25px 20px;
     }
+
+}
+
+
+/* =================================
+   SMALL MOBILE
+   ================================= */
+
+@media (max-width: 400px) {
+
+    .provider-hero h1 {
+        font-size: 31px;
+    }
+
+    .provider-hero p {
+        font-size: 15px;
+    }
+
+    .provider-container {
+        padding: 50px 16px;
+    }
+
+    .section-heading h2,
+    .form-heading h2 {
+        font-size: 26px;
+    }
+
 }

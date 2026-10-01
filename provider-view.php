@@ -3,7 +3,7 @@
 require_once "config/db.php";
 
 $pageTitle = "Service Providers";
-$pageCss = "../provider/provider-view.css";
+$pageCss = "../pages/provider-view.css";
 
 $providerResult = $conn->query(
     "SELECT * FROM service_providers
