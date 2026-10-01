@@ -1,3 +1,4 @@
+```php
 <?php
 
 require_once "../auth/provider-auth-check.php";
@@ -7,87 +8,122 @@ $providerId = $_SESSION["provider_id"];
 
 $serviceId = $_GET["id"] ?? "";
 
-if ($serviceId === "" || !is_numeric($serviceId)) {
+
+/* Check service ID */
+
+if ($serviceId == "" || !is_numeric($serviceId)) {
+
     header("Location: services.php");
     exit;
 }
 
 $serviceId = (int)$serviceId;
 
-$stmt = $conn->prepare(
-    "SELECT
-        s.service_id,
-        s.service_name,
-        s.description,
-        s.price,
-        s.service_status,
-        s.category_id,
-        c.category_name
-     FROM services s
-     LEFT JOIN categories c
-        ON s.category_id = c.category_id
-     WHERE s.service_id = ?
-     AND s.provider_id = ?
-     LIMIT 1"
-);
 
-$stmt->bind_param("ii", $serviceId, $providerId);
-$stmt->execute();
+/* Get service information */
 
-$result = $stmt->get_result();
-$service = $result->fetch_assoc();
+$sql = "SELECT * FROM services
+        WHERE service_id = $serviceId
+        AND provider_id = $providerId";
 
-$stmt->close();
+$result = mysqli_query($conn, $sql);
+$service = mysqli_fetch_assoc($result);
+
+
+/* If service is not found */
 
 if (!$service) {
+
     header("Location: services.php");
     exit;
 }
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+/* Get category name */
+
+$categoryId = $service["category_id"];
+
+$categorySql = "SELECT category_name
+                FROM categories
+                WHERE category_id = $categoryId";
+
+$categoryResult = mysqli_query($conn, $categorySql);
+$category = mysqli_fetch_assoc($categoryResult);
+
+if ($category) {
+    $categoryName = $category["category_name"];
+} else {
+    $categoryName = "Not Assigned";
+}
+
+
+/* Update service */
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $serviceName = trim($_POST["service_name"] ?? "");
     $description = trim($_POST["description"] ?? "");
     $price = trim($_POST["price"] ?? "");
     $serviceStatus = trim($_POST["service_status"] ?? "");
 
+
+    /* Check empty fields */
+
     if (
-        $serviceName === "" ||
-        $description === "" ||
-        $price === "" ||
-        $serviceStatus === ""
+        $serviceName == "" ||
+        $description == "" ||
+        $price == "" ||
+        $serviceStatus == ""
     ) {
+
         $error = "Please fill in all fields.";
-    } elseif (!is_numeric($price) || $price < 0) {
+
+    }
+
+
+    /* Check price */
+
+    elseif (!is_numeric($price) || $price < 0) {
+
         $error = "Please enter a valid price.";
-    } elseif (!in_array($serviceStatus, ["Active", "Inactive"])) {
+
+    }
+
+
+    /* Check status */
+
+    elseif (
+        $serviceStatus != "Active" &&
+        $serviceStatus != "Inactive"
+    ) {
+
         $error = "Invalid service status.";
-    } else {
 
-        $stmt = $conn->prepare(
-            "UPDATE services
-             SET
-                service_name = ?,
-                description = ?,
-                price = ?,
-                service_status = ?
-             WHERE service_id = ?
-             AND provider_id = ?"
-        );
+    }
 
-        $stmt->bind_param(
-            "ssdsii",
-            $serviceName,
-            $description,
-            $price,
-            $serviceStatus,
-            $serviceId,
-            $providerId
-        );
 
-        if ($stmt->execute()) {
+    else {
 
-            $stmt->close();
+        /* Protect values before putting them in SQL */
+
+        $serviceName = mysqli_real_escape_string($conn, $serviceName);
+        $description = mysqli_real_escape_string($conn, $description);
+        $price = mysqli_real_escape_string($conn, $price);
+        $serviceStatus = mysqli_real_escape_string($conn, $serviceStatus);
+
+
+        /* Update service */
+
+        $sql = "UPDATE services SET
+                service_name = '$serviceName',
+                description = '$description',
+                price = '$price',
+                service_status = '$serviceStatus'
+                WHERE service_id = $serviceId
+                AND provider_id = $providerId";
+
+
+        if (mysqli_query($conn, $sql)) {
 
             header("Location: services.php?updated=1");
             exit;
@@ -95,11 +131,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         } else {
 
             $error = "Failed to update service.";
-        }
 
-        $stmt->close();
+        }
     }
 }
+
 
 $pageTitle = "Edit Service";
 $pageCss = "services.css";
@@ -110,25 +146,38 @@ require_once "layout/provider-layout.php";
 <div class="edit-service-page">
 
     <div class="services-header">
+
         <div>
+
             <h2>Edit Service</h2>
+
             <p>Update your service information.</p>
+
         </div>
+
     </div>
+
 
     <?php if (isset($error)): ?>
 
         <div class="service-message error-message">
+
             <?php echo htmlspecialchars($error); ?>
+
         </div>
 
     <?php endif; ?>
 
+
     <div class="edit-service-card">
 
-        <form method="POST" action="edit-service.php?id=<?php echo $serviceId; ?>">
+        <form
+            method="POST"
+            action="edit-service.php?id=<?php echo $serviceId; ?>"
+        >
 
             <div class="form-grid">
+
 
                 <div class="form-group">
 
@@ -143,17 +192,19 @@ require_once "layout/provider-layout.php";
 
                 </div>
 
+
                 <div class="form-group">
 
                     <label>Category</label>
 
                     <input
                         type="text"
-                        value="<?php echo htmlspecialchars($service["category_name"] ?? "Not Assigned"); ?>"
+                        value="<?php echo htmlspecialchars($categoryName); ?>"
                         readonly
                     >
 
                 </div>
+
 
                 <div class="form-group full-width">
 
@@ -166,6 +217,7 @@ require_once "layout/provider-layout.php";
                     ><?php echo htmlspecialchars($service["description"]); ?></textarea>
 
                 </div>
+
 
                 <div class="form-group">
 
@@ -182,6 +234,7 @@ require_once "layout/provider-layout.php";
 
                 </div>
 
+
                 <div class="form-group">
 
                     <label>Status</label>
@@ -190,14 +243,22 @@ require_once "layout/provider-layout.php";
 
                         <option
                             value="Active"
-                            <?php echo $service["service_status"] === "Active" ? "selected" : ""; ?>
+                            <?php
+                            if ($service["service_status"] == "Active") {
+                                echo "selected";
+                            }
+                            ?>
                         >
                             Active
                         </option>
 
                         <option
                             value="Inactive"
-                            <?php echo $service["service_status"] === "Inactive" ? "selected" : ""; ?>
+                            <?php
+                            if ($service["service_status"] == "Inactive") {
+                                echo "selected";
+                            }
+                            ?>
                         >
                             Inactive
                         </option>
@@ -206,7 +267,9 @@ require_once "layout/provider-layout.php";
 
                 </div>
 
+
             </div>
+
 
             <div class="form-actions">
 
@@ -229,5 +292,7 @@ require_once "layout/provider-layout.php";
 </section>
 </main>
 </div>
+
 </body>
 </html>
+

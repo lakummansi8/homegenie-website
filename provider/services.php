@@ -1,3 +1,4 @@
+```php id="xq8b0f"
 <?php
 
 require_once "../auth/provider-auth-check.php";
@@ -5,25 +6,15 @@ require_once "../config/db.php";
 
 $providerId = $_SESSION["provider_id"];
 
-$stmt = $conn->prepare(
-    "SELECT
-        s.service_id,
-        s.service_name,
-        s.description,
-        s.price,
-        s.service_status,
-        c.category_name
-     FROM services s
-     LEFT JOIN categories c
-        ON s.category_id = c.category_id
-     WHERE s.provider_id = ?
-     ORDER BY s.service_id DESC"
-);
 
-$stmt->bind_param("i", $providerId);
-$stmt->execute();
+/* Get services of this provider */
 
-$result = $stmt->get_result();
+$sql = "SELECT * FROM services
+        WHERE provider_id = $providerId
+        ORDER BY service_id DESC";
+
+$result = mysqli_query($conn, $sql);
+
 
 $pageTitle = "My Services";
 $pageCss = "services.css";
@@ -63,7 +54,7 @@ require_once "layout/provider-layout.php";
 
     <div class="services-section">
 
-        <?php if ($result->num_rows > 0): ?>
+        <?php if (mysqli_num_rows($result) > 0): ?>
 
             <div class="services-table-wrapper">
 
@@ -84,7 +75,29 @@ require_once "layout/provider-layout.php";
 
                     <tbody>
 
-                    <?php while ($service = $result->fetch_assoc()): ?>
+                    <?php while ($service = mysqli_fetch_assoc($result)): ?>
+
+                        <?php
+
+                        /* Get category name */
+
+                        $categoryId = $service["category_id"];
+
+                        $categorySql = "SELECT category_name
+                                        FROM categories
+                                        WHERE category_id = $categoryId";
+
+                        $categoryResult = mysqli_query($conn, $categorySql);
+
+                        $category = mysqli_fetch_assoc($categoryResult);
+
+                        if ($category) {
+                            $categoryName = $category["category_name"];
+                        } else {
+                            $categoryName = "Not Assigned";
+                        }
+
+                        ?>
 
                         <tr>
 
@@ -100,9 +113,7 @@ require_once "layout/provider-layout.php";
 
                             <td>
                                 <?php
-                                echo htmlspecialchars(
-                                    $service["category_name"] ?? "Not Assigned"
-                                );
+                                echo htmlspecialchars($categoryName);
                                 ?>
                             </td>
 
@@ -194,3 +205,4 @@ require_once "layout/provider-layout.php";
 </div>
 </body>
 </html>
+

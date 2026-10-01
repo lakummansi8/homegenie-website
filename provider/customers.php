@@ -1,3 +1,4 @@
+```php
 <?php
 
 require_once "../auth/provider-auth-check.php";
@@ -5,30 +6,12 @@ require_once "../config/db.php";
 
 $providerId = $_SESSION["provider_id"];
 
-$stmt = $conn->prepare(
-    "SELECT
-        u.user_id,
-        u.full_name,
-        u.email,
-        u.phone,
-        COUNT(b.booking_id) AS total_bookings,
-        MAX(b.booking_date) AS last_booking_date
-     FROM users u
-     INNER JOIN bookings b
-        ON u.user_id = b.user_id
-     WHERE b.provider_id = ?
-     GROUP BY
-        u.user_id,
-        u.full_name,
-        u.email,
-        u.phone
-     ORDER BY last_booking_date DESC"
-);
+/* Get all bookings of this provider */
+$sql = "SELECT * FROM bookings
+        WHERE provider_id = $providerId
+        ORDER BY booking_date DESC";
 
-$stmt->bind_param("i", $providerId);
-$stmt->execute();
-
-$result = $stmt->get_result();
+$result = mysqli_query($conn, $sql);
 
 $pageTitle = "Customers";
 $pageCss = "customers.css";
@@ -47,7 +30,7 @@ require_once "layout/provider-layout.php";
 
     <div class="customers-section">
 
-        <?php if ($result->num_rows > 0): ?>
+        <?php if (mysqli_num_rows($result) > 0): ?>
 
             <div class="customers-table-wrapper">
 
@@ -67,7 +50,41 @@ require_once "layout/provider-layout.php";
 
                     <tbody>
 
-                    <?php while ($customer = $result->fetch_assoc()): ?>
+                    <?php
+
+                    $customers = array();
+
+                    while ($booking = mysqli_fetch_assoc($result)) {
+
+                        $userId = $booking["user_id"];
+
+                        /* Check if customer is already added */
+                        if (!isset($customers[$userId])) {
+
+                            $userSql = "SELECT full_name, email, phone
+                                        FROM users
+                                        WHERE user_id = $userId";
+
+                            $userResult = mysqli_query($conn, $userSql);
+                            $user = mysqli_fetch_assoc($userResult);
+
+                            $customers[$userId] = array(
+                                "full_name" => $user["full_name"],
+                                "email" => $user["email"],
+                                "phone" => $user["phone"],
+                                "total_bookings" => 1,
+                                "last_booking" => $booking["booking_date"]
+                            );
+
+                        } else {
+
+                            $customers[$userId]["total_bookings"]++;
+
+                        }
+                    }
+
+                    foreach ($customers as $customer):
+                    ?>
 
                         <tr>
 
@@ -86,16 +103,16 @@ require_once "layout/provider-layout.php";
                             </td>
 
                             <td>
-                                <?php echo htmlspecialchars($customer["total_bookings"]); ?>
+                                <?php echo $customer["total_bookings"]; ?>
                             </td>
 
                             <td>
-                                <?php echo htmlspecialchars($customer["last_booking_date"]); ?>
+                                <?php echo htmlspecialchars($customer["last_booking"]); ?>
                             </td>
 
                         </tr>
 
-                    <?php endwhile; ?>
+                    <?php endforeach; ?>
 
                     </tbody>
 
@@ -124,3 +141,4 @@ require_once "layout/provider-layout.php";
 </div>
 </body>
 </html>
+

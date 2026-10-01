@@ -1,3 +1,4 @@
+```php
 <?php
 
 require_once "../auth/provider-auth-check.php";
@@ -5,28 +6,12 @@ require_once "../config/db.php";
 
 $providerId = $_SESSION["provider_id"];
 
-$stmt = $conn->prepare(
-    "SELECT
-        b.booking_id,
-        b.booking_date,
-        b.booking_time,
-        b.booking_status,
-        u.full_name AS customer_name,
-        u.phone AS customer_phone,
-        s.service_name
-     FROM bookings b
-     LEFT JOIN users u
-        ON b.user_id = u.user_id
-     LEFT JOIN services s
-        ON b.service_id = s.service_id
-     WHERE b.provider_id = ?
-     ORDER BY b.booking_date DESC, b.booking_time DESC"
-);
+/* Get all bookings of this provider */
+$sql = "SELECT * FROM bookings 
+        WHERE provider_id = $providerId
+        ORDER BY booking_date DESC, booking_time DESC";
 
-$stmt->bind_param("i", $providerId);
-$stmt->execute();
-
-$result = $stmt->get_result();
+$result = mysqli_query($conn, $sql);
 
 $pageTitle = "Bookings";
 $pageCss = "bookings.css";
@@ -53,14 +38,13 @@ require_once "layout/provider-layout.php";
 
     <div class="bookings-section">
 
-        <?php if ($result->num_rows > 0): ?>
+        <?php if (mysqli_num_rows($result) > 0): ?>
 
             <div class="bookings-table-wrapper">
 
                 <table class="bookings-table">
 
                     <thead>
-
                         <tr>
                             <th>Customer</th>
                             <th>Phone</th>
@@ -70,18 +54,38 @@ require_once "layout/provider-layout.php";
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
-
                     </thead>
 
                     <tbody>
 
-                    <?php while ($booking = $result->fetch_assoc()): ?>
+                    <?php while ($booking = mysqli_fetch_assoc($result)): ?>
 
                         <?php
 
-                        $status = trim($booking["booking_status"] ?? "");
+                        /* Get customer details */
+                        $userId = $booking["user_id"];
 
-                        if ($status === "") {
+                        $userSql = "SELECT full_name, phone 
+                                    FROM users 
+                                    WHERE user_id = $userId";
+
+                        $userResult = mysqli_query($conn, $userSql);
+                        $user = mysqli_fetch_assoc($userResult);
+
+                        /* Get service details */
+                        $serviceId = $booking["service_id"];
+
+                        $serviceSql = "SELECT service_name 
+                                       FROM services 
+                                       WHERE service_id = $serviceId";
+
+                        $serviceResult = mysqli_query($conn, $serviceSql);
+                        $service = mysqli_fetch_assoc($serviceResult);
+
+                        /* Booking status */
+                        $status = $booking["booking_status"];
+
+                        if ($status == "") {
                             $status = "Pending";
                         }
 
@@ -91,16 +95,34 @@ require_once "layout/provider-layout.php";
 
                             <td>
                                 <strong>
-                                    <?php echo htmlspecialchars($booking["customer_name"] ?? "Unknown"); ?>
+                                    <?php
+                                    if ($user) {
+                                        echo htmlspecialchars($user["full_name"]);
+                                    } else {
+                                        echo "Unknown";
+                                    }
+                                    ?>
                                 </strong>
                             </td>
 
                             <td>
-                                <?php echo htmlspecialchars($booking["customer_phone"] ?? "Not Available"); ?>
+                                <?php
+                                if ($user) {
+                                    echo htmlspecialchars($user["phone"]);
+                                } else {
+                                    echo "Not Available";
+                                }
+                                ?>
                             </td>
 
                             <td>
-                                <?php echo htmlspecialchars($booking["service_name"] ?? "Unknown Service"); ?>
+                                <?php
+                                if ($service) {
+                                    echo htmlspecialchars($service["service_name"]);
+                                } else {
+                                    echo "Unknown Service";
+                                }
+                                ?>
                             </td>
 
                             <td>
@@ -121,14 +143,11 @@ require_once "layout/provider-layout.php";
 
                             <td>
 
-                                <?php if ($status === "Pending"): ?>
+                                <?php if ($status == "Pending"): ?>
 
                                     <div class="booking-actions">
 
-                                        <form
-                                            method="POST"
-                                            action="update-booking.php"
-                                        >
+                                        <form method="POST" action="update-booking.php">
 
                                             <input
                                                 type="hidden"
@@ -151,10 +170,7 @@ require_once "layout/provider-layout.php";
 
                                         </form>
 
-                                        <form
-                                            method="POST"
-                                            action="update-booking.php"
-                                        >
+                                        <form method="POST" action="update-booking.php">
 
                                             <input
                                                 type="hidden"
@@ -179,14 +195,11 @@ require_once "layout/provider-layout.php";
 
                                     </div>
 
-                                <?php elseif ($status === "Accepted"): ?>
+                                <?php elseif ($status == "Accepted"): ?>
 
                                     <div class="booking-actions">
 
-                                        <form
-                                            method="POST"
-                                            action="update-booking.php"
-                                        >
+                                        <form method="POST" action="update-booking.php">
 
                                             <input
                                                 type="hidden"
@@ -209,10 +222,7 @@ require_once "layout/provider-layout.php";
 
                                         </form>
 
-                                        <form
-                                            method="POST"
-                                            action="update-booking.php"
-                                        >
+                                        <form method="POST" action="update-booking.php">
 
                                             <input
                                                 type="hidden"
@@ -263,7 +273,6 @@ require_once "layout/provider-layout.php";
             <div class="no-bookings">
 
                 <h3>No Bookings Found</h3>
-
                 <p>You do not have any customer bookings yet.</p>
 
             </div>
@@ -279,3 +288,4 @@ require_once "layout/provider-layout.php";
 </div>
 </body>
 </html>
+

@@ -1,126 +1,144 @@
+```php id="e8w4qk"
 <?php
 
 require_once "../auth/provider-auth-check.php";
 require_once "../config/db.php";
 
-if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+
+/* Check request method */
+
+if ($_SERVER["REQUEST_METHOD"] != "POST") {
+
     header("Location: bookings.php");
     exit;
 }
+
 
 $bookingId = $_POST["booking_id"] ?? "";
 $action = $_POST["action"] ?? "";
 
 $providerId = $_SESSION["provider_id"];
 
-if ($bookingId === "" || !is_numeric($bookingId) || $action === "") {
+
+/* Check booking ID and action */
+
+if ($bookingId == "" || !is_numeric($bookingId) || $action == "") {
+
     header("Location: bookings.php");
     exit;
 }
 
 $bookingId = (int)$bookingId;
 
-$stmt = $conn->prepare(
-    "SELECT booking_status
-     FROM bookings
-     WHERE booking_id = ?
-     AND provider_id = ?
-     LIMIT 1"
-);
 
-$stmt->bind_param(
-    "ii",
-    $bookingId,
-    $providerId
-);
+/* Get booking status */
 
-$stmt->execute();
+$sql = "SELECT booking_status
+        FROM bookings
+        WHERE booking_id = $bookingId
+        AND provider_id = $providerId";
 
-$result = $stmt->get_result();
-$booking = $result->fetch_assoc();
+$result = mysqli_query($conn, $sql);
 
-$stmt->close();
+$booking = mysqli_fetch_assoc($result);
+
+
+/* Check booking */
 
 if (!$booking) {
+
     header("Location: bookings.php");
     exit;
 }
 
+
+/* Get current status */
+
 $currentStatus = trim($booking["booking_status"] ?? "");
 
-if ($currentStatus === "") {
+if ($currentStatus == "") {
+
     $currentStatus = "Pending";
 }
 
+
+/* Decide new status */
+
 $newStatus = "";
 
-if ($currentStatus === "Pending") {
 
-    if ($action === "accept") {
+if ($currentStatus == "Pending") {
+
+    if ($action == "accept") {
 
         $newStatus = "Accepted";
 
-    } elseif ($action === "reject") {
+    } elseif ($action == "reject") {
 
         $newStatus = "Rejected";
     }
 
-} elseif ($currentStatus === "Accepted") {
 
-    if ($action === "complete") {
+} elseif ($currentStatus == "Accepted") {
+
+    if ($action == "complete") {
 
         $newStatus = "Completed";
 
-    } elseif ($action === "cancel") {
+    } elseif ($action == "cancel") {
 
         $newStatus = "Cancelled";
     }
 }
 
-if ($newStatus === "") {
+
+/* Check valid action */
+
+if ($newStatus == "") {
+
     header("Location: bookings.php");
     exit;
 }
 
-if ($booking["booking_status"] === null || trim($booking["booking_status"]) === "") {
 
-    $stmt = $conn->prepare(
-        "UPDATE bookings
-         SET booking_status = ?
-         WHERE booking_id = ?
-         AND provider_id = ?
-         AND (booking_status IS NULL OR booking_status = '')"
-    );
+/* Protect status value */
 
-    $stmt->bind_param(
-        "sii",
-        $newStatus,
-        $bookingId,
-        $providerId
-    );
+$newStatus = mysqli_real_escape_string($conn, $newStatus);
+
+
+/* Update booking status */
+
+if (
+    $booking["booking_status"] === null ||
+    trim($booking["booking_status"]) == ""
+) {
+
+    $sql = "UPDATE bookings SET
+            booking_status = '$newStatus'
+            WHERE booking_id = $bookingId
+            AND provider_id = $providerId
+            AND (booking_status IS NULL OR booking_status = '')";
 
 } else {
 
-    $stmt = $conn->prepare(
-        "UPDATE bookings
-         SET booking_status = ?
-         WHERE booking_id = ?
-         AND provider_id = ?
-         AND booking_status = ?"
-    );
-
-    $stmt->bind_param(
-        "siis",
-        $newStatus,
-        $bookingId,
-        $providerId,
+    $currentStatus = mysqli_real_escape_string(
+        $conn,
         $currentStatus
     );
+
+    $sql = "UPDATE bookings SET
+            booking_status = '$newStatus'
+            WHERE booking_id = $bookingId
+            AND provider_id = $providerId
+            AND booking_status = '$currentStatus'";
 }
 
-$stmt->execute();
 
-$stmt->close();
+mysqli_query($conn, $sql);
+
+
+/* Go back to bookings page */
 
 header("Location: bookings.php?updated=1");
 exit;
+?>
