@@ -20,6 +20,9 @@ if (!$result)
 }
 
 
+$totalCustomers = mysqli_num_rows($result);
+
+
 ob_start();
 
 ?>
@@ -142,7 +145,7 @@ ob_start();
 
             <span class="users-count">
 
-                <?php echo mysqli_num_rows($result); ?>
+                <?php echo $totalCustomers; ?>
 
                 Customers
 
@@ -151,7 +154,20 @@ ob_start();
         </div>
 
 
-        <?php if (mysqli_num_rows($result) == 0) { ?>
+        <!-- Search -->
+
+        <div class="admin-search">
+
+            <input
+                type="text"
+                id="customerSearch"
+                placeholder="Search customers..."
+            >
+
+        </div>
+
+
+        <?php if ($totalCustomers == 0) { ?>
 
 
             <div class="users-empty-state">
@@ -264,7 +280,7 @@ ob_start();
                         ?>
 
 
-                            <tr>
+                            <tr class="customer-search-row">
 
 
                                 <td>
@@ -560,6 +576,16 @@ ob_start();
                 </table>
 
 
+                <!-- No Search Result -->
+
+                <div
+                    id="customerNoResult"
+                    class="admin-no-result"
+                >
+                    No customers found.
+                </div>
+
+
             </div>
 
 
@@ -570,6 +596,78 @@ ob_start();
 
 
 </div>
+
+
+<!-- Customer Search -->
+
+<script>
+
+var searchInput =
+    document.getElementById("customerSearch");
+
+var rows =
+    document.querySelectorAll(".customer-search-row");
+
+var noResult =
+    document.getElementById("customerNoResult");
+
+
+if (searchInput)
+{
+
+    searchInput.addEventListener("keyup", function()
+    {
+
+        var searchText =
+            searchInput.value.toLowerCase();
+
+        var found = false;
+
+
+        rows.forEach(function(row)
+        {
+
+            var rowText =
+                row.innerText.toLowerCase();
+
+
+            if (rowText.includes(searchText))
+            {
+
+                row.style.display = "";
+
+                found = true;
+
+            }
+            else
+            {
+
+                row.style.display = "none";
+
+            }
+
+        });
+
+
+        if (noResult)
+        {
+
+            if (found)
+            {
+                noResult.style.display = "none";
+            }
+            else
+            {
+                noResult.style.display = "block";
+            }
+
+        }
+
+    });
+
+}
+
+</script>
 
 
 <?php

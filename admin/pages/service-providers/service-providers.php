@@ -10,29 +10,41 @@ require_once "../../../config/db.php";
 
 
 $q = "select * from service_providers order by provider_id desc";
+
 $res = mysqli_query($conn, $q);
 
-if (!$res) {
+if (!$res)
+{
     die("Provider query failed.");
 }
+
+
+$totalProviders = mysqli_num_rows($res);
+
 
 ob_start();
 
 ?>
 
+
 <div class="providers-page">
+
 
     <div class="providers-header">
 
+
         <div>
 
-            <h1>Service Providers</h1>
+            <h1>
+                Service Providers
+            </h1>
 
             <p>
                 Manage the service providers available on HomeGenie.
             </p>
 
         </div>
+
 
         <a
             href="add-service-provider.php"
@@ -41,68 +53,89 @@ ob_start();
             + Add Provider
         </a>
 
+
     </div>
 
 
     <?php if (isset($_GET["success"])): ?>
 
+
         <div class="provider-alert success">
+
 
             <?php
 
-            if ($_GET["success"] == "provider_added") {
+            if ($_GET["success"] == "provider_added")
+            {
                 echo "Provider added successfully.";
             }
-            elseif ($_GET["success"] == "provider_updated") {
+            elseif ($_GET["success"] == "provider_updated")
+            {
                 echo "Provider updated successfully.";
             }
-            elseif ($_GET["success"] == "provider_deleted") {
+            elseif ($_GET["success"] == "provider_deleted")
+            {
                 echo "Provider deleted successfully.";
             }
 
             ?>
 
+
         </div>
+
 
     <?php endif; ?>
 
 
     <?php if (isset($_GET["error"])): ?>
 
+
         <div class="provider-alert error">
+
 
             <?php
 
-            if ($_GET["error"] == "invalid_provider") {
+            if ($_GET["error"] == "invalid_provider")
+            {
                 echo "Invalid service provider.";
             }
-            elseif ($_GET["error"] == "provider_not_found") {
+            elseif ($_GET["error"] == "provider_not_found")
+            {
                 echo "Service provider not found.";
             }
-            elseif ($_GET["error"] == "provider_delete_failed") {
+            elseif ($_GET["error"] == "provider_delete_failed")
+            {
                 echo "Unable to delete service provider.";
             }
-            elseif ($_GET["error"] == "provider_has_services") {
+            elseif ($_GET["error"] == "provider_has_services")
+            {
                 echo "This provider cannot be deleted because services are assigned to this provider.";
             }
-            else {
+            else
+            {
                 echo "Something went wrong.";
             }
 
             ?>
 
+
         </div>
+
 
     <?php endif; ?>
 
 
     <div class="providers-card">
 
+
         <div class="providers-card-header">
+
 
             <div>
 
-                <h2>All Service Providers</h2>
+                <h2>
+                    All Service Providers
+                </h2>
 
                 <p>
                     View and manage all registered service providers.
@@ -110,26 +143,52 @@ ob_start();
 
             </div>
 
+
             <span class="provider-count">
-                <?php echo mysqli_num_rows($res); ?> Providers
+
+                <?php echo $totalProviders; ?>
+
+                Providers
+
             </span>
+
 
         </div>
 
 
-        <?php if (mysqli_num_rows($res) == 0): ?>
+        <!-- Search -->
+
+        <div class="admin-search">
+
+            <input
+                type="text"
+                id="providerSearch"
+                placeholder="Search service providers..."
+            >
+
+        </div>
+
+
+        <?php if ($totalProviders == 0): ?>
+
 
             <div class="providers-empty">
+
 
                 <div class="empty-icon">
                     +
                 </div>
 
-                <h3>No Service Providers Found</h3>
+
+                <h3>
+                    No Service Providers Found
+                </h3>
+
 
                 <p>
                     Add your first service provider to get started.
                 </p>
+
 
                 <a
                     href="add-service-provider.php"
@@ -138,35 +197,72 @@ ob_start();
                     + Add Provider
                 </a>
 
+
             </div>
+
 
         <?php else: ?>
 
+
             <div class="providers-table-container">
+
 
                 <table class="providers-table">
 
+
                     <thead>
+
 
                         <tr>
 
-                            <th>Sr.</th>
-                            <th>Provider</th>
-                            <th>Contact</th>
-                            <th>Category</th>
-                            <th>Experience</th>
-                            <th>Location</th>
-                            <th>Availability</th>
-                            <th>Status</th>
-                            <th>Created</th>
-                            <th>Actions</th>
+                            <th>
+                                Sr.
+                            </th>
+
+                            <th>
+                                Provider
+                            </th>
+
+                            <th>
+                                Contact
+                            </th>
+
+                            <th>
+                                Category
+                            </th>
+
+                            <th>
+                                Experience
+                            </th>
+
+                            <th>
+                                Location
+                            </th>
+
+                            <th>
+                                Availability
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Created
+                            </th>
+
+                            <th>
+                                Actions
+                            </th>
 
                         </tr>
+
 
                     </thead>
 
 
                     <tbody>
+
 
                         <?php
 
@@ -174,26 +270,34 @@ ob_start();
 
                         while ($provider = mysqli_fetch_array($res)):
 
+
                             /*
                              * Get category name separately.
                              */
 
                             $categoryId = $provider["category_id"];
 
-                            $q2 = "select * from categories where category_id = $categoryId";
+                            $q2 = "select * from categories
+                                   where category_id = $categoryId";
 
-                            $categoryResult = mysqli_query($conn, $q2);
+                            $categoryResult =
+                                mysqli_query($conn, $q2);
 
-                            $category = mysqli_fetch_array($categoryResult);
+                            $category =
+                                mysqli_fetch_array($categoryResult);
 
                         ?>
 
-                            <tr>
+
+                            <tr class="provider-search-row">
+
 
                                 <td>
 
                                     <span class="provider-number">
+
                                         <?php echo $srno; ?>
+
                                     </span>
 
                                 </td>
@@ -201,9 +305,12 @@ ob_start();
 
                                 <td>
 
+
                                     <div class="provider-info">
 
+
                                         <?php if (!empty($provider["profile_image"])): ?>
+
 
                                             <img
                                                 src="../../../assets/providers/<?php echo htmlspecialchars($provider["profile_image"]); ?>"
@@ -211,9 +318,12 @@ ob_start();
                                                 class="provider-image"
                                             >
 
+
                                         <?php else: ?>
 
+
                                             <div class="provider-image placeholder">
+
 
                                                 <?php
 
@@ -227,14 +337,18 @@ ob_start();
 
                                                 ?>
 
+
                                             </div>
+
 
                                         <?php endif; ?>
 
 
                                         <div>
 
+
                                             <strong>
+
 
                                                 <?php
 
@@ -244,62 +358,87 @@ ob_start();
 
                                                 ?>
 
+
                                             </strong>
+
 
                                             <span>
 
+
                                                 <?php
 
-                                                if ($provider["gender"] != "") {
+                                                if ($provider["gender"] != "")
+                                                {
                                                     echo htmlspecialchars(
                                                         $provider["gender"]
                                                     );
                                                 }
-                                                else {
+                                                else
+                                                {
                                                     echo "Provider";
                                                 }
 
                                                 ?>
 
+
                                             </span>
+
 
                                         </div>
 
+
                                     </div>
+
 
                                 </td>
 
 
                                 <td>
+
 
                                     <div class="provider-contact">
 
+
                                         <span>
+
                                             <?php
+
                                             echo htmlspecialchars(
                                                 $provider["email"]
                                             );
+
                                             ?>
+
                                         </span>
 
+
                                         <span>
+
                                             <?php
+
                                             echo htmlspecialchars(
                                                 $provider["phone"]
                                             );
+
                                             ?>
+
                                         </span>
 
+
                                     </div>
+
 
                                 </td>
 
 
                                 <td>
 
+
                                     <?php if (!empty($category["category_name"])): ?>
 
+
                                         <span class="category-badge">
+
 
                                             <?php
 
@@ -309,24 +448,32 @@ ob_start();
 
                                             ?>
 
+
                                         </span>
 
+
                                     <?php else: ?>
+
 
                                         <span class="no-data">
                                             No Category
                                         </span>
 
+
                                     <?php endif; ?>
+
 
                                 </td>
 
 
                                 <td>
 
+
                                     <?php if ($provider["experience"] != ""): ?>
 
+
                                         <span class="experience-text">
+
 
                                             <?php
 
@@ -338,24 +485,32 @@ ob_start();
 
                                             years
 
+
                                         </span>
 
+
                                     <?php else: ?>
+
 
                                         <span class="no-data">
                                             Not specified
                                         </span>
 
+
                                     <?php endif; ?>
+
 
                                 </td>
 
 
                                 <td>
 
+
                                     <div class="location-info">
 
+
                                         <strong>
+
 
                                             <?php
 
@@ -365,9 +520,12 @@ ob_start();
 
                                             ?>
 
+
                                         </strong>
 
+
                                         <span>
+
 
                                             <?php
 
@@ -377,66 +535,87 @@ ob_start();
 
                                             ?>
 
+
                                         </span>
 
+
                                     </div>
+
 
                                 </td>
 
 
                                 <td>
 
+
                                     <?php if ($provider["availability"] == "Available"): ?>
+
 
                                         <span class="status-badge available">
                                             Available
                                         </span>
 
+
                                     <?php elseif ($provider["availability"] == "Busy"): ?>
+
 
                                         <span class="status-badge busy">
                                             Busy
                                         </span>
 
+
                                     <?php else: ?>
+
 
                                         <span class="status-badge offline">
                                             Not Available
                                         </span>
 
+
                                     <?php endif; ?>
+
 
                                 </td>
 
 
                                 <td>
 
+
                                     <?php if ($provider["account_status"] == "Active"): ?>
+
 
                                         <span class="status-badge active">
                                             Active
                                         </span>
 
+
                                     <?php elseif ($provider["account_status"] == "Blocked"): ?>
+
 
                                         <span class="status-badge blocked">
                                             Blocked
                                         </span>
 
+
                                     <?php else: ?>
+
 
                                         <span class="status-badge pending">
                                             Pending
                                         </span>
 
+
                                     <?php endif; ?>
+
 
                                 </td>
 
 
                                 <td>
 
+
                                     <span class="created-date">
+
 
                                         <?php
 
@@ -449,14 +628,18 @@ ob_start();
 
                                         ?>
 
+
                                     </span>
+
 
                                 </td>
 
 
                                 <td>
 
+
                                     <div class="provider-actions">
+
 
                                         <a
                                             href="edit-service-provider.php?id=<?php echo $provider["provider_id"]; ?>"
@@ -464,6 +647,7 @@ ob_start();
                                         >
                                             Edit
                                         </a>
+
 
                                         <a
                                             href="delete-service-provider.php?id=<?php echo $provider["provider_id"]; ?>"
@@ -473,11 +657,15 @@ ob_start();
                                             Delete
                                         </a>
 
+
                                     </div>
+
 
                                 </td>
 
+
                             </tr>
+
 
                         <?php
 
@@ -487,17 +675,105 @@ ob_start();
 
                         ?>
 
+
                     </tbody>
+
 
                 </table>
 
+
+                <!-- No Search Result -->
+
+                <div
+                    id="providerNoResult"
+                    class="admin-no-result"
+                >
+                    No service providers found.
+                </div>
+
+
             </div>
+
 
         <?php endif; ?>
 
+
     </div>
 
+
 </div>
+
+
+<!-- Provider Search -->
+
+<script>
+
+var searchInput =
+    document.getElementById("providerSearch");
+
+var rows =
+    document.querySelectorAll(".provider-search-row");
+
+var noResult =
+    document.getElementById("providerNoResult");
+
+
+if (searchInput)
+{
+
+    searchInput.addEventListener("keyup", function()
+    {
+
+        var searchText =
+            searchInput.value.toLowerCase();
+
+        var found = false;
+
+
+        rows.forEach(function(row)
+        {
+
+            var rowText =
+                row.innerText.toLowerCase();
+
+
+            if (rowText.includes(searchText))
+            {
+
+                row.style.display = "";
+
+                found = true;
+
+            }
+            else
+            {
+
+                row.style.display = "none";
+
+            }
+
+        });
+
+
+        if (noResult)
+        {
+
+            if (found)
+            {
+                noResult.style.display = "none";
+            }
+            else
+            {
+                noResult.style.display = "block";
+            }
+
+        }
+
+    });
+
+}
+
+</script>
 
 
 <?php

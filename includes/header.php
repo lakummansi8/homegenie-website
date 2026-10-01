@@ -25,8 +25,12 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 
     <link
         rel="stylesheet"
-        href="/homegenie-website/css/style.css"
-    >
+        href="/homegenie-website/css/style.css">
+        <link rel="stylesheet" href="css/core/reset.css">
+<link rel="stylesheet" href="css/core/variables.css">
+<link rel="stylesheet" href="css/core/typography.css">
+<link rel="stylesheet" href="css/about.css">
+    
 
     <?php if ($pageCss !== ""): ?>
 

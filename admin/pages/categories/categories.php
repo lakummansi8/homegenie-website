@@ -23,6 +23,7 @@ ob_start();
 
 <div class="admin-page-header">
 
+
     <div class="header-title">
 
         <h3>
@@ -47,6 +48,7 @@ ob_start();
 
     </div>
 
+
 </div>
 
 
@@ -56,20 +58,17 @@ ob_start();
 
         <?php
 
-        if ($_GET["success"] == "category_added") {
-
+        if ($_GET["success"] == "category_added")
+        {
             echo "Category added successfully.";
-
         }
-        elseif ($_GET["success"] == "category_updated") {
-
+        elseif ($_GET["success"] == "category_updated")
+        {
             echo "Category updated successfully.";
-
         }
-        elseif ($_GET["success"] == "category_deleted") {
-
+        elseif ($_GET["success"] == "category_deleted")
+        {
             echo "Category deleted successfully.";
-
         }
 
         ?>
@@ -85,20 +84,17 @@ ob_start();
 
         <?php
 
-        if ($_GET["error"] == "invalid_category") {
-
+        if ($_GET["error"] == "invalid_category")
+        {
             echo "Invalid category.";
-
         }
-        elseif ($_GET["error"] == "category_not_found") {
-
+        elseif ($_GET["error"] == "category_not_found")
+        {
             echo "Category not found.";
-
         }
-        else {
-
+        else
+        {
             echo "Something went wrong.";
-
         }
 
         ?>
@@ -124,6 +120,19 @@ ob_start();
             Categories
 
         </span>
+
+    </div>
+
+
+    <!-- Search -->
+
+    <div class="admin-search">
+
+        <input
+            type="text"
+            id="categorySearch"
+            placeholder="Search categories..."
+        >
 
     </div>
 
@@ -199,12 +208,13 @@ ob_start();
 
                     $srno = 1;
 
-                    while ($category = mysqli_fetch_array($res)) {
+                    while ($category = mysqli_fetch_array($res))
+                    {
 
                     ?>
 
 
-                        <tr>
+                        <tr class="category-search-row">
 
 
                             <td>
@@ -224,7 +234,7 @@ ob_start();
 
                                         <img
                                             src="../../../assets/categories/<?php echo $category["category_image"]; ?>"
-                                            alt="<?php echo $category["category_name"]; ?>"
+                                            alt="<?php echo htmlspecialchars($category["category_name"]); ?>"
                                             class="category-table-image"
                                         >
 
@@ -242,7 +252,13 @@ ob_start();
 
                                     <strong>
 
-                                        <?php echo $category["category_name"]; ?>
+                                        <?php
+
+                                        echo htmlspecialchars(
+                                            $category["category_name"]
+                                        );
+
+                                        ?>
 
                                     </strong>
 
@@ -256,15 +272,15 @@ ob_start();
 
                                 <?php
 
-                                if ($category["description"] != "") {
-
-                                    echo $category["description"];
-
+                                if ($category["description"] != "")
+                                {
+                                    echo htmlspecialchars(
+                                        $category["description"]
+                                    );
                                 }
-                                else {
-
+                                else
+                                {
                                     echo "-";
-
                                 }
 
                                 ?>
@@ -303,7 +319,9 @@ ob_start();
 
                                 echo date(
                                     "d M Y",
-                                    strtotime($category["created_at"])
+                                    strtotime(
+                                        $category["created_at"]
+                                    )
                                 );
 
                                 ?>
@@ -350,6 +368,16 @@ ob_start();
                 </table>
 
 
+                <!-- No Search Result -->
+
+                <div
+                    id="categoryNoResult"
+                    class="admin-no-result"
+                >
+                    No categories found.
+                </div>
+
+
             </div>
 
 
@@ -360,6 +388,78 @@ ob_start();
 
 
 </div>
+
+
+<!-- Category Search -->
+
+<script>
+
+var searchInput =
+    document.getElementById("categorySearch");
+
+var rows =
+    document.querySelectorAll(".category-search-row");
+
+var noResult =
+    document.getElementById("categoryNoResult");
+
+
+if (searchInput)
+{
+
+    searchInput.addEventListener("keyup", function()
+    {
+
+        var searchText =
+            searchInput.value.toLowerCase();
+
+        var found = false;
+
+
+        rows.forEach(function(row)
+        {
+
+            var rowText =
+                row.innerText.toLowerCase();
+
+
+            if (rowText.includes(searchText))
+            {
+
+                row.style.display = "";
+
+                found = true;
+
+            }
+            else
+            {
+
+                row.style.display = "none";
+
+            }
+
+        });
+
+
+        if (noResult)
+        {
+
+            if (found)
+            {
+                noResult.style.display = "none";
+            }
+            else
+            {
+                noResult.style.display = "block";
+            }
+
+        }
+
+    });
+
+}
+
+</script>
 
 
 <?php
