@@ -127,6 +127,29 @@
     white-space: nowrap;
 }
 
+/* Mark as Read */
+
+.contact-status + br + a {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 5px 9px;
+    background: #0F766E;
+    border: 1px solid #0F766E;
+    border-radius: 5px;
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.contact-status + br + a:hover {
+    background: #115E59;
+    border-color: #115E59;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
 .contacts-empty {
     padding: 50px 20px;
     text-align: center;
