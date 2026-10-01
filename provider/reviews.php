@@ -18,40 +18,82 @@ $providerId = $_SESSION["provider_id"];
 $pageTitle = "Reviews";
 $pageCss = "reviews.css";
 
-$stmt = $conn->prepare(
-    "SELECT
-        r.review_id,
-        r.rating,
-        r.review_comment,
-        r.created_at,
-        u.full_name AS customer_name,
-        s.service_name
-     FROM reviews r
-     LEFT JOIN users u
-        ON r.user_id = u.user_id
-     LEFT JOIN bookings b
-        ON r.booking_id = b.booking_id
-     LEFT JOIN services s
-        ON b.service_id = s.service_id
-     WHERE r.provider_id = ?
-     ORDER BY r.review_id DESC"
-);
 
-$stmt->bind_param("i", $providerId);
-$stmt->execute();
+/* Get reviews of this provider */
 
-$result = $stmt->get_result();
+$sql = "SELECT * FROM reviews
+        WHERE provider_id = $providerId
+        ORDER BY review_id DESC";
+
+$result = mysqli_query($conn, $sql);
 
 require_once "layout/provider-layout.php";
 ?>
 
 <div class="reviews-container">
 
-    <?php if ($result->num_rows > 0): ?>
+    <?php if (mysqli_num_rows($result) > 0): ?>
 
         <div class="reviews-grid">
 
-            <?php while ($review = $result->fetch_assoc()): ?>
+            <?php while ($review = mysqli_fetch_assoc($result)): ?>
+
+                <?php
+
+                /* Get customer name */
+
+                $userId = $review["user_id"];
+
+                $userSql = "SELECT full_name
+                            FROM users
+                            WHERE user_id = $userId";
+
+                $userResult = mysqli_query($conn, $userSql);
+                $user = mysqli_fetch_assoc($userResult);
+
+
+                /* Get service ID from booking */
+
+                $bookingId = $review["booking_id"];
+
+                $bookingSql = "SELECT service_id
+                               FROM bookings
+                               WHERE booking_id = $bookingId";
+
+                $bookingResult = mysqli_query($conn, $bookingSql);
+                $booking = mysqli_fetch_assoc($bookingResult);
+
+
+                /* Get service name */
+
+                $serviceName = "Unknown Service";
+
+                if ($booking) {
+
+                    $serviceId = $booking["service_id"];
+
+                    $serviceSql = "SELECT service_name
+                                   FROM services
+                                   WHERE service_id = $serviceId";
+
+                    $serviceResult = mysqli_query($conn, $serviceSql);
+                    $service = mysqli_fetch_assoc($serviceResult);
+
+                    if ($service) {
+                        $serviceName = $service["service_name"];
+                    }
+                }
+
+
+                /* Customer name */
+
+                if ($user) {
+                    $customerName = $user["full_name"];
+                } else {
+                    $customerName = "Unknown Customer";
+                }
+
+                ?>
 
                 <div class="review-card">
 
@@ -59,11 +101,11 @@ require_once "layout/provider-layout.php";
 
                         <div>
                             <h3>
-                                <?php echo htmlspecialchars($review["customer_name"]); ?>
+                                <?php echo htmlspecialchars($customerName); ?>
                             </h3>
 
                             <p>
-                                <?php echo htmlspecialchars($review["service_name"]); ?>
+                                <?php echo htmlspecialchars($serviceName); ?>
                             </p>
                         </div>
 
@@ -129,4 +171,3 @@ require_once "layout/provider-layout.php";
 
 </body>
 </html>
-
