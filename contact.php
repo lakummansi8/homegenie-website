@@ -1,3 +1,4 @@
+```php
 <?php
 
 require_once "config/db.php";
@@ -9,7 +10,9 @@ $message = "";
 $messageType = "";
 
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+/* Submit contact form */
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $fullName = trim($_POST["full_name"] ?? "");
     $email = trim($_POST["email"] ?? "");
@@ -18,51 +21,66 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $messageText = trim($_POST["message"] ?? "");
 
 
+    /* Check empty fields */
+
     if (
-        $fullName === "" ||
-        $email === "" ||
-        $phone === "" ||
-        $subject === "" ||
-        $messageText === ""
+        $fullName == "" ||
+        $email == "" ||
+        $phone == "" ||
+        $subject == "" ||
+        $messageText == ""
     ) {
 
         $message = "Please fill in all fields.";
         $messageType = "error";
 
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    }
+
+
+    /* Check email */
+
+    elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
         $message = "Please enter a valid email address.";
         $messageType = "error";
 
-    } else {
-
-        $query = "
-            INSERT INTO contact
-            (
-                full_name,
-                email,
-                phone,
-                subject,
-                message,
-                message_status
-            )
-            VALUES
-            (?, ?, ?, ?, ?, 'Unread')
-        ";
-
-        $stmt = $conn->prepare($query);
-
-        $stmt->bind_param(
-            "sssss",
-            $fullName,
-            $email,
-            $phone,
-            $subject,
-            $messageText
-        );
+    }
 
 
-        if ($stmt->execute()) {
+    else {
+
+        /* Protect values before putting them in SQL */
+
+        $fullName = mysqli_real_escape_string($conn, $fullName);
+        $email = mysqli_real_escape_string($conn, $email);
+        $phone = mysqli_real_escape_string($conn, $phone);
+        $subject = mysqli_real_escape_string($conn, $subject);
+        $messageText = mysqli_real_escape_string($conn, $messageText);
+
+
+        /* Insert contact message */
+
+        $sql = "INSERT INTO contact
+                (
+                    full_name,
+                    email,
+                    phone,
+                    subject,
+                    message,
+                    message_status
+                )
+                VALUES
+                (
+                    '$fullName',
+                    '$email',
+                    '$phone',
+                    '$subject',
+                    '$messageText',
+                    'Unread'
+                )";
+
+
+        if (mysqli_query($conn, $sql)) {
 
             $message = "Your message has been sent successfully. We will get back to you soon.";
             $messageType = "success";
@@ -392,3 +410,4 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
 <?php include "includes/footer.php"; ?>
+
