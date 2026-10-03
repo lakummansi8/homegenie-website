@@ -1,18 +1,24 @@
+/* =========================================
+   PROVIDER VIEW PAGE
+========================================= */
+
 .provider-view-page {
     width: 100%;
+    background: #ffffff;
 }
 
 
 /* =========================================
-   HERO
+   HERO SECTION
 ========================================= */
 
 .provider-view-page .provider-hero {
     width: 100%;
-    min-height: 420px;
-    padding: 60px 25px;
+    min-height: 100vh;
 
-    background: #f0fdfa;
+    padding: 80px 30px;
+
+    background: #d8eee8;
 
     box-sizing: border-box;
 
@@ -25,7 +31,7 @@
 
 .provider-view-page .provider-hero-content {
     width: 100%;
-    max-width: 800px;
+    max-width: 850px;
 
     margin: 0 auto !important;
     padding: 0 !important;
@@ -40,8 +46,84 @@
 
     width: 100% !important;
 
-    margin: 0 0 12px 0 !important;
+    margin: 0 0 18px 0 !important;
     padding: 0 !important;
+
+    color: #0f766e;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    letter-spacing: 2px;
+
+    text-align: center !important;
+}
+
+.provider-view-page .provider-hero-content h1 {
+    width: 100% !important;
+
+    margin: 0 0 20px 0 !important;
+    padding: 0 !important;
+
+    color: #111827;
+
+    font-size: 52px;
+    font-weight: 700;
+
+    line-height: 1.15;
+
+    text-align: center !important;
+}
+
+.provider-view-page .provider-hero-content p {
+    width: 100% !important;
+
+    max-width: 650px;
+
+    margin: 0 auto !important;
+    padding: 0 !important;
+
+    color: #4b5563;
+
+    font-size: 18px;
+    line-height: 1.7;
+
+    text-align: center !important;
+}
+
+
+/* =========================================
+   PROVIDERS SECTION
+========================================= */
+
+.providers-list-section {
+    width: 100%;
+
+    padding: 80px 30px;
+
+    background: #ffffff;
+
+    box-sizing: border-box;
+}
+
+.section-container {
+    width: 100%;
+    max-width: 1200px;
+
+    margin: 0 auto;
+}
+
+
+/* =========================================
+   PROVIDERS SECTION HEADING
+========================================= */
+
+.providers-list-section::before {
+    content: "OUR PROFESSIONALS";
+
+    display: block;
+
+    margin-bottom: 10px;
 
     color: #0f766e;
 
@@ -50,46 +132,34 @@
 
     letter-spacing: 1.5px;
 
-    text-align: center !important;
+    text-align: center;
 }
 
-.provider-view-page .provider-hero-content h1 {
-    width: 100% !important;
+.providers-list-section::after {
+    content: "Choose a trusted professional for your home service needs.";
 
-    margin: 0 0 12px 0 !important;
-    padding: 0 !important;
+    display: block;
 
-    font-size: 42px;
-    font-weight: 700;
+    margin: 0 auto 45px;
 
-    color: #111827;
+    max-width: 650px;
 
-    text-align: center !important;
-}
+    color: #6b7280;
 
-.provider-view-page .provider-hero-content p {
-    width: 100% !important;
+    font-size: 15px;
+    line-height: 1.6;
 
-    margin: 0 !important;
-    padding: 0 !important;
-
-    font-size: 17px;
-
-    color: #4b5563;
-
-    text-align: center !important;
+    text-align: center;
 }
 
 
 /* =========================================
-   PROVIDERS
+   PROVIDER GRID
 ========================================= */
 
-.providers-list-section {
-    padding: 60px 30px;
-}
-
 .provider-grid {
+    width: 100%;
+
     display: grid;
 
     grid-template-columns: repeat(3, 1fr);
@@ -99,17 +169,19 @@
 
 
 /* =========================================
-   CARD
+   PROVIDER CARD
 ========================================= */
 
 .provider-card {
     background: #ffffff;
 
+    border: 1px solid #d5e8e3;
+
     border-radius: 16px;
 
     overflow: hidden;
 
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
 
     transition: 0.3s;
 
@@ -118,20 +190,22 @@
 
 .provider-card:hover {
     transform: translateY(-5px);
+
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.10);
 }
 
 
 /* =========================================
-   IMAGE
+   PROVIDER IMAGE
 ========================================= */
 
 .provider-image {
     width: 150px;
     height: 150px;
 
-    margin: 25px auto 0;
+    margin: 30px auto 0;
 
-    background: #f0fdfa;
+    background: #d8eee8;
 
     overflow: hidden;
 
@@ -160,32 +234,30 @@
     align-items: center;
     justify-content: center;
 
-    font-size: 55px;
-
-    font-weight: bold;
+    background: #d8eee8;
 
     color: #0f766e;
+
+    font-size: 55px;
+    font-weight: 700;
 }
 
 
 /* =========================================
-   DETAILS
+   PROVIDER DETAILS
 ========================================= */
 
 .provider-card-content {
-    padding: 20px 25px 25px;
+    padding: 22px 25px 28px;
 }
 
 .provider-card-content h2 {
     margin: 0 0 7px;
 
+    color: #111827;
+
     font-size: 21px;
-}
-
-.provider-card-content h3 {
-    margin: 15px 0 7px;
-
-    font-size: 17px;
+    font-weight: 700;
 }
 
 .provider-category {
@@ -196,21 +268,37 @@
     font-weight: 600;
 }
 
+.provider-card-content h3 {
+    margin: 15px 0 7px;
+
+    color: #111827;
+
+    font-size: 17px;
+    font-weight: 600;
+}
+
 .provider-price {
     margin: 9px 0;
+
+    color: #6b7280;
 
     font-size: 14px;
 }
 
 .provider-price strong {
     color: #0f766e;
+
+    font-weight: 700;
 }
 
 .provider-experience,
 .provider-location {
     margin: 7px 0;
 
+    color: #6b7280;
+
     font-size: 14px;
+    line-height: 1.5;
 }
 
 
@@ -229,7 +317,7 @@
 
     margin-top: 15px !important;
 
-    padding: 9px 18px !important;
+    padding: 10px 20px !important;
 
     background: #0f766e !important;
 
@@ -250,21 +338,79 @@
     font-size: 14px;
 
     font-weight: 600;
+
+    transition: 0.3s;
+}
+
+.provider-view-page a.book-button:hover {
+    background: #115e59 !important;
 }
 
 
 /* =========================================
-   MOBILE
+   DISABLED BUTTON
+========================================= */
+
+.provider-view-page .disabled-button {
+    margin-top: 15px;
+
+    padding: 10px 20px;
+
+    background: #d1d5db;
+
+    color: #6b7280;
+
+    border: none;
+
+    border-radius: 6px;
+
+    font-family: "Outfit", sans-serif;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================
+   NO DATA
+========================================= */
+
+.provider-view-page .no-data {
+    width: 100%;
+
+    grid-column: 1 / -1;
+
+    padding: 40px 20px;
+
+    color: #6b7280;
+
+    font-size: 15px;
+
+    text-align: center;
+}
+
+
+/* =========================================
+   TABLET
 ========================================= */
 
 @media (max-width: 900px) {
 
     .provider-view-page .provider-hero {
-        min-height: 350px;
+        min-height: 70vh;
+
+        padding: 70px 25px;
     }
 
     .provider-view-page .provider-hero-content h1 {
-        font-size: 34px;
+        font-size: 42px;
+    }
+
+    .provider-view-page .provider-hero-content p {
+        font-size: 17px;
     }
 
     .provider-grid {
@@ -274,12 +420,57 @@
 }
 
 
+/* =========================================
+   MOBILE
+========================================= */
+
 @media (max-width: 600px) {
 
     .provider-view-page .provider-hero {
-        min-height: 300px;
+        min-height: 75vh;
 
-        padding: 45px 20px;
+        padding: 60px 20px;
+    }
+
+    .provider-view-page .provider-hero-label {
+        font-size: 11px;
+    }
+
+    .provider-view-page .provider-hero-content h1 {
+        font-size: 32px;
+    }
+
+    .provider-view-page .provider-hero-content p {
+        font-size: 15px;
+    }
+
+    .providers-list-section {
+        padding: 60px 20px;
+    }
+
+    .providers-list-section::after {
+        margin-bottom: 35px;
+    }
+
+    .provider-grid {
+        grid-template-columns: 1fr;
+
+        gap: 25px;
+    }
+
+}
+
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 400px) {
+
+    .provider-view-page .provider-hero {
+        min-height: 70vh;
+
+        padding: 50px 16px;
     }
 
     .provider-view-page .provider-hero-content h1 {
@@ -290,12 +481,13 @@
         font-size: 14px;
     }
 
-    .providers-list-section {
-        padding: 40px 20px;
+    .provider-image {
+        width: 135px;
+        height: 135px;
     }
 
-    .provider-grid {
-        grid-template-columns: 1fr;
+    .provider-card-content {
+        padding: 20px;
     }
 
 }
