@@ -9,6 +9,8 @@ $pageTitle = "Become a Provider";
 $pageCss = "provider-register.css";
 
 
+/* Get active categories */
+
 $categoriesQuery = "
     SELECT category_id, category_name
     FROM categories
@@ -16,10 +18,11 @@ $categoriesQuery = "
     ORDER BY category_name ASC
 ";
 
-$categoriesResult = $conn->query($categoriesQuery);
+$categoriesResult = mysqli_query($conn, $categoriesQuery);
 
-if (!$categoriesResult) {
-    die("Categories query failed: " . $conn->error);
+if (!$categoriesResult)
+{
+    die("Categories query failed: " . mysqli_error($conn));
 }
 
 
@@ -27,8 +30,8 @@ $message = "";
 $messageType = "";
 
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-
+if ($_SERVER["REQUEST_METHOD"] == "POST")
+{
     $fullName = trim($_POST["full_name"] ?? "");
     $email = trim($_POST["email"] ?? "");
     $phone = trim($_POST["phone"] ?? "");
@@ -42,55 +45,72 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $categoryId = (int)($_POST["category_id"] ?? 0);
 
 
-    if (
-        $fullName === "" ||
-        $email === "" ||
-        $phone === "" ||
-        $password === "" ||
-        $gender === "" ||
-        $address === "" ||
-        $area === "" ||
-        $city === "" ||
-        $availability === "" ||
-        $categoryId <= 0
-    ) {
+    /* Check required fields */
 
+    if (
+        $fullName == "" ||
+        $email == "" ||
+        $phone == "" ||
+        $password == "" ||
+        $gender == "" ||
+        $address == "" ||
+        $area == "" ||
+        $city == "" ||
+        $availability == "" ||
+        $categoryId <= 0
+    )
+    {
         $message = "Please fill in all required fields.";
         $messageType = "error";
+    }
+    else
+    {
+        /* Check if email already exists */
 
-    } else {
+        $email = mysqli_real_escape_string($conn, $email);
 
         $checkQuery = "
             SELECT provider_id
             FROM service_providers
-            WHERE email = ?
+            WHERE email = '$email'
             LIMIT 1
         ";
 
-        $checkStmt = $conn->prepare($checkQuery);
+        $checkResult = mysqli_query($conn, $checkQuery);
 
-        if (!$checkStmt) {
-            die("Check query failed: " . $conn->error);
+        if (!$checkResult)
+        {
+            die("Check query failed: " . mysqli_error($conn));
         }
 
-        $checkStmt->bind_param("s", $email);
-        $checkStmt->execute();
 
-        $checkResult = $checkStmt->get_result();
-
-
-        if ($checkResult->num_rows > 0) {
-
+        if (mysqli_num_rows($checkResult) > 0)
+        {
             $message = "An account with this email already exists.";
             $messageType = "error";
-
-        } else {
+        }
+        else
+        {
+            /* Encrypt password */
 
             $hashedPassword = password_hash(
                 $password,
                 PASSWORD_DEFAULT
             );
 
+
+            /* Make text values safe */
+
+            $fullName = mysqli_real_escape_string($conn, $fullName);
+            $phone = mysqli_real_escape_string($conn, $phone);
+            $gender = mysqli_real_escape_string($conn, $gender);
+            $address = mysqli_real_escape_string($conn, $address);
+            $area = mysqli_real_escape_string($conn, $area);
+            $city = mysqli_real_escape_string($conn, $city);
+            $availability = mysqli_real_escape_string($conn, $availability);
+
+
+            /* Insert provider */
 
             $insertQuery = "
                 INSERT INTO service_providers
@@ -109,51 +129,34 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     category_id
                 )
                 VALUES
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending', ?)
+                (
+                    '$fullName',
+                    '$email',
+                    '$phone',
+                    '$hashedPassword',
+                    '$gender',
+                    $experience,
+                    '$address',
+                    '$area',
+                    '$city',
+                    '$availability',
+                    'Pending',
+                    $categoryId
+                )
             ";
 
 
-            $insertStmt = $conn->prepare($insertQuery);
-
-            if (!$insertStmt) {
-                die("Insert query failed: " . $conn->error);
-            }
-
-
-            $insertStmt->bind_param(
-                "sssssissssi",
-                $fullName,
-                $email,
-                $phone,
-                $hashedPassword,
-                $gender,
-                $experience,
-                $address,
-                $area,
-                $city,
-                $availability,
-                $categoryId
-            );
-
-
-            if ($insertStmt->execute()) {
-
+            if (mysqli_query($conn, $insertQuery))
+            {
                 $message = "Your provider application has been submitted successfully. Please wait for admin approval.";
                 $messageType = "success";
-
-            } else {
-
-                $message = "Something went wrong: " . $insertStmt->error;
-                $messageType = "error";
-
             }
-
-
-            $insertStmt->close();
+            else
+            {
+                $message = "Something went wrong: " . mysqli_error($conn);
+                $messageType = "error";
+            }
         }
-
-
-        $checkStmt->close();
     }
 }
 
@@ -466,7 +469,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                 Select Category
                             </option>
 
-                            <?php while ($category = $categoriesResult->fetch_assoc()): ?>
+                            <?php while ($category = mysqli_fetch_assoc($categoriesResult)): ?>
 
                                 <option
                                     value="<?php echo (int)$category["category_id"]; ?>"

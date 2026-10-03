@@ -2,7 +2,8 @@
 
 require_once "config/db.php";
 
-if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+if ($_SERVER["REQUEST_METHOD"] != "POST")
+{
     header("Location: register.php");
     exit;
 }
@@ -15,49 +16,54 @@ $address = trim($_POST["address"] ?? "");
 $city = trim($_POST["city"] ?? "");
 
 if (
-    $full_name === "" ||
-    $email === "" ||
-    $phone === "" ||
-    $password === "" ||
-    $address === "" ||
-    $city === ""
-) {
+    $full_name == "" ||
+    $email == "" ||
+    $phone == "" ||
+    $password == "" ||
+    $address == "" ||
+    $city == ""
+)
+{
     header("Location: register.php?error=empty");
     exit;
 }
 
-$stmt = $conn->prepare("SELECT user_id FROM users WHERE email = ?");
-$stmt->bind_param("s", $email);
-$stmt->execute();
-$result = $stmt->get_result();
+/* Check if email already exists */
 
-if ($result->num_rows > 0) {
+$email = mysqli_real_escape_string($conn, $email);
+
+$sql = "SELECT user_id FROM users WHERE email = '$email'";
+$result = mysqli_query($conn, $sql);
+
+if (mysqli_num_rows($result) > 0)
+{
     header("Location: register.php?error=email_exists");
     exit;
 }
 
+/* Encrypt password */
+
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-$stmt = $conn->prepare(
-    "INSERT INTO users 
-    (full_name, email, phone, password, address, city, account_status)
-    VALUES (?, ?, ?, ?, ?, ?, 'active')"
-);
+/* Insert user */
 
-$stmt->bind_param(
-    "ssssss",
-    $full_name,
-    $email,
-    $phone,
-    $hashed_password,
-    $address,
-    $city
-);
+$full_name = mysqli_real_escape_string($conn, $full_name);
+$phone = mysqli_real_escape_string($conn, $phone);
+$address = mysqli_real_escape_string($conn, $address);
+$city = mysqli_real_escape_string($conn, $city);
 
-if ($stmt->execute()) {
+$sql = "INSERT INTO users
+        (full_name, email, phone, password, address, city, account_status)
+        VALUES
+        ('$full_name', '$email', '$phone', '$hashed_password', '$address', '$city', 'active')";
+
+if (mysqli_query($conn, $sql))
+{
     header("Location: auth/login.php?registered=success");
     exit;
 }
 
-echo "Registration failed: " . $stmt->error;
+echo "Registration failed: " . mysqli_error($conn);
 exit;
+
+?>
