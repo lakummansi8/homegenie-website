@@ -70,10 +70,16 @@
    TABLE
 ========================================= */
 
-.service-table-responsive {
-    width: 100%;
 
+   .service-table-responsive {
+    width: 100%;
     overflow-x: auto;
+    overflow-y: hidden;
+    cursor: grab;
+}
+.service-table-responsive.dragging {
+    cursor: grabbing;
+    user-select: none;
 }
 
 .services-table {

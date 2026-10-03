@@ -533,6 +533,99 @@ if (searchInput)
 
 }
 
+
+var bookingsTableWrapper =
+    document.querySelector(".bookings-table-wrapper");
+
+
+if (bookingsTableWrapper)
+{
+
+    var isDragging = false;
+
+    var startX = 0;
+
+    var scrollLeft = 0;
+
+
+    bookingsTableWrapper.addEventListener(
+        "mousedown",
+        function(e)
+        {
+
+            isDragging = true;
+
+            bookingsTableWrapper.classList.add("dragging");
+
+
+            startX =
+                e.pageX -
+                bookingsTableWrapper.offsetLeft;
+
+
+            scrollLeft =
+                bookingsTableWrapper.scrollLeft;
+
+        }
+    );
+
+
+    bookingsTableWrapper.addEventListener(
+        "mousemove",
+        function(e)
+        {
+
+            if (!isDragging)
+            {
+                return;
+            }
+
+
+            e.preventDefault();
+
+
+            var x =
+                e.pageX -
+                bookingsTableWrapper.offsetLeft;
+
+
+            var distance =
+                (x - startX) * 1.5;
+
+
+            bookingsTableWrapper.scrollLeft =
+                scrollLeft - distance;
+
+        }
+    );
+
+
+    bookingsTableWrapper.addEventListener(
+        "mouseup",
+        function()
+        {
+
+            isDragging = false;
+
+            bookingsTableWrapper.classList.remove("dragging");
+
+        }
+    );
+
+
+    bookingsTableWrapper.addEventListener(
+        "mouseleave",
+        function()
+        {
+
+            isDragging = false;
+
+            bookingsTableWrapper.classList.remove("dragging");
+
+        }
+    );
+
+}
 </script>
 
 

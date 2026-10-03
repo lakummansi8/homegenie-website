@@ -666,6 +666,104 @@ if (searchInput)
     });
 
 }
+var usersTableWrapper =
+    document.querySelector(".users-table-wrapper");
+
+
+if (usersTableWrapper)
+{
+
+    var isDragging = false;
+
+    var startX = 0;
+
+    var scrollLeft = 0;
+
+
+    usersTableWrapper.addEventListener(
+        "mousedown",
+        function(e)
+        {
+
+            isDragging = true;
+
+            usersTableWrapper.classList.add(
+                "dragging"
+            );
+
+
+            startX =
+                e.pageX -
+                usersTableWrapper.offsetLeft;
+
+
+            scrollLeft =
+                usersTableWrapper.scrollLeft;
+
+        }
+    );
+
+
+    usersTableWrapper.addEventListener(
+        "mousemove",
+        function(e)
+        {
+
+            if (!isDragging)
+            {
+                return;
+            }
+
+
+            e.preventDefault();
+
+
+            var x =
+                e.pageX -
+                usersTableWrapper.offsetLeft;
+
+
+            var distance =
+                (x - startX) * 1.5;
+
+
+            usersTableWrapper.scrollLeft =
+                scrollLeft - distance;
+
+        }
+    );
+
+
+    usersTableWrapper.addEventListener(
+        "mouseup",
+        function()
+        {
+
+            isDragging = false;
+
+            usersTableWrapper.classList.remove(
+                "dragging"
+            );
+
+        }
+    );
+
+
+    usersTableWrapper.addEventListener(
+        "mouseleave",
+        function()
+        {
+
+            isDragging = false;
+
+            usersTableWrapper.classList.remove(
+                "dragging"
+            );
+
+        }
+    );
+
+}
 
 </script>
 

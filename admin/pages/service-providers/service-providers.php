@@ -772,6 +772,100 @@ if (searchInput)
     });
 
 }
+var providerTableContainer =
+    document.querySelector(".providers-table-container");
+
+if (providerTableContainer)
+{
+
+    var isDragging = false;
+    var startX = 0;
+    var scrollLeft = 0;
+
+
+    providerTableContainer.addEventListener(
+        "mousedown",
+        function(e)
+        {
+
+            isDragging = true;
+
+            providerTableContainer.classList.add(
+                "dragging"
+            );
+
+            startX =
+                e.pageX -
+                providerTableContainer.offsetLeft;
+
+            scrollLeft =
+                providerTableContainer.scrollLeft;
+
+        }
+    );
+
+
+    providerTableContainer.addEventListener(
+        "mousemove",
+        function(e)
+        {
+
+            if (!isDragging)
+            {
+                return;
+            }
+
+
+            e.preventDefault();
+
+
+            var x =
+                e.pageX -
+                providerTableContainer.offsetLeft;
+
+
+            var distance =
+                (x - startX) * 1.5;
+
+
+            providerTableContainer.scrollLeft =
+                scrollLeft - distance;
+
+        }
+    );
+
+
+    providerTableContainer.addEventListener(
+        "mouseup",
+        function()
+        {
+
+            isDragging = false;
+
+            providerTableContainer.classList.remove(
+                "dragging"
+            );
+
+        }
+    );
+
+
+    providerTableContainer.addEventListener(
+        "mouseleave",
+        function()
+        {
+
+            isDragging = false;
+
+            providerTableContainer.classList.remove(
+                "dragging"
+            );
+
+        }
+    );
+
+}
+
 
 </script>
 

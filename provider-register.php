@@ -1,3 +1,4 @@
+
 <?php
 
 error_reporting(E_ALL);
@@ -288,6 +289,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
                     Fill in your details below to submit your
                     provider application.
                 </p>
+
+                <a
+                    href="provider-view.php"
+                    class="view-providers-link"
+                >
+                    View Our Service Providers
+                </a>
 
             </div>
 
@@ -595,3 +603,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
 
 
 <?php include "includes/footer.php"; ?>
+

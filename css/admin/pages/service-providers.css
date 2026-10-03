@@ -103,9 +103,16 @@
 
 /* Table */
 
-.providers-table-container {
-    padding: 20px;
+.providers-table-container { 
+    padding: 20px; 
     overflow-x: auto;
+    overflow-y: hidden;
+    cursor: grab;
+}
+.providers-table-container.dragging {
+    cursor: grabbing;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .providers-table {

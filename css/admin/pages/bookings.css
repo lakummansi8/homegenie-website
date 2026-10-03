@@ -227,6 +227,16 @@
     width: 100%;
 
     overflow-x: auto;
+    overflow-y: hidden;
+
+    cursor: grab;
+}
+
+.bookings-table-wrapper.dragging {
+    cursor: grabbing;
+
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .bookings-table {

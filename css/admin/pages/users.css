@@ -256,8 +256,18 @@
     width: 100%;
 
     overflow-x: auto;
-}
 
+    overflow-y: hidden;
+
+    cursor: grab;
+}
+.users-table-wrapper.dragging {
+    cursor: grabbing;
+
+    user-select: none;
+
+    -webkit-user-select: none;
+}
 .users-table {
     width: 100%;
 

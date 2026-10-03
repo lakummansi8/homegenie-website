@@ -566,6 +566,55 @@ if (searchInput)
 
 }
 
+var tableContainer = document.querySelector(".service-table-responsive");
+
+if (tableContainer) {
+
+    var isDragging = false;
+    var startX = 0;
+    var scrollLeft = 0;
+
+    tableContainer.addEventListener("mousedown", function(e) {
+
+        isDragging = true;
+
+        tableContainer.classList.add("dragging");
+
+        startX = e.pageX - tableContainer.offsetLeft;
+
+        scrollLeft = tableContainer.scrollLeft;
+    });
+
+    tableContainer.addEventListener("mousemove", function(e) {
+
+        if (!isDragging) {
+            return;
+        }
+
+        e.preventDefault();
+
+        var x = e.pageX - tableContainer.offsetLeft;
+
+        var distance = (x - startX) * 1.5;
+
+        tableContainer.scrollLeft = scrollLeft - distance;
+    });
+
+    tableContainer.addEventListener("mouseup", function() {
+
+        isDragging = false;
+
+        tableContainer.classList.remove("dragging");
+    });
+
+    tableContainer.addEventListener("mouseleave", function() {
+
+        isDragging = false;
+
+        tableContainer.classList.remove("dragging");
+    });
+}
+
 </script>
 
 
